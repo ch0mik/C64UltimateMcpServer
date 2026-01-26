@@ -48,9 +48,10 @@ dotnet run
 ## 📦 Installation
 
 ### Requirements
-- **.NET 8.0 SDK** - [Download](https://dotnet.microsoft.com/download)
+- **.NET 10.0 SDK** - [Download](https://dotnet.microsoft.com/download)
 - **C64 Ultimate device** - On your network
 - **Curl or HTTP client** - For testing
+- **Docker** (optional) - [Download](https://www.docker.com/products/docker-desktop)
 
 ### Setup
 
@@ -415,9 +416,10 @@ Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 
 
 ## 📋 Spis Treści
 
-- **.NET 8.0 SDK** - [Pobierz](https://dotnet.microsoft.com/download)
+- **.NET 10.0 SDK** - [Pobierz](https://dotnet.microsoft.com/download)
 - **Urządzenie C64 Ultimate** - W sieci lokalnej
 - **cURL lub klient HTTP** - Do testowania
+- **Docker** (opcjonalnie) - [Pobierz](https://www.docker.com/products/docker-desktop)
 
 ## Instalacja (PL)
 
