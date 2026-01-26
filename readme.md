@@ -2,6 +2,10 @@
 
 **English** | [**Polski**](#-c64-ultimate-mcp-server-polski)
 
+> ⚙️ **This project was built 100% using AI Agent prompts** - Every line of code, configuration, and documentation was generated through conversational prompts to GitHub Copilot Agent.
+
+![C64 Ultimate MCP Server Logo](logo.png)
+
 Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ultimate** device with **45+ tools** for complete control. Built in C# with enterprise-grade architecture, type safety, and comprehensive API coverage.
 
 **License:** MIT License (see [LICENSE](LICENSE) file)
@@ -9,6 +13,7 @@ Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ult
 ## ⚡ Key Features
 
 - **Complete Ultimate 64 API Support**: All 45+ tools from the 1541U REST API
+- **BASIC to PRG Compilation**: Real-time compilation of BASIC V2 source code to executable PRG files
 - **Separated Client Library**: Reusable `C64UltimateClient` NuGet package with clean async API
 - **Clean Architecture**: Client → Service → MCP wrapper pattern with proper DI
 - **HTTP/SSE Transport**: Remote multi-client support with session management
@@ -359,6 +364,7 @@ Access:
 ## ✅ Status: Production Ready
 
 - ✅ All 45+ tools implemented
+- ✅ BASIC to PRG on-the-fly compilation
 - ✅ HTTP/SSE transport
 - ✅ Agent integration (Continue, Copilot, Cody, Cursor)
 - ✅ Docker containerization
@@ -370,9 +376,16 @@ Access:
 ## 🔗 Links
 
 - **C64 Ultimate**: https://ultimate64.com/
+- **1541u API**: https://github.com/GideonZ/1541u-documentation
+- **RetroC64**: https://retroc64.github.io/
+- **C64U (cybersorcerer)**: https://github.com/cybersorcerer/c64u/
+- **C64U MCP Server**: https://github.com/xphileby/c64u-mcp-server
+- **Ultimate64 MCP**: https://github.com/Martijn-DevRev/Ultimate64MCP
 - **MCP Spec**: https://modelcontextprotocol.io/
 - **Continue IDE**: https://continue.dev
 - **GitHub Copilot**: https://github.com/features/copilot
+- **Cody**: https://cody.dev
+- **Cursor**: https://cursor.sh
 - **Cody**: https://cody.dev
 - **Cursor**: https://cursor.sh
 
@@ -380,11 +393,17 @@ Access:
 
 MIT
 
+![C64U Logo](c64u.png)
+
 ---
 
 # 🇵🇱 C64 Ultimate MCP Server (Polski)
 
-## 📋 Spis Treści
+> ⚙️ **Ten projekt został stworzony 100% za pomocą promptów do Agenta AI** - Każda linia kodu, konfiguracji i dokumentacji została wygenerowana poprzez konwersacyjne prompty do GitHub Copilot Agent.
+
+![C64 Ultimate MCP Server Logo](logo.png)
+
+Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 64 Ultimate** z **45+ narzędziami** do pełnej kontroli. Zbudowany w C# z architekturą klasy enterprise, bezpieczeństwem typów i kompleksowym pokryciem API.
 
 - [Wymagania](#wymagania-pl)
 - [Instalacja](#instalacja-pl)
@@ -598,6 +617,7 @@ curl -X POST http://localhost:8080/ \
 ## 🎉 Status: Gotowy do Produkcji
 
 - ✅ Wszystkie 45+ narzędzia zaimplementowane
+- ✅ Kompilacja BASIC do PRG w locie
 - ✅ Transport HTTP/SSE
 - ✅ Integracja z agentami AI
 - ✅ Konteneryzacja Docker
@@ -610,6 +630,10 @@ curl -X POST http://localhost:8080/ \
 
 - **C64 Ultimate**: https://ultimate64.com/
 - **1541u API**: https://github.com/GideonZ/1541u-documentation
+- **RetroC64**: https://retroc64.github.io/
+- **C64U (cybersorcerer)**: https://github.com/cybersorcerer/c64u/
+- **C64U MCP Server**: https://github.com/xphileby/c64u-mcp-server
+- **Ultimate64 MCP**: https://github.com/Martijn-DevRev/Ultimate64MCP
 - **MCP**: https://modelcontextprotocol.io/
 - **Continue IDE**: https://continue.dev
 - **GitHub Copilot**: https://github.com/features/copilot
@@ -619,3 +643,5 @@ curl -X POST http://localhost:8080/ \
 ## 📄 Licencja
 
 MIT
+
+![C64U Logo](c64u.png)
