@@ -341,7 +341,7 @@ Access:
 ```
 ┌─────────────────────────────────────────────┐
 │         AI Agents                           │
-│  (Continue/Copilot/Cody/Cursor)            │
+│  (Continue/Copilot/Cody/Cursor)             │
 └──────────────────┬──────────────────────────┘
                    │ HTTP/SSE
 ┌──────────────────▼──────────────────────────┐
@@ -353,7 +353,7 @@ Access:
                    │ REST API
 ┌──────────────────▼──────────────────────────┐
 │   C64 Ultimate Device                       │
-│   (192.168.0.120:80)                       │
+│   (192.168.0.120:80)                        │
 │  - V1 REST API                              │
 │  - SID/MOD Playback                         │
 │  - Drive Control                            │
