@@ -8,7 +8,7 @@ A reusable .NET client library for the Commodore 64 Ultimate REST API.
 
 ## Prerequisites
 
-1. **.NET SDK 8.0 or higher** installed
+1. **.NET SDK 10.0 or higher** installed
 2. **A NuGet.org account** created at https://www.nuget.org/users/account/LogOn
 3. **NuGet API key** from https://www.nuget.org/account/apikeys
 

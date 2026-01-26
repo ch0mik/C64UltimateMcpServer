@@ -11,7 +11,7 @@ A comprehensive, production-ready .NET client library for the **Commodore 64 Ult
 ✅ **Type-Safe** - Full C# type safety with nullable reference types enabled  
 ✅ **Structured Logging** - Optional ILogger<Ultimate64Client> integration  
 ✅ **Error Handling** - UltimateClientException with API error details  
-✅ **Multiple .NET Versions** - Targets net8.0 and net10.0  
+✅ **.NET 10.0** - Targets .NET 10.0 and later  
 ✅ **Zero Dependencies** - Only uses System.* and Microsoft.Extensions.Logging.Abstractions  
 ✅ **NuGet Ready** - Fully packaged for public distribution  
 
