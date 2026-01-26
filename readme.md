@@ -99,7 +99,7 @@ environment:
   ],
   "mcp_servers": {
     "c64-ultimate": {
-      "url": "http://localhost:8080/mcp"
+      "url": "http://localhost:8080"
     }
   }
 }
@@ -121,7 +121,7 @@ environment:
   "github.copilot.chat.mcpServers": [
     {
       "name": "C64 Ultimate",
-      "command": "http://localhost:8080/mcp"
+      "url": "http://localhost:8080"
     }
   ]
 }
@@ -136,7 +136,7 @@ environment:
 ### Cody (Sourcegraph)
 
 ```bash
-cody mcp add c64-ultimate http://localhost:8080/mcp
+cody mcp add c64-ultimate http://localhost:8080
 ```
 
 Then in Cody:
@@ -154,7 +154,7 @@ Ask Cody: List all available config categories
     {
       "name": "C64 Ultimate",
       "type": "http",
-      "url": "http://localhost:8080/mcp"
+      "url": "http://localhost:8080"
     }
   ]
 }
@@ -456,7 +456,7 @@ Ultimate__BaseUrl=http://192.168.0.120
   ],
   "mcp_servers": {
     "c64-ultimate": {
-      "url": "http://localhost:8080/mcp"
+      "url": "http://localhost:8080"
     }
   }
 }
@@ -478,7 +478,7 @@ Ultimate__BaseUrl=http://192.168.0.120
   "github.copilot.chat.mcpServers": [
     {
       "name": "C64 Ultimate",
-      "command": "http://localhost:8080/mcp"
+      "url": "http://localhost:8080"
     }
   ]
 }
@@ -494,7 +494,7 @@ Ultimate__BaseUrl=http://192.168.0.120
 ### Cody (Sourcegraph)
 
 ```bash
-cody mcp add c64-ultimate http://localhost:8080/mcp
+cody mcp add c64-ultimate http://localhost:8080
 ```
 
 W Cody:
@@ -512,7 +512,7 @@ Ask Cody: Pokaz dostepne kategorie konfiguracji
     {
       "name": "C64 Ultimate",
       "type": "http",
-      "url": "http://localhost:8080/mcp"
+      "url": "http://localhost:8080"
     }
   ]
 }
