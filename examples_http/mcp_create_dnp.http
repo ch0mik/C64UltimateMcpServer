@@ -1,0 +1,44 @@
+### Create DNP Disk Image
+# Uses: Ultimate64Client.CreateDnpAsync(path, tracks, diskname?)
+# MCP Tool: ultimate_create_dnp
+# Creates empty DNP image (native filesystem)
+# Required tracks: 1-255 (each track = 256 sectors, max ~16MB for 255 tracks)
+# Optional diskname: custom name for disk header (auto-generated from filename if omitted)
+
+### Example 1: Small DNP (16 tracks = 1MB)
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_create_dnp",
+    "arguments": {
+      "path": "/Disks/small.dnp",
+      "tracks": 16
+    }
+  }
+}
+
+###
+### Example 2: Large DNP with custom name (255 tracks = ~16MB max)
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_create_dnp",
+    "arguments": {
+      "path": "/Disks/large.dnp",
+      "tracks": 255,
+      "diskname": "BIG ARCHIVE"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="C64UltimateClient.Tests/C64UltimateClient.Tests.csproj" />
+  <Project Path="C64UltimateClient/C64UltimateClient.csproj" />
+  <Project Path="C64BasicPrgGenerator/C64BasicPrgGenerator.csproj" />
+  <Project Path="C64UltimateMcpServer/C64UltimateMcpServer.csproj" />
+</Solution>

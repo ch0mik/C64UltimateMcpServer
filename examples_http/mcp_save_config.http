@@ -1,0 +1,18 @@
+### Save Configuration to Flash
+# Uses: Ultimate64Client.SaveConfigAsync()
+# MCP Tool: ultimate_save_config
+# Persists current configuration
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_save_config",
+    "arguments": {}
+  }
+}

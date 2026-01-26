@@ -1,0 +1,21 @@
+### Play SID File
+# Uses: Ultimate64Client.PlaySidAsync(file)
+# MCP Tool: ultimate_play_sid
+# File must already be on the Ultimate in /Temp/ directory
+
+### Play SID file with binary upload
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_play_sid_binary",
+    "arguments": {
+      "filePath": "./examples_http/matrix.sid"
+    }
+  }
+}

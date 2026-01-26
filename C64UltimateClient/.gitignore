@@ -1,0 +1,34 @@
+# Directories
+.vs/
+.vscode/
+bin/
+obj/
+.idea/
+.DS_Store
+
+# Build outputs
+*.dll
+*.exe
+*.so
+*.dylib
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+
+# Visual Studio
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.sln.lock.json
+
+# Test results
+TestResults/
+*.trx
+
+# Misc
+.env
+.env.local
+*.log

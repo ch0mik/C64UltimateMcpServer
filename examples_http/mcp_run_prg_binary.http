@@ -1,0 +1,20 @@
+### Run PRG from Binary (File)
+# Uses: Ultimate64Client.RunProgramBinaryAsync(filePath)
+# MCP Tool: ultimate_run_prg_binary
+# Uploads and executes PRG file in single call
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_run_prg_binary",
+    "arguments": {
+      "filePath": "./examples_http/matrix.prg"
+    }
+  }
+}

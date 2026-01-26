@@ -1,0 +1,79 @@
+### Test 1: Play SID from /Temp/ (after manual upload to Ultimate)
+# Prerequisite: matrix.sid must already be in /Temp/ on Ultimate
+# Upload method: SD card or other manual method
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_play_sid",
+    "arguments": {
+      "file": "/Temp/matrix.sid"
+    }
+  }
+}
+
+###
+### Test 2: Play SID from /Roms/ (if file is there)
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_play_sid",
+    "arguments": {
+      "file": "/Roms/matrix.sid"
+    }
+  }
+}
+
+###
+### Test 3: Play SID with song number
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_play_sid",
+    "arguments": {
+      "file": "/Temp/matrix.sid",
+      "songNumber": 1
+    }
+  }
+}
+
+###
+### Test 4: Direct API call to Ultimate (without MCP wrapper)
+### This tests if the C64 Ultimate API endpoint works directly
+PUT http://192.168.0.120/v1/runners:sidplay?file=/Temp/matrix.sid
+
+###
+### Test 5: Check what files are in /Temp/
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 5,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_get_file_info",
+    "arguments": {
+      "path": "/Temp"
+    }
+  }
+}

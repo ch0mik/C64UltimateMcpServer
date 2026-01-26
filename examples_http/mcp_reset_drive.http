@@ -1,0 +1,20 @@
+### Reset Drive
+# Uses: Ultimate64Client.ResetDriveAsync(drive)
+# MCP Tool: ultimate_reset_drive
+# Resets a specific drive (A, B, C, or D)
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_reset_drive",
+    "arguments": {
+      "drive": "A"
+    }
+  }
+}

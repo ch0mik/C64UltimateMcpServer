@@ -1,0 +1,137 @@
+### Play SID File with Specific Song Number
+# Tests: runners:sidplay with songnr parameter
+# Verifies C# correctly sends 'songnr' parameter (not 'song')
+# Expected API call: PUT /v1/runners:sidplay?file=...&songnr=2
+
+### Test 1: First upload SID file
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 0,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_play_sid_binary",
+    "arguments": {
+      "filePath": "./examples_http/music.sid"
+    }
+  }
+}
+
+###
+### Test 2: Play SID file with default song (no songNumber param)
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_play_sid",
+    "arguments": {
+      "file": "/Temp/music.sid"
+    }
+  }
+}
+
+###
+### Test 3: Play SID file with song number 2 (WITH songnr parameter)
+# This tests if C# correctly generates: /v1/runners:sidplay?file=...&songnr=2
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_play_sid",
+    "arguments": {
+      "file": "/Temp/music.sid",
+      "songNumber": 2
+    }
+  }
+}
+
+###
+### Test 4: Play SID file with song number 5
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_play_sid",
+    "arguments": {
+      "file": "/Temp/Commando.sid",
+      "songNumber": 5
+    }
+  }
+}
+
+###
+### Test 4: Play SID binary with song number 1
+# This tests POST /v1/runners:sidplay?songnr=1 with binary data
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_run_prg_binary",
+    "arguments": {
+      "filePath": "./music.sid",
+      "songNumber": 1
+    }
+  }
+}
+
+###
+### Test 5: Mount disk and then play SID from it
+# First mount a disk image
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 5,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_mount_disk",
+    "arguments": {
+      "drive": "a",
+      "file": "/Roms/disk.d64"
+    }
+  }
+}
+
+###
+### Then play a SID from the mounted disk
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 6,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_play_sid",
+    "arguments": {
+      "file": "/Roms/MUSIC.SID",
+      "songNumber": 3
+    }
+  }
+}

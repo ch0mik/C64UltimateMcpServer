@@ -1,0 +1,40 @@
+### Test ultimate_play_sid_binary - Binary SID Upload & Play
+
+### Test 1: Play SID from local file (matrix.sid)
+# Uses ultimate_play_sid_binary with filePath
+# Reads file from MCP server filesystem and sends binary to Ultimate
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_play_sid_binary",
+    "arguments": {
+      "filePath": "./examples_http/matrix.sid"
+    }
+  }
+}
+
+###
+### Test 2: Play SID with song number
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_play_sid_binary",
+    "arguments": {
+      "filePath": "./examples_http/matrix.sid",
+      "songNumber": 1
+    }
+  }
+}
+

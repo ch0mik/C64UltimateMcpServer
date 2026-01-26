@@ -1,0 +1,41 @@
+### Create D71 Disk Image
+# Uses: Ultimate64Client.CreateD71Async(path, diskname?)
+# MCP Tool: ultimate_create_d71
+# Creates empty D71 image (double-sided 1571 disk, 70 tracks fixed)
+# Optional diskname: custom name for disk header (auto-generated from filename if omitted)
+
+### Example 1: Basic D71
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_create_d71",
+    "arguments": {
+      "path": "/Disks/new_disk.d71"
+    }
+  }
+}
+
+###
+### Example 2: D71 with custom disk name
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_create_d71",
+    "arguments": {
+      "path": "/Disks/archive.d71",
+      "diskname": "ARCHIVE D71"
+    }
+  }
+}

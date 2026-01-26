@@ -1,0 +1,95 @@
+# Git metadata
+.git
+.gitignore
+.gitattributes
+.gitkeep
+
+# Development & IDE
+.vscode/
+.idea/
+.vs/
+*.suo
+*.user
+*.userprefs
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Build artifacts - should not be in Docker image
+bin/
+obj/
+dist/
+build/
+x64/
+x86/
+Debug/
+Release/
+
+# NuGet
+packages/
+*.nupkg
+project.lock.json
+project.assets.json
+.nuget/
+
+# Node (if used)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Configuration files with potential secrets
+.env
+.env.local
+.env.*.local
+appsettings.local.json
+appsettings.*.local.json
+secrets.json
+user-secrets/
+docker-compose.override.yml
+
+# Cache and temporary
+.cache/
+tmp/
+temp/
+*.tmp
+*.bak
+.gradle/
+.m2/
+.npm/
+
+# Test results
+TestResults/
+coverage/
+*.trx
+test-results/
+
+# Logs
+logs/
+*.log
+*.log.*
+npm-debug.log*
+
+# Documentation source (if applicable)
+docs/src/
+*.md.draft
+
+# OS specific files
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Docker build cache (optional - helps with layer caching)
+# Uncomment if you want to exclude for cleaner builds:
+# .dockerbuild/
+
+# Source maps (optional - exclude if not needed in image)
+# *.map
+
+# Local development files
+.editorconfig.local
+.prettierrc.local
+.agent-instructions.md

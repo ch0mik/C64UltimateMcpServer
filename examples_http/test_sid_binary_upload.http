@@ -1,0 +1,81 @@
+### Test SID Binary Upload + Play (bez wcześniejszego wgrania)
+# This sends SID file as binary data via POST (no pre-upload needed)
+# Uses: ultimate_play_sid_binary with proper parameters
+
+### Example 1: Play SID from local file
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_play_sid_binary",
+    "arguments": {
+      "filePath": "./examples_http/matrix.sid"
+    }
+  }
+}
+
+###
+### Example 2: Play SID from base64 encoded data
+# First, encode your SID file to base64
+# On Windows: certutil -encode music.sid music.sid.b64
+# Then copy the base64 content between BEGIN/END markers
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_play_sid_binary",
+    "arguments": {
+      "sidDataBase64": "SURBWAE8AAAA..."
+    }
+  }
+}
+
+###
+### Example 3: Download SID from URL and play
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_play_sid_binary",
+    "arguments": {
+      "url": "http://example.com/music.sid"
+    }
+  }
+}}
+
+###
+### Alternative: Use actual endpoints directly via REST
+### (for testing the raw API)
+
+### Direct POST /v1/runners:run_prg with binary
+POST http://192.168.0.120/v1/runners:run_prg
+Content-Type: application/octet-stream
+
+[binary PRG/SID data here]
+
+###
+### Or with form data
+POST http://192.168.0.120/v1/runners:sidplay
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="sid"; filename="music.sid"
+Content-Type: application/octet-stream
+
+[binary SID data]
+--boundary--

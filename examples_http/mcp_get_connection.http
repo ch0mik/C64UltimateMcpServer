@@ -1,0 +1,17 @@
+### Get Current Connection Status
+# Uses: Ultimate64Client.GetVersionAsync() to verify connection
+# MCP Tool: ultimate_get_connection
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 8,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_get_connection",
+    "arguments": {}
+  }
+}

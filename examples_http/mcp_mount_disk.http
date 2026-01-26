@@ -1,0 +1,45 @@
+### Mount Disk Image
+# Uses: Ultimate64Client.MountDiskAsync(drive, file, type?, mode?)
+# MCP Tool: ultimate_mount_disk
+# Drives: 8 (primary), 9 (secondary), etc.
+# Optional type: d64, g64, d71, g71, d81 (auto-detected from file extension if omitted)
+# Optional mode: readwrite (default), readonly, unlinked
+
+### Example 1: Basic mount (type auto-detected from extension)
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_mount_disk",
+    "arguments": {
+      "drive": "8",
+      "file": "/games/loderunner.d64"
+    }
+  }
+}
+
+###
+### Example 2: Mount with explicit type and read-only mode
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_mount_disk",
+    "arguments": {
+      "drive": "9",
+      "file": "/disks/archive.d71",
+      "type": "d71",
+      "mode": "readonly"
+    }
+  }
+}

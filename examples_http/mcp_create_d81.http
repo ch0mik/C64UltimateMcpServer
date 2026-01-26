@@ -1,0 +1,41 @@
+### Create D81 Disk Image
+# Uses: Ultimate64Client.CreateD81Async(path, diskname?)
+# MCP Tool: ultimate_create_d81
+# Creates empty D81 image (3.5" 1581 disk, 160 tracks fixed - 80 per side)
+# Optional diskname: custom name for disk header (auto-generated from filename if omitted)
+
+### Example 1: Basic D81
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_create_d81",
+    "arguments": {
+      "path": "/Disks/new_disk.d81"
+    }
+  }
+}
+
+###
+### Example 2: D81 with custom disk name
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_create_d81",
+    "arguments": {
+      "path": "/Disks/projects.d81",
+      "diskname": "MY PROJECTS"
+    }
+  }
+}

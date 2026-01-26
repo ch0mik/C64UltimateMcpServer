@@ -1,0 +1,19 @@
+### Turn Drive On
+# Uses: Ultimate64Client.EnableDriveAsync(drive)
+# MCP Tool: ultimate_turn_drive_on
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_turn_drive_on",
+    "arguments": {
+      "drive": "9"
+    }
+  }
+}

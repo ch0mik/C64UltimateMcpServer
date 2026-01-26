@@ -1,0 +1,15 @@
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_play_sid",
+    "arguments": {
+      "sidDataBase64": "PSBEaXIgU0lEIEZpbGUgSGVhZGVyIChCYXNlNjQgZW5jb2RlZCkuIFJlcGxhY2Ugd2l0aCBhY3R1YWwgU0lEIGZpbGUgZGF0YQ=="
+    }
+  }
+}

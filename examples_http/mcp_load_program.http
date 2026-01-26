@@ -1,0 +1,39 @@
+### Load Program into Memory
+# Uses: Ultimate64Client.LoadProgramAsync(file)
+# MCP Tool: ultimate_load_program
+# Note: Loads but does not execute
+
+### Load the program
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_load_program",
+    "arguments": {
+      "file": "/Temp/matrix.prg"
+    }
+  }
+}
+
+###
+### Alternative: Upload and load PRG binary directly
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_run_prg_binary",
+    "arguments": {
+      "filePath": "./examples_http/matrix.prg"
+    }
+  }
+}

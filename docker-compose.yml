@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  mcp-server:
+    container_name: mcp-server
+    build:
+      context: .
+      dockerfile: ./C64UltimateMcpServer.Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - Ultimate__BaseUrl=http://192.168.0.120
+      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Production
+    volumes:
+      - ./examples_http:/app/examples_http
+    networks:
+      - c64-network
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama-llama3.2
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - c64-network
+    command: serve
+
+volumes:
+  ollama-data:
+
+networks:
+  c64-network:
+    driver: bridge

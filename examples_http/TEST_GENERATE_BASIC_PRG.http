@@ -1,0 +1,42 @@
+### Generate BASIC PRG and Run - Pipeline
+# Step 1: Generate PRG from BASIC source
+# Step 2: Copy prgDataBase64 from Step 1 response
+# Step 3: Run PRG using the base64 from Step 1
+
+### Step 1: Generate BASIC PRG
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_generate_basic_prg",
+    "arguments": {
+      "basicSource": "10 PRINT \"HELLO FROM MCP\"\n20 PRINT \"PRESS RETURN TO LOOP\"\n30 GOTO 10"
+    }
+  }
+}
+
+
+
+###
+### Step 2: Run the Generated PRG
+### Copy "prgDataBase64" value from Step 1 response and paste below as value
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_run_prg_binary",
+    "arguments": {
+      "prgDataBase64": "PASTE_BASE64_FROM_STEP_1_HERE"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+### Set Connection (Metadata Operation)
+# Uses: UltimateService.SetConnection()
+# MCP Tool: ultimate_set_connection
+# Note: Connection is managed via client initialization
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_set_connection",
+    "arguments": {
+      "hostname": "192.168.0.120",
+      "port": 80
+    }
+  }
+}

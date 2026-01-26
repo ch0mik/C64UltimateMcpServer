@@ -1,0 +1,112 @@
+# Build artifacts
+bin/
+obj/
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Debug & Release
+Debug/
+Release/
+x64/
+x86/
+
+# C# specific
+*.csproj.user
+*.csproj.DotNetCore.props
+*.csproj.nuget.cache
+*.csproj.nuget.dgspec.json
+*.csproj.nuget.g.props
+*.csproj.nuget.g.targets
+project.lock.json
+project.assets.json
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# Node (if used for frontend)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Configuration & Secrets
+appsettings.local.json
+appsettings.*.json.local
+.env
+.env.local
+.env.*.local
+user-secrets/
+secrets.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Build output
+dist/
+build/
+*.dll
+*.exe
+*.exe.config
+*.so
+*.dylib
+*.pdb
+*.bin
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Test results
+TestResults/
+coverage/
+*.trx
+
+# OS specific
+.DS_Store
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# VS Code specific
+.vscode/settings.json
+.vscode/extensions.json
+
+# Application-specific
+C64UltimateMcpServer/bin/
+C64UltimateMcpServer/obj/
+C64BasicPrgGenerator/bin/
+C64BasicPrgGenerator/obj/
+
+# Generated files
+*.GeneratedMSBuildEditorConfig.editorconfig
+C64UltimateMcpServer.GlobalUsings.g.cs
+
+# Cache files
+rpswa.dswa.cache.json
+staticwebassets.removed.txt
+
+# Agent instructions
+.agent-instructions.md

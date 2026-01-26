@@ -1,0 +1,21 @@
+### Get File Information
+# Uses: Ultimate64Client.GetFileInfoAsync(path)
+# MCP Tool: ultimate_get_file_info
+# Returns metadata about file on C64 Ultimate
+# File should be in /Temp/ directory
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_get_file_info",
+    "arguments": {
+      "path": "/Temp/matrix.prg"
+    }
+  }
+}

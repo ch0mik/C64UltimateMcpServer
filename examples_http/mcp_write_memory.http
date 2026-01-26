@@ -1,0 +1,21 @@
+### Write to C64 Memory
+# Uses: Ultimate64Client.WriteMemoryAsync(address, data)
+# MCP Tool: ultimate_write_memory
+# Parameters: address (hex string), data (hex string)
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_write_memory",
+    "arguments": {
+      "address": "D020",
+      "data": "02 05 08"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+### Read Memory from C64
+# Uses: Ultimate64Client.ReadMemoryAsync(address, length)
+# MCP Tool: ultimate_read_memory
+# Parameters: address (hex string like "2048"), length (number of bytes)
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_read_memory",
+    "arguments": {
+      "address": "2048",
+      "length": "256"
+    }
+  }
+}

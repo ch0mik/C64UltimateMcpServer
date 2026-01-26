@@ -1,0 +1,20 @@
+### Set Debug Register (U64 Only)
+# Uses: Ultimate64Client.SetDebugRegisterAsync(value)
+# MCP Tool: ultimate_set_debug_register
+# U64-specific feature
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_set_debug_register",
+    "arguments": {
+      "value": "12345678"
+    }
+  }
+}

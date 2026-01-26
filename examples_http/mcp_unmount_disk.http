@@ -1,0 +1,19 @@
+### Unmount Disk Image
+# Uses: Ultimate64Client.UnmountDiskAsync(drive)
+# MCP Tool: ultimate_unmount_disk
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_unmount_disk",
+    "arguments": {
+      "drive": "8"
+    }
+  }
+}

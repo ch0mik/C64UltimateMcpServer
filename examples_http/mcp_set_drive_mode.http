@@ -1,0 +1,20 @@
+### Set Drive Mode (1541, 1571, 1581)
+# Uses: Ultimate64Client.SetDriveModeAsync(drive, mode)
+# MCP Tool: ultimate_set_drive_mode
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_set_drive_mode",
+    "arguments": {
+      "drive": "8",
+      "mode": "1541"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+### Load Custom Drive ROM
+# Uses: Ultimate64Client.LoadDriveRomAsync(drive, file)
+# MCP Tool: ultimate_load_drive_rom
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_load_drive_rom",
+    "arguments": {
+      "drive": "8",
+      "file": "/ROMs/1541_custom.rom"
+    }
+  }
+}

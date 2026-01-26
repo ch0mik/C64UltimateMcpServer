@@ -1,0 +1,18 @@
+### Pause Machine (Halt CPU)
+# Uses: Ultimate64Client.PauseMachineAsync()
+# MCP Tool: ultimate_pause_machine
+# Freezes CPU execution
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_pause_machine",
+    "arguments": {}
+  }
+}

@@ -1,0 +1,28 @@
+### Bulk Configuration Update
+# Uses: Ultimate64Client.BulkConfigUpdateAsync(config)
+# MCP Tool: ultimate_bulk_config_update
+# Updates multiple config items at once
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_bulk_config_update",
+    "arguments": {
+      "config": {
+        "machine": {
+          "model": "c64",
+          "region": "pal"
+        },
+        "display": {
+          "resolution": "720p"
+        }
+      }
+    }
+  }
+}

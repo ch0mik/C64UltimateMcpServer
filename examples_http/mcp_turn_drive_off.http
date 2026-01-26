@@ -1,0 +1,19 @@
+### Turn Drive Off
+# Uses: Ultimate64Client.DisableDriveAsync(drive)
+# MCP Tool: ultimate_turn_drive_off
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_turn_drive_off",
+    "arguments": {
+      "drive": "9"
+    }
+  }
+}

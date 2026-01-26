@@ -1,0 +1,20 @@
+### Get Configuration Category Items
+# Uses: Ultimate64Client.GetConfigCategoryAsync(category)
+# MCP Tool: ultimate_get_config_category
+# Gets all items in a config category
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_get_config_category",
+    "arguments": {
+      "category": "machine"
+    }
+  }
+}

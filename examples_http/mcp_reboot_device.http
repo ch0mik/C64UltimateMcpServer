@@ -1,0 +1,22 @@
+### Reboot Device (Full Power Cycle)
+# Uses: Ultimate64Client.RebootMachineAsync()
+# MCP Tool: ultimate_reboot_device
+# Full reboot, slower than soft reset
+
+@hostname=localhost
+@port=8080
+@host={{hostname}}:{{port}}
+
+POST http://{{host}}/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_reboot_device",
+    "arguments": {}
+  }
+}

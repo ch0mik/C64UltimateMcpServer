@@ -1,0 +1,17 @@
+### Reset Configuration to Factory Defaults
+# Uses: Ultimate64Client.ResetConfigToDefaultAsync()
+# MCP Tool: ultimate_reset_config
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_reset_config",
+    "arguments": {}
+  }
+}

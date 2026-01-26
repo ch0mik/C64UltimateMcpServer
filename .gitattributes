@@ -1,0 +1,36 @@
+# Declare files as binary
+*.prg binary
+*.sid binary
+*.p00 binary
+*.d64 binary
+*.d81 binary
+*.t64 binary
+*.tap binary
+*.crt binary
+*.rom binary
+
+# Preserve line endings in text files
+* text=auto
+*.cs text eol=lf
+*.json text eol=lf
+*.xml text eol=lf
+*.csproj text eol=lf
+*.props text eol=lf
+*.targets text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.sh text eol=lf
+*.dockerfile text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.http text eol=lf
+*.rest text eol=lf
+Dockerfile text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.dockerignore text eol=lf
+
+# Windows line endings
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf

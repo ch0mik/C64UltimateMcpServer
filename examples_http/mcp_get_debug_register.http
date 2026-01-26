@@ -1,0 +1,18 @@
+### Get Debug Register (U64 Only)
+# Uses: Ultimate64Client.GetDebugRegisterAsync()
+# MCP Tool: ultimate_get_debug_register
+# U64-specific feature
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_get_debug_register",
+    "arguments": {}
+  }
+}

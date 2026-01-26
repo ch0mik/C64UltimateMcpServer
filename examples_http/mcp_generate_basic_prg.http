@@ -1,0 +1,52 @@
+### Generate BASIC PRG - Hello World Loop
+POST http://localhost:3000/tools/ultimate_generate_basic_prg/execute
+Content-Type: application/json
+Accept: application/json
+
+{
+  "basicSource": "10 PRINT \"HELLO WORLD\"\n20 GOTO 10"
+}
+
+###
+### Generate BASIC PRG - Simple Print
+POST http://localhost:3000/tools/ultimate_generate_basic_prg/execute
+Content-Type: application/json
+Accept: application/json
+
+{
+  "basicSource": "10 PRINT \"HI THERE\""
+}
+
+###
+### Generate BASIC PRG - Variables and Math
+POST http://localhost:3000/tools/ultimate_generate_basic_prg/execute
+Content-Type: application/json
+Accept: application/json
+
+{
+  "basicSource": "10 X = 5\n20 Y = 10\n30 Z = X + Y\n40 PRINT Z"
+}
+
+###
+### Generate BASIC PRG - Input and Loop
+POST http://localhost:3000/tools/ultimate_generate_basic_prg/execute
+Content-Type: application/json
+Accept: application/json
+
+{
+  "basicSource": "10 INPUT \"ENTER NAME: \"; N$\n20 PRINT \"HELLO \" N$\n30 GOTO 10"
+}
+
+###
+### Generate BASIC PRG - Invalid Syntax (Error Example)
+POST http://localhost:3000/tools/ultimate_generate_basic_prg/execute
+Content-Type: application/json
+Accept: application/json
+
+{
+  "basicSource": "10 PRINT\nGOTO"
+}
+
+###
+### Then execute generated PRG with:
+### ultimate_run_prg_binary with prgDataBase64 from response

@@ -1,0 +1,21 @@
+### Set Configuration Item
+# Uses: Ultimate64Client.SetConfigItemAsync(category, item, value)
+# MCP Tool: ultimate_set_config_item
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_set_config_item",
+    "arguments": {
+      "category": "machine",
+      "item": "model",
+      "value": "c64"
+    }
+  }
+}

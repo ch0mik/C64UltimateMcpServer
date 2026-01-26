@@ -1,0 +1,27 @@
+### Run Program (Load and Execute)
+# Uses: Ultimate64Client.RunProgramAsync(file)
+# MCP Tool: ultimate_run_program
+# Loads program and starts execution
+# Note: File must be uploaded to /Temp/ first
+
+### Upload and Run PRG file in one operation
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_run_prg_binary",
+    "arguments": {
+      "filePath": "./examples_http/matrix.prg"
+    }
+  }
+}
+
+###
+### Step 2: Run the program (executed automatically by step 1)
+# Note: ultimate_run_prg_binary handles upload + execution in single call
+# If you need to run again without uploading, use ultimate_run_program with /Temp/matrix.prg
