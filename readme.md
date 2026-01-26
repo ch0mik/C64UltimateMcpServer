@@ -10,6 +10,10 @@ Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ult
 
 **License:** MIT License (see [LICENSE](LICENSE) file)
 
+## 🎥 Demo Video
+
+[![C64 Ultimate MCP Server Demo](https://img.youtube.com/vi/YZYprkUDAyM/0.jpg)](https://youtu.be/YZYprkUDAyM)
+
 ## ⚡ Key Features
 
 - **Complete Ultimate 64 API Support**: All 45+ tools from the 1541U REST API
@@ -405,14 +409,11 @@ MIT
 
 Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 64 Ultimate** z **45+ narzędziami** do pełnej kontroli. Zbudowany w C# z architekturą klasy enterprise, bezpieczeństwem typów i kompleksowym pokryciem API.
 
-- [Wymagania](#wymagania-pl)
-- [Instalacja](#instalacja-pl)
-- [Konfiguracja](#konfiguracja-pl)
-- [Agenci AI](#agenci-ai-pl)
-- [Narzędzia](#narzędzia)
-- [Przykłady](#przykłady-pl)
+## 🎥 Wideo Demo
 
-## Wymagania (PL)
+[![C64 Ultimate MCP Server Demo](https://img.youtube.com/vi/YZYprkUDAyM/0.jpg)](https://youtu.be/YZYprkUDAyM)
+
+## 📋 Spis Treści
 
 - **.NET 8.0 SDK** - [Pobierz](https://dotnet.microsoft.com/download)
 - **Urządzenie C64 Ultimate** - W sieci lokalnej
