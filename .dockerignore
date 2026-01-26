@@ -8,6 +8,8 @@
 .vscode/
 .idea/
 .vs/
+.continue/
+.fleet/
 *.suo
 *.user
 *.userprefs
@@ -48,6 +50,7 @@ appsettings.*.local.json
 secrets.json
 user-secrets/
 docker-compose.override.yml
+docker-compose.local.yml
 
 # Cache and temporary
 .cache/
