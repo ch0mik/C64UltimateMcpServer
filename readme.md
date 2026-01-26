@@ -46,8 +46,8 @@ dotnet run
 ### Setup
 
 ```bash
-git clone <repository>
-cd app7
+git clone https://github.com/ch0mik/C64UltimateMcpServer.git
+cd C64UltimateMcpServer
 dotnet build
 dotnet run
 ```
@@ -403,8 +403,8 @@ MIT
 
 ```bash
 # 1. Klonuj repozytorium
-git clone <repo>
-cd app7
+git clone https://github.com/ch0mik/C64UltimateMcpServer.git
+cd C64UltimateMcpServer
 
 # 2. Zbuduj projekt
 dotnet build
