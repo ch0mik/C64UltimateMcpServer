@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mcp-server:
     container_name: mcp-server
@@ -29,6 +27,21 @@ services:
     networks:
       - c64-network
     command: serve
+
+  inspector:
+    image: mcpuse/inspector:latest
+    container_name: mcp-inspector
+    command:
+    - /bin/sh
+    - -c
+    - |
+      npx @mcp-use/inspector --port 3000 --url http://mcp-server:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mcp-server
+    networks:
+      - c64-network
 
 volumes:
   ollama-data:
