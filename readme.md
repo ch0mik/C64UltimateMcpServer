@@ -12,7 +12,7 @@ Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ult
 
 ## 🎥 Demo Video
 
-[![C64 Ultimate MCP Server Demo](https://img.youtube.com/vi/YZYprkUDAyM/0.jpg)](https://youtu.be/YZYprkUDAyM)
+[![C64 Ultimate MCP Server Demo](https://img.youtube.com/vi/1q80quIIkV0/0.jpg)](https://www.youtube.com/watch?v=1q80quIIkV0?cc_load_policy=1&cc_lang_pref=en)
 
 ## ⚡ Key Features
 
@@ -412,7 +412,7 @@ Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 
 
 ## 🎥 Wideo Demo
 
-[![C64 Ultimate MCP Server Demo](https://img.youtube.com/vi/1q80quIIkV0/0.jpg)](https://www.youtube.com/watch?v=1q80quIIkV0)
+[![C64 Ultimate MCP Server Demo](https://img.youtube.com/vi/1q80quIIkV0/0.jpg)](https://www.youtube.com/watch?v=1q80quIIkV0?cc_load_policy=1&cc_lang_pref=pl)
 
 ## 📋 Spis Treści
 
