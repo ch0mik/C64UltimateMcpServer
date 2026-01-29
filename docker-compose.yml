@@ -4,6 +4,12 @@ services:
     build:
       context: .
       dockerfile: ./C64UltimateMcpServer.Dockerfile
+    healthcheck:
+      test: ["CMD", "sh", "-c", "ps x| grep dotnet | grep C64UltimateMcpServer"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     ports:
       - "8080:8080"
     environment:
@@ -15,36 +21,25 @@ services:
     networks:
       - c64-network
 
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama-llama3.2
-    ports:
-      - "11434:11434"
-    environment:
-      - OLLAMA_HOST=0.0.0.0:11434
-    volumes:
-      - ollama-data:/root/.ollama
-    networks:
-      - c64-network
-    command: serve
 
-  inspector:
+  mcp-inspector:
     image: mcpuse/inspector:latest
-    container_name: mcp-inspector
+    container_name: inspector
     command:
-    - /bin/sh
-    - -c
-    - |
-      npx @mcp-use/inspector --port 3000 --url http://mcp-server:8080
+      - /bin/sh
+      - -c
+      - |
+        npx @mcp-use/inspector \
+          --port 8000 \
+        --url http://mcp-server:8080 
     ports:
-      - "3000:3000"
+      - "8000:8000"
     depends_on:
-      - mcp-server
+      mcp-server:
+          condition: service_healthy
     networks:
       - c64-network
 
-volumes:
-  ollama-data:
 
 networks:
   c64-network:
