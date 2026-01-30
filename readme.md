@@ -349,7 +349,7 @@ docker run -p 8080:8080 \
 version: '3.8'
 services:
   mcp-server:
-    build: .
+    image: sq7mru/c64ultimatemcpserver:latest
     ports:
       - "8080:8080"
     environment:
@@ -761,7 +761,7 @@ docker run -p 8080:8080 \
 version: '3.8'
 services:
   mcp-server:
-    build: .
+    image: sq7mru/c64ultimatemcpserver:latest
     ports:
       - "8080:8080"
     environment:
