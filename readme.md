@@ -4,8 +4,6 @@
 
 > ⚙️ **This project was built 100% using AI Agent prompts** - Every line of code, configuration, and documentation was generated through conversational prompts to GitHub Copilot Agent.
 
-![C64 Ultimate MCP Server Logo](logo.png)
-
 Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ultimate** device with **45+ tools** for complete control. Built in C# with enterprise-grade architecture, type safety, and comprehensive API coverage.
 
 **License:** MIT License (see [LICENSE](LICENSE) file)
@@ -60,14 +58,6 @@ git clone https://github.com/ch0mik/C64UltimateMcpServer.git
 cd C64UltimateMcpServer
 dotnet build
 dotnet run
-```
-
-### Docker
-
-```bash
-docker-compose up
-# Server: http://localhost:8080
-# Inspector: http://localhost:6274
 ```
 
 ## ⚙️ Configuration
@@ -176,68 +166,74 @@ Ask Cody: List all available config categories
 /c64 load program
 ```
 
-## 🛠️ Tools (46 Total)
-
-### Connection Management (3)
-- `ultimate_set_connection` - Set device hostname/port
-- `ultimate_get_connection` - Get connection details
-- `ultimate_version` - Get API version
-
-### BASIC Program Generation (1)
-- `ultimate_generate_basic_prg` - Generate C64 BASIC PRG from source code
-
-### Audio Playback (2)
-- `ultimate_play_sid` - Play SID music file
-- `ultimate_play_mod` - Play Amiga MOD file
-
-### Program Execution (4)
-- `ultimate_load_program` - Load PRG into memory
-- `ultimate_run_program` - Load and execute PRG
-- `ultimate_run_prg_binary` - Upload & run (base64/file/URL)
-- `ultimate_run_cartridge` - Load cartridge
-
-### Configuration (8)
-- `ultimate_get_config_categories` - List categories
-- `ultimate_get_config_category` - Get category items
-- `ultimate_get_config_item` - Get specific value
-- `ultimate_set_config_item` - Set config value
-- `ultimate_bulk_config_update` - Update multiple settings
-- `ultimate_save_config` - Save to flash
-- `ultimate_load_config` - Load from flash
-- `ultimate_reset_config` - Factory reset
-
-### Drive Operations (6)
-- `ultimate_mount_disk` - Mount disk image
-- `ultimate_unmount_disk` - Unmount drive
-- `ultimate_turn_drive_on` - Power on drive
-- `ultimate_turn_drive_off` - Power off drive
-- `ultimate_set_drive_mode` - Set mode (1541/1571/1581)
-- `ultimate_load_drive_rom` - Load drive ROM
-
-### Disk Image Creation (4)
-- `ultimate_create_d64` - Create D64 image
-- `ultimate_create_d71` - Create D71 image (128K)
-- `ultimate_create_d81` - Create D81 image (3.5")
-- `ultimate_create_dnp` - Create DNP (custom tracks)
-
-### File Operations (1)
-- `ultimate_get_file_info` - Get file information
-
-### Memory Operations (3)
-- `ultimate_read_memory` - Read C64 memory
-- `ultimate_write_memory` - Write hex data
-- `ultimate_write_memory_binary` - Write binary file
+## 🛠️ Tools (45 Total)
 
 ### Machine Control (5)
-- `ultimate_reset_machine` - Hard reset
-- `ultimate_soft_reset` - Soft reset
-- `ultimate_power_off` - Power down
-- `ultimate_reboot_device` - Restart device
-- `ultimate_get_machine_info` / `ultimate_get_machine_state` - Status
+- **ultimate_reset_machine** - Soft reset C64 (preserves configuration)
+- **ultimate_reboot_device** - Full device restart (reinitializes cartridge)
+- **ultimate_pause_machine** - Pause machine execution
+- **ultimate_resume_machine** - Resume machine execution
+- **ultimate_power_off** - Power off C64
 
-### Streaming (2)
-- `ultimate_start_stream` - Start video/audio/debug stream
-- `ultimate_stop_stream` - Stop active stream
+### Program Management (6)
+- **ultimate_generate_basic_prg** - Generate PRG from BASIC source code with token conversion
+- **ultimate_load_program** - Load PRG program from filesystem
+- **ultimate_run_program** - Load and execute PRG from disk
+- **ultimate_run_prg_binary** - Execute program from binary data, URL or file
+- **ultimate_run_cartridge** - Load and run cartridge
+- **ultimate_menu_button** - Simulate menu button press
+
+### Memory Management (5)
+- **ultimate_read_memory** - Read C64 RAM memory contents
+- **ultimate_write_memory** - Write to RAM memory
+- **ultimate_write_memory_binary** - Write binary data to memory
+- **ultimate_get_debug_register** - Read debug register
+- **ultimate_set_debug_register** - Write to debug register
+
+### Audio Playback (5)
+- **ultimate_play_sid** - Play SID file with optional song number
+- **ultimate_play_sid_binary** - Play SID from binary data, URL or file
+- **ultimate_play_mod** - Play Amiga MOD file
+- **ultimate_start_stream** - Start audio/video/debug stream
+- **ultimate_stop_stream** - Stop active stream
+
+### Drive Management (7)
+- **ultimate_get_drives** - Get information about all disk drives
+- **ultimate_mount_disk** - Mount disk image from filesystem or binary data
+- **ultimate_unmount_disk** - Unmount disk image
+- **ultimate_reset_drive** - Reset selected disk drive
+- **ultimate_set_drive_mode** - Change drive operating mode
+- **ultimate_turn_drive_on** - Power on disk drive
+- **ultimate_turn_drive_off** - Power off disk drive
+
+### Disk Creation (4)
+- **ultimate_create_d64** - Create 1541 disk image (D64)
+- **ultimate_create_d71** - Create 1571 disk image (D71)
+- **ultimate_create_d81** - Create 1581 disk image (D81)
+- **ultimate_create_dnp** - Create Native Partition disk image (DNP)
+
+### ROM Management (1)
+- **ultimate_load_drive_rom** - Load custom ROM to disk drive
+
+### File Management (1)
+- **ultimate_get_file_info** - Get file information
+
+### Configuration Management (6)
+- **ultimate_get_config_categories** - Get list of available configuration categories
+- **ultimate_get_config_category** - Get all settings in a category
+- **ultimate_get_config_item** - Get single configuration value
+- **ultimate_set_config_item** - Set configuration value
+- **ultimate_bulk_config_update** - Update multiple settings at once
+- **ultimate_load_config** - Load configuration from flash
+
+Note: `ultimate_save_config` and `ultimate_reset_config` are also available for configuration management
+
+### Connection Management (2)
+- **ultimate_get_connection** - Get current connection settings
+- **ultimate_set_connection** - Change device hostname/port
+
+### System Information (1)
+- **ultimate_version** - Get C64 Ultimate API version
 
 ## 📝 Examples
 
@@ -304,7 +300,53 @@ All files in `examples_http/mcp_*.http` correspond to available tools.
 
 ## 🐳 Docker Deployment
 
-### docker-compose.yml
+### About MCP Inspector
+The **MCP Inspector** is a web-based tool for testing and debugging MCP servers. It provides:
+- Interactive tool exploration
+- Real-time parameter testing
+- Request/response inspection
+- WebSocket monitoring
+
+It automatically connects to the MCP server and displays all available tools with detailed information.
+
+### Option 1: Docker Compose with Build
+```bash
+docker compose up --build
+```
+Builds the image locally and starts both MCP server and inspector.
+
+**Access:**
+- **MCP Server**: http://localhost:8080 - Main MCP Server endpoint
+- **MCP Inspector**: http://localhost:8000 - Web UI for testing tools
+
+**Services:**
+- `mcp-server` - C64 Ultimate MCP Server (handles all tool requests)
+- `inspector` - MCP Inspector UI (connects to mcp-server at http://mcp-server:8080)
+
+### Option 2: Docker Compose Simple
+```bash
+docker compose up
+```
+Starts pre-built containers (same as Option 1 but without rebuilding image).
+
+**Access:**
+- **MCP Server**: http://localhost:8080
+- **MCP Inspector**: http://localhost:8000
+
+### Option 3: Docker Run (Pre-built Image)
+```bash
+docker run -p 8080:8080 \
+  -e ASPNETCORE_URLS=http://+:8080 \
+  -e Ultimate__BaseUrl=http://192.168.0.120 \
+  -d sq7mru/c64ultimatemcpserver:latest
+```
+
+**Access:**
+- **MCP Server**: http://localhost:8080
+
+**Note:** This option runs only the MCP Server. To also run MCP Inspector, either use Option 1 or 2, or run a separate inspector container.
+
+### Custom docker-compose.yml
 ```yaml
 version: '3.8'
 services:
@@ -314,16 +356,16 @@ services:
       - "8080:8080"
     environment:
       - Ultimate__BaseUrl=http://192.168.0.120
+      - ASPNETCORE_URLS=http://+:8080
     networks:
       - c64-network
 
   inspector:
-    image: modelcontextprotocol/inspector
+    image: mcpuse/inspector:latest
     ports:
-      - "6274:6274"
-      - "6277:6277"
+      - "8000:8000"
     environment:
-      - MCP_SERVER_URL=http://mcp-server:8080/mcp
+      - MCP_SERVER_URL=http://mcp-server:8080
     networks:
       - c64-network
 
@@ -332,14 +374,10 @@ networks:
     driver: bridge
 ```
 
-Run:
-```bash
-docker-compose up
-```
-
-Access:
-- Server: http://localhost:8080
-- Inspector: http://localhost:6274
+### Environment Variables
+- `Ultimate__BaseUrl` - C64 Ultimate device URL (default: http://192.168.0.120)
+- `ASPNETCORE_URLS` - Server binding (default: http://+:8080)
+- `ASPNETCORE_ENVIRONMENT` - Environment mode (Production/Development)
 
 ## 📚 Architecture
 
@@ -398,15 +436,11 @@ Access:
 
 MIT
 
-![C64U Logo](c64u.png)
-
 ---
 
 # 🇵🇱 C64 Ultimate MCP Server (Polski)
 
 > ⚙️ **Ten projekt został stworzony 100% za pomocą promptów do Agenta AI** - Każda linia kodu, konfiguracji i dokumentacji została wygenerowana poprzez konwersacyjne prompty do GitHub Copilot Agent.
-
-![C64 Ultimate MCP Server Logo](logo.png)
 
 Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 64 Ultimate** z **45+ narzędziami** do pełnej kontroli. Zbudowany w C# z architekturą klasy enterprise, bezpieczeństwem typów i kompleksowym pokryciem API.
 
@@ -461,7 +495,76 @@ docker-compose up
 Ultimate__BaseUrl=http://192.168.0.120
 ```
 
-## Agenci AI (PL)
+## 🛠️ Narzędzia (45 Razem)
+
+### Kontrola Maszyny (5)
+- **ultimate_reset_machine** - Miękki reset C64 (zachowuje konfigurację)
+- **ultimate_reboot_device** - Pełny restart urządzenia (reinicjalizacja kartridża)
+- **ultimate_pause_machine** - Wstrzymanie pracy maszyny
+- **ultimate_resume_machine** - Wznowienie pracy maszyny
+- **ultimate_power_off** - Wyłączenie C64
+
+### Zarządzanie Programami (6)
+- **ultimate_generate_basic_prg** - Generowanie PRG z kodu BASIC z konwersją do tokenów
+- **ultimate_load_program** - Ładowanie programu PRG z systemu plików
+- **ultimate_run_program** - Uruchomienie programu PRG z dysku
+- **ultimate_run_prg_binary** - Uruchomienie programu z danych binarnych, URL lub pliku
+- **ultimate_run_cartridge** - Uruchomienie kartridża
+- **ultimate_menu_button** - Symulacja naciśnięcia przycisku menu
+
+### Zarządzanie Pamięcią (5)
+- **ultimate_read_memory** - Odczyt zawartości pamięci RAM
+- **ultimate_write_memory** - Zapis do pamięci RAM
+- **ultimate_write_memory_binary** - Zapis danych binarnych do pamięci
+- **ultimate_get_debug_register** - Odczyt rejestru debugowania
+- **ultimate_set_debug_register** - Zapis do rejestru debugowania
+
+### Odtwarzanie Audio (5)
+- **ultimate_play_sid** - Odtwarzanie pliku SID z wskazanym numerem piosenki
+- **ultimate_play_sid_binary** - Odtwarzanie SID z danych binarnych, URL lub pliku
+- **ultimate_play_mod** - Odtwarzanie pliku MOD
+- **ultimate_start_stream** - Uruchomienie strumienia audio/wideo/debug
+- **ultimate_stop_stream** - Zatrzymanie aktywnego strumienia
+
+### Zarządzanie Stacjami Dysków (7)
+- **ultimate_get_drives** - Pobranie informacji o wszystkich stacjach dysków
+- **ultimate_mount_disk** - Zamontowanie obrazu dysku z systemu plików lub danych binarnych
+- **ultimate_unmount_disk** - Odmontowanie obrazu dysku
+- **ultimate_reset_drive** - Reset wybranej stacji dysków
+- **ultimate_set_drive_mode** - Zmiana trybu pracy stacji
+- **ultimate_turn_drive_on** - Włączenie stacji dysków
+- **ultimate_turn_drive_off** - Wyłączenie stacji dysków
+
+### Tworzenie Dysków (4)
+- **ultimate_create_d64** - Tworzenie obrazu dysku 1541 (D64)
+- **ultimate_create_d71** - Tworzenie obrazu dysku 1571 (D71)
+- **ultimate_create_d81** - Tworzenie obrazu dysku 1581 (D81)
+- **ultimate_create_dnp** - Tworzenie obrazu dysku Native Partition (DNP)
+
+### Zarządzanie ROM-ami (1)
+- **ultimate_load_drive_rom** - Załadowanie niestandardowego ROM-u do stacji dysków
+
+### Zarządzanie Plikami (1)
+- **ultimate_get_file_info** - Pobranie informacji o pliku
+
+### Zarządzanie Konfiguracją (6)
+- **ultimate_get_config_categories** - Pobranie listy dostępnych kategorii konfiguracyjnych
+- **ultimate_get_config_category** - Pobranie ustawień całej kategorii
+- **ultimate_get_config_item** - Pobranie wartości pojedynczego ustawienia
+- **ultimate_set_config_item** - Zmiana wartości ustawienia
+- **ultimate_bulk_config_update** - Masowa zmiana wielu ustawień jednocześnie
+- **ultimate_load_config** - Załadowanie konfiguracji
+
+Uwaga: `ultimate_save_config` i `ultimate_reset_config` są również dostępne do zarządzania konfiguracją
+
+### Zarządzanie Połączeniem (2)
+- **ultimate_get_connection** - Pobranie aktualnych ustawień połączenia
+- **ultimate_set_connection** - Zmiana hosta/portu do nawiązania połączenia
+
+### Informacje Systemowe (1)
+- **ultimate_version** - Pobranie wersji C64 Ultimate
+
+## 🤖 Agenci AI (PL)
 
 ### Continue IDE (Polecane)
 
@@ -586,6 +689,145 @@ Wszystkie 45+ narzędzi mają odpowiadające im pliki `.http` w folderze `exampl
 
 **Przykład programu BASIC** - Zobacz [mcp_hello_world.http](examples_http/mcp_hello_world.http) - zawiera Hello World ze wskazówkami jak tworzyć własne binarne programy BASIC (.prg).
 
+## 🧪 Testowanie (PL)
+
+Wszystkie przykłady testowe znajdują się w folderze `examples_http/`:
+
+**Testuj Połączenie**:
+```bash
+# Pliki HTTP: test_basic_connection.http
+curl http://localhost:8080/health
+# Odpowiedź: "C64 Ultimate MCP Server is running"
+```
+
+**Lista Narzędzi** - Zobacz [mcp_list_tools.http](examples_http/mcp_list_tools.http)
+
+**Wersja** - Zobacz [mcp_get_version.http](examples_http/mcp_get_version.http)
+
+**Test Wgrywania SID** - Zobacz [TEST_PLAY_SID_BINARY.http](examples_http/TEST_PLAY_SID_BINARY.http)
+
+**Test Wgrywania PRG** - Zobacz [TEST_RUN_PRG_BINARY.http](examples_http/TEST_RUN_PRG_BINARY.http)
+
+Wszystkie pliki w `examples_http/mcp_*.http` odpowiadają dostępnym narzędziom.
+
+## 🐳 Wdrażanie Docker (PL)
+
+### O MCP Inspector
+**MCP Inspector** to narzędzie webowe do testowania i debugowania serwerów MCP. Zapewnia:
+- Interaktywne przeglądanie narzędzi
+- Testowanie parametrów w czasie rzeczywistym
+- Inspekcję żądań/odpowiedzi
+- Monitorowanie WebSocket
+
+Automatycznie łączy się z serwerem MCP i wyświetla wszystkie dostępne narzędzia z szczegółowymi informacjami.
+
+### Opcja 1: Docker Compose z Budowaniem
+```bash
+docker compose up --build
+```
+Buduje obraz lokalnie i uruchamia zarówno serwer MCP jak i inspector.
+
+**Dostęp:**
+- **Serwer MCP**: http://localhost:8080 - Główny punkt końcowy MCP Server
+- **MCP Inspector**: http://localhost:8000 - Interfejs webowy do testowania narzędzi
+
+**Usługi:**
+- `mcp-server` - Serwer C64 Ultimate MCP (obsługuje wszystkie żądania narzędzi)
+- `inspector` - Interfejs MCP Inspector (łączy się z mcp-server pod adresem http://mcp-server:8080)
+
+### Opcja 2: Docker Compose Prosta
+```bash
+docker compose up
+```
+Uruchamia wstępnie zbudowane kontenery (to samo co Opcja 1, ale bez przebudowywania obrazu).
+
+**Dostęp:**
+- **Serwer MCP**: http://localhost:8080
+- **MCP Inspector**: http://localhost:8000
+
+### Opcja 3: Docker Run (Wstępnie Zbudowany Obraz)
+```bash
+docker run -p 8080:8080 \
+  -e ASPNETCORE_URLS=http://+:8080 \
+  -e Ultimate__BaseUrl=http://192.168.0.120 \
+  -d sq7mru/c64ultimatemcpserver:latest
+```
+
+**Dostęp:**
+- **Serwer MCP**: http://localhost:8080
+
+**Uwaga:** Ta opcja uruchamia tylko Serwer MCP. Aby uruchomić również MCP Inspector, użyj Opcji 1 lub 2, lub uruchom oddzielny kontener inspectora.
+
+### Niestandardowy docker-compose.yml
+```yaml
+version: '3.8'
+services:
+  mcp-server:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - Ultimate__BaseUrl=http://192.168.0.120
+      - ASPNETCORE_URLS=http://+:8080
+    networks:
+      - c64-network
+
+  inspector:
+    image: mcpuse/inspector:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - MCP_SERVER_URL=http://mcp-server:8080
+    networks:
+      - c64-network
+
+networks:
+  c64-network:
+    driver: bridge
+```
+
+### Zmienne Środowiska
+- `Ultimate__BaseUrl` - URL urządzenia C64 Ultimate (domyślnie: http://192.168.0.120)
+- `ASPNETCORE_URLS` - Wiązanie serwera (domyślnie: http://+:8080)
+- `ASPNETCORE_ENVIRONMENT` - Tryb środowiska (Production/Development)
+
+## 📚 Architektura (PL)
+
+```
+┌─────────────────────────────────────────────┐
+│         Agenci AI                           │
+│  (Continue/Copilot/Cody/Cursor)             │
+└──────────────────┬──────────────────────────┘
+                   │ HTTP/SSE
+┌──────────────────▼──────────────────────────┐
+│      Serwer MCP (localhost:8080)            │
+│  - Warstwa Transportu HTTP                  │
+│  - Zarządzanie Sesją                        │
+│  - Routing Narzędzi                         │
+└──────────────────┬──────────────────────────┘
+                   │ REST API
+┌──────────────────▼──────────────────────────┐
+│   Urządzenie C64 Ultimate                   │
+│   (192.168.0.120:80)                        │
+│  - V1 REST API                              │
+│  - Odtwarzanie SID/MOD                      │
+│  - Kontrola Stacji Dysków                   │
+│  - Dostęp do Pamięci                        │
+└─────────────────────────────────────────────┘
+```
+
+## ✅ Status: Gotowy do Produkcji (PL)
+
+- ✅ Wszystkie 45+ narzędzia zaimplementowane
+- ✅ Kompilacja BASIC do PRG w locie
+- ✅ Transport HTTP/SSE
+- ✅ Integracja z agentami AI (Continue, Copilot, Cody, Cursor)
+- ✅ Konteneryzacja Docker
+- ✅ Brak błędów i ostrzeżeń
+- ✅ Pełna dokumentacja
+- ✅ Zarządzanie konfiguracją
+- ✅ Obsługa sesji
+
 ## Rozwiązywanie Problemów (PL)
 
 ### Serwer nie odpowiada
@@ -646,5 +888,3 @@ curl -X POST http://localhost:8080/ \
 ## 📄 Licencja
 
 MIT
-
-![C64U Logo](c64u.png)
