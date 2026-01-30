@@ -273,9 +273,7 @@ All 45+ tools have corresponding `.http` files in `examples_http/` for testing
 @C64 Reset the C64 and show machine info
 ```
 
-**BASIC Program Example** - See [mcp_hello_world.http](examples_http/mcp_hello_world.http) for Hello World program with instructions on how to create your own BASIC PRG binaries.
-
-**Generate BASIC PRG** - See [mcp_generate_basic_prg.http](examples_http/mcp_generate_basic_prg.http) to compile BASIC source code directly to executable PRG files.
+**BASIC Program Example** - See [mcp_generate_basic_prg.http](examples_http/mcp_generate_basic_prg.http) to compile BASIC source code directly to executable PRG files and create your own BASIC PRG binaries.
 
 ## 🧪 Testing
 
@@ -687,7 +685,7 @@ Wszystkie 45+ narzędzi mają odpowiadające im pliki `.http` w folderze `exampl
 @C64 Zrestartuj C64 i pokaż informacje o maszynie
 ```
 
-**Przykład programu BASIC** - Zobacz [mcp_hello_world.http](examples_http/mcp_hello_world.http) - zawiera Hello World ze wskazówkami jak tworzyć własne binarne programy BASIC (.prg).
+**Przykład programu BASIC** - Zobacz [mcp_generate_basic_prg.http](examples_http/mcp_generate_basic_prg.http) - zawiera Hello World ze wskazówkami jak tworzyć własne binarne programy BASIC (.prg).
 
 ## 🧪 Testowanie (PL)
 
