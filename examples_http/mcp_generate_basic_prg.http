@@ -1,7 +1,7 @@
 ### Generate BASIC PRG - Hello World Loop
 POST http://localhost:3000/tools/ultimate_generate_basic_prg/execute
 Content-Type: application/json
-Accept: application/json
+Accept: application/json, text/event-stream
 
 {
   "basicSource": "10 PRINT \"HELLO WORLD\"\n20 GOTO 10"
@@ -11,7 +11,7 @@ Accept: application/json
 ### Generate BASIC PRG - Simple Print
 POST http://localhost:3000/tools/ultimate_generate_basic_prg/execute
 Content-Type: application/json
-Accept: application/json
+Accept: application/json, text/event-stream
 
 {
   "basicSource": "10 PRINT \"HI THERE\""
@@ -21,7 +21,7 @@ Accept: application/json
 ### Generate BASIC PRG - Variables and Math
 POST http://localhost:3000/tools/ultimate_generate_basic_prg/execute
 Content-Type: application/json
-Accept: application/json
+Accept: application/json, text/event-stream
 
 {
   "basicSource": "10 X = 5\n20 Y = 10\n30 Z = X + Y\n40 PRINT Z"
@@ -31,7 +31,7 @@ Accept: application/json
 ### Generate BASIC PRG - Input and Loop
 POST http://localhost:3000/tools/ultimate_generate_basic_prg/execute
 Content-Type: application/json
-Accept: application/json
+Accept: application/json, text/event-stream
 
 {
   "basicSource": "10 INPUT \"ENTER NAME: \"; N$\n20 PRINT \"HELLO \" N$\n30 GOTO 10"
@@ -41,7 +41,7 @@ Accept: application/json
 ### Generate BASIC PRG - Invalid Syntax (Error Example)
 POST http://localhost:3000/tools/ultimate_generate_basic_prg/execute
 Content-Type: application/json
-Accept: application/json
+Accept: application/json, text/event-stream
 
 {
   "basicSource": "10 PRINT\nGOTO"
