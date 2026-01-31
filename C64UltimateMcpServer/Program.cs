@@ -40,6 +40,8 @@ builder.Services
                 }
             ]
         };
+        // Note: Custom JsonSerializerOptions are configured per-service (see UltimateService)
+        // MCP SDK v0.7.0+ supports user-defined serialization options
     })
     .WithHttpTransport(options =>
         {

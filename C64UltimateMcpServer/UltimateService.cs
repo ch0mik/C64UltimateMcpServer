@@ -11,12 +11,14 @@ namespace C64UltimateMcpServer.Core;
 /// <summary>
 /// MCP Server wrapper around C64UltimateClient.
 /// Exposes Commodore 64 Ultimate REST API as MCP tools.
+/// Supports v0.7.0+ features including custom JsonSerializerOptions and task support.
 /// </summary>
 public class UltimateService
 {
     private readonly Ultimate64Client _client;
     private readonly ILogger<UltimateService> _serviceLogger;
     private readonly ILogger<Ultimate64Client> _clientLogger;
+    private readonly JsonSerializerOptions _jsonOptions;
 
     public UltimateService(ILogger<UltimateService> serviceLogger, ILogger<Ultimate64Client> clientLogger, IConfiguration configuration)
     {
@@ -24,7 +26,35 @@ public class UltimateService
         _clientLogger = clientLogger;
         var baseUrl = configuration["Ultimate:BaseUrl"] ?? "http://192.168.0.120";
         _client = new Ultimate64Client(baseUrl, _clientLogger);
+        
+        // Initialize JSON serializer options with camelCase and null handling (MCP SDK v0.7.0+)
+        _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            WriteIndented = false,
+            PropertyNameCaseInsensitive = true
+        };
+        
         _serviceLogger.LogInformation($"[UltimateService] Initialized with C64UltimateClient pointing to: {baseUrl}");
+    }
+
+    /// <summary>
+    /// Helper method to serialize responses with custom JsonSerializerOptions.
+    /// Ensures consistent JSON formatting across all tool responses (MCP SDK v0.7.0+).
+    /// </summary>
+    private string SerializeResponse(object obj)
+    {
+        try
+        {
+            return JsonSerializer.Serialize(obj, _jsonOptions);
+        }
+        catch (Exception ex)
+        {
+            _serviceLogger.LogError(ex, "Failed to serialize response");
+            // Use default options for error fallback to avoid recursion
+            return JsonSerializer.Serialize(new { error = "Failed to serialize response", details = ex.Message });
+        }
     }
 
     // Connection Management
@@ -34,7 +64,7 @@ public class UltimateService
     {
         _serviceLogger.LogInformation($"Setting connection to {hostname}:{port}");
         // Note: This is a metadata operation not in the official API
-        return JsonSerializer.Serialize(new { ok = true, message = $"Connection managed via client initialization" });
+        return SerializeResponse(new { ok = true, message = $"Connection managed via client initialization" });
     }
 
     [McpServerTool(Name = "ultimate_get_connection")]
@@ -44,12 +74,12 @@ public class UltimateService
         try
         {
             var version = await _client.GetVersionAsync();
-            return JsonSerializer.Serialize(new { version = version.Version, connected = true });
+            return SerializeResponse(new { version = version.Version, connected = true });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to verify connection");
-            return JsonSerializer.Serialize(new { error = ex.Message, connected = false });
+            return SerializeResponse(new { error = ex.Message, connected = false });
         }
     }
 
@@ -60,12 +90,12 @@ public class UltimateService
         try
         {
             var version = await _client.GetVersionAsync();
-            return JsonSerializer.Serialize(new { version = version.Version, errors = version.Errors });
+            return SerializeResponse(new { version = version.Version, errors = version.Errors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to get version");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -78,17 +108,17 @@ public class UltimateService
         try
         {
             await _client.PlaySidAsync(file, songNumber);
-            return JsonSerializer.Serialize(new { ok = true, message = $"Playing {file}" });
+            return SerializeResponse(new { ok = true, message = $"Playing {file}" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to play SID file");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to play SID file");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -111,7 +141,7 @@ public class UltimateService
                 }
                 catch (Exception ex)
                 {
-                    return JsonSerializer.Serialize(new { error = $"Invalid base64 data: {ex.Message}" });
+                    return SerializeResponse(new { error = $"Invalid base64 data: {ex.Message}" });
                 }
             }
             else if (!string.IsNullOrEmpty(url))
@@ -127,7 +157,7 @@ public class UltimateService
                 }
                 catch (Exception ex)
                 {
-                    return JsonSerializer.Serialize(new { error = $"Failed to download from URL: {ex.Message}" });
+                    return SerializeResponse(new { error = $"Failed to download from URL: {ex.Message}" });
                 }
             }
             else if (!string.IsNullOrEmpty(filePath))
@@ -135,7 +165,7 @@ public class UltimateService
                 try
                 {
                     if (!File.Exists(filePath))
-                        return JsonSerializer.Serialize(new { error = $"File not found: {filePath}" });
+                        return SerializeResponse(new { error = $"File not found: {filePath}" });
                     
                     sidData = await File.ReadAllBytesAsync(filePath);
                     sourceInfo = $"file {filePath} ({sidData.Length} bytes)";
@@ -143,23 +173,23 @@ public class UltimateService
                 }
                 catch (Exception ex)
                 {
-                    return JsonSerializer.Serialize(new { error = $"Failed to read file: {ex.Message}" });
+                    return SerializeResponse(new { error = $"Failed to read file: {ex.Message}" });
                 }
             }
             else
             {
-                return JsonSerializer.Serialize(new { error = "One of filePath, sidDataBase64, or url must be provided" });
+                return SerializeResponse(new { error = "One of filePath, sidDataBase64, or url must be provided" });
             }
 
             if (sidData == null || sidData.Length == 0)
-                return JsonSerializer.Serialize(new { error = "No SID data provided or data is empty" });
+                return SerializeResponse(new { error = "No SID data provided or data is empty" });
 
             if (sidData.Length < 4)
-                return JsonSerializer.Serialize(new { error = "SID file is too small (must be at least 4 bytes for header)" });
+                return SerializeResponse(new { error = "SID file is too small (must be at least 4 bytes for header)" });
 
             await _client.PlaySidBinaryAsync(sidData, songNumber);
             
-            return JsonSerializer.Serialize(new 
+            return SerializeResponse(new 
             { 
                 success = true, 
                 message = $"Playing SID from {sourceInfo}",
@@ -169,12 +199,12 @@ public class UltimateService
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to play SID binary");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to play SID binary");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -185,17 +215,17 @@ public class UltimateService
         try
         {
             await _client.PlayModAsync(file);
-            return JsonSerializer.Serialize(new { ok = true, message = $"Playing {file}" });
+            return SerializeResponse(new { ok = true, message = $"Playing {file}" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to play MOD file");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to play MOD file");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -208,17 +238,17 @@ public class UltimateService
         try
         {
             await _client.LoadProgramAsync(file);
-            return JsonSerializer.Serialize(new { ok = true, message = $"Loaded {file}" });
+            return SerializeResponse(new { ok = true, message = $"Loaded {file}" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to load program");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to load program");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -229,17 +259,17 @@ public class UltimateService
         try
         {
             await _client.RunProgramAsync(file);
-            return JsonSerializer.Serialize(new { ok = true, message = $"Running {file}" });
+            return SerializeResponse(new { ok = true, message = $"Running {file}" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to run program");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to run program");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -262,7 +292,7 @@ public class UltimateService
                 }
                 catch (Exception ex)
                 {
-                    return JsonSerializer.Serialize(new { error = $"Invalid base64 data: {ex.Message}" });
+                    return SerializeResponse(new { error = $"Invalid base64 data: {ex.Message}" });
                 }
             }
             else if (!string.IsNullOrEmpty(url))
@@ -278,7 +308,7 @@ public class UltimateService
                 }
                 catch (Exception ex)
                 {
-                    return JsonSerializer.Serialize(new { error = $"Failed to download from URL: {ex.Message}" });
+                    return SerializeResponse(new { error = $"Failed to download from URL: {ex.Message}" });
                 }
             }
             else if (!string.IsNullOrEmpty(filePath))
@@ -286,7 +316,7 @@ public class UltimateService
                 try
                 {
                     if (!File.Exists(filePath))
-                        return JsonSerializer.Serialize(new { error = $"File not found: {filePath}" });
+                        return SerializeResponse(new { error = $"File not found: {filePath}" });
                     
                     prgData = await File.ReadAllBytesAsync(filePath);
                     sourceInfo = $"file {filePath} ({prgData.Length} bytes)";
@@ -294,23 +324,23 @@ public class UltimateService
                 }
                 catch (Exception ex)
                 {
-                    return JsonSerializer.Serialize(new { error = $"Failed to read file: {ex.Message}" });
+                    return SerializeResponse(new { error = $"Failed to read file: {ex.Message}" });
                 }
             }
             else
             {
-                return JsonSerializer.Serialize(new { error = "One of filePath, prgDataBase64, or url must be provided" });
+                return SerializeResponse(new { error = "One of filePath, prgDataBase64, or url must be provided" });
             }
 
             if (prgData == null || prgData.Length == 0)
-                return JsonSerializer.Serialize(new { error = "No PRG data provided or data is empty" });
+                return SerializeResponse(new { error = "No PRG data provided or data is empty" });
 
             if (prgData.Length < 2)
-                return JsonSerializer.Serialize(new { error = "PRG file is too small (must be at least 2 bytes)" });
+                return SerializeResponse(new { error = "PRG file is too small (must be at least 2 bytes)" });
 
             await _client.RunProgramBinaryAsync(prgData);
             
-            return JsonSerializer.Serialize(new 
+            return SerializeResponse(new 
             { 
                 success = true, 
                 message = $"Running PRG from {sourceInfo}",
@@ -320,12 +350,12 @@ public class UltimateService
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to run PRG binary");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to run PRG binary");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -336,17 +366,17 @@ public class UltimateService
         try
         {
             await _client.RunCartridgeAsync(file);
-            return JsonSerializer.Serialize(new { ok = true, message = $"Running {file}" });
+            return SerializeResponse(new { ok = true, message = $"Running {file}" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to run cartridge");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to run cartridge");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -359,17 +389,17 @@ public class UltimateService
         try
         {
             var result = await _client.GetConfigCategoriesAsync();
-            return JsonSerializer.Serialize(result);
+            return SerializeResponse(result);
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to get config categories");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to get config categories");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -380,17 +410,17 @@ public class UltimateService
         try
         {
             var result = await _client.GetConfigCategoryAsync(category);
-            return JsonSerializer.Serialize(result);
+            return SerializeResponse(result);
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to get config category");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to get config category");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -401,17 +431,17 @@ public class UltimateService
         try
         {
             var result = await _client.GetConfigItemAsync(category, item);
-            return JsonSerializer.Serialize(result);
+            return SerializeResponse(result);
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to get config item");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to get config item");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -422,17 +452,17 @@ public class UltimateService
         try
         {
             await _client.SetConfigItemAsync(category, item, value);
-            return JsonSerializer.Serialize(new { ok = true, message = "Config item set" });
+            return SerializeResponse(new { ok = true, message = "Config item set" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to set config item");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to set config item");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -443,17 +473,17 @@ public class UltimateService
         try
         {
             await _client.BulkConfigUpdateAsync(config);
-            return JsonSerializer.Serialize(new { ok = true, message = "Config updated" });
+            return SerializeResponse(new { ok = true, message = "Config updated" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to bulk update config");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to bulk update config");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -464,17 +494,17 @@ public class UltimateService
         try
         {
             await _client.SaveConfigAsync();
-            return JsonSerializer.Serialize(new { ok = true, message = "Config saved" });
+            return SerializeResponse(new { ok = true, message = "Config saved" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to save config");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to save config");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -485,17 +515,17 @@ public class UltimateService
         try
         {
             await _client.LoadConfigAsync();
-            return JsonSerializer.Serialize(new { ok = true, message = "Config loaded" });
+            return SerializeResponse(new { ok = true, message = "Config loaded" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to load config");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to load config");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -506,17 +536,17 @@ public class UltimateService
         try
         {
             await _client.ResetConfigToDefaultAsync();
-            return JsonSerializer.Serialize(new { ok = true, message = "Config reset to defaults" });
+            return SerializeResponse(new { ok = true, message = "Config reset to defaults" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to reset config");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to reset config");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -529,17 +559,17 @@ public class UltimateService
         try
         {
             var result = await _client.GetDrivesInfoAsync();
-            return JsonSerializer.Serialize(result);
+            return SerializeResponse(result);
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to get drives info");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to get drives info");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -550,17 +580,17 @@ public class UltimateService
         try
         {
             await _client.MountDiskAsync(drive, file, type, mode);
-            return JsonSerializer.Serialize(new { ok = true, message = $"Disk mounted on {drive}" });
+            return SerializeResponse(new { ok = true, message = $"Disk mounted on {drive}" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to mount disk");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to mount disk");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -571,17 +601,17 @@ public class UltimateService
         try
         {
             await _client.UnmountDiskAsync(drive);
-            return JsonSerializer.Serialize(new { ok = true, message = $"Disk unmounted from {drive}" });
+            return SerializeResponse(new { ok = true, message = $"Disk unmounted from {drive}" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to unmount disk");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to unmount disk");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -592,17 +622,17 @@ public class UltimateService
         try
         {
             await _client.ResetDriveAsync(drive);
-            return JsonSerializer.Serialize(new { ok = true, message = $"Drive {drive} reset" });
+            return SerializeResponse(new { ok = true, message = $"Drive {drive} reset" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to reset drive");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to reset drive");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -613,17 +643,17 @@ public class UltimateService
         try
         {
             await _client.EnableDriveAsync(drive);
-            return JsonSerializer.Serialize(new { ok = true, message = $"Drive {drive} enabled" });
+            return SerializeResponse(new { ok = true, message = $"Drive {drive} enabled" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to turn drive on");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to turn drive on");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -634,17 +664,17 @@ public class UltimateService
         try
         {
             await _client.DisableDriveAsync(drive);
-            return JsonSerializer.Serialize(new { ok = true, message = $"Drive {drive} disabled" });
+            return SerializeResponse(new { ok = true, message = $"Drive {drive} disabled" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to turn drive off");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to turn drive off");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -655,17 +685,17 @@ public class UltimateService
         try
         {
             await _client.SetDriveModeAsync(drive, mode);
-            return JsonSerializer.Serialize(new { ok = true, message = $"Drive {drive} mode set to {mode}" });
+            return SerializeResponse(new { ok = true, message = $"Drive {drive} mode set to {mode}" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to set drive mode");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to set drive mode");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -676,17 +706,17 @@ public class UltimateService
         try
         {
             await _client.LoadDriveRomAsync(drive, file);
-            return JsonSerializer.Serialize(new { ok = true, message = $"ROM loaded for drive {drive}" });
+            return SerializeResponse(new { ok = true, message = $"ROM loaded for drive {drive}" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to load drive ROM");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to load drive ROM");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -699,17 +729,17 @@ public class UltimateService
         try
         {
             await _client.CreateD64Async(path, tracks ?? 35, diskname);
-            return JsonSerializer.Serialize(new { ok = true, message = "D64 created" });
+            return SerializeResponse(new { ok = true, message = "D64 created" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to create D64");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to create D64");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -720,17 +750,17 @@ public class UltimateService
         try
         {
             await _client.CreateD71Async(path, diskname);
-            return JsonSerializer.Serialize(new { ok = true, message = "D71 created" });
+            return SerializeResponse(new { ok = true, message = "D71 created" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to create D71");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to create D71");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -741,17 +771,17 @@ public class UltimateService
         try
         {
             await _client.CreateD81Async(path, diskname);
-            return JsonSerializer.Serialize(new { ok = true, message = "D81 created" });
+            return SerializeResponse(new { ok = true, message = "D81 created" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to create D81");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to create D81");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -762,17 +792,17 @@ public class UltimateService
         try
         {
             await _client.CreateDnpAsync(path, tracks, diskname);
-            return JsonSerializer.Serialize(new { ok = true, message = "DNP created" });
+            return SerializeResponse(new { ok = true, message = "DNP created" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to create DNP");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to create DNP");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -785,17 +815,17 @@ public class UltimateService
         try
         {
             var result = await _client.GetFileInfoAsync(path);
-            return JsonSerializer.Serialize(result);
+            return SerializeResponse(result);
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to get file info");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to get file info");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -808,17 +838,17 @@ public class UltimateService
         try
         {
             var memory = await _client.ReadMemoryAsync(address, length);
-            return JsonSerializer.Serialize(new { address, length, data = Convert.ToBase64String(memory) });
+            return SerializeResponse(new { address, length, data = Convert.ToBase64String(memory) });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to read memory");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to read memory");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -829,17 +859,17 @@ public class UltimateService
         try
         {
             await _client.WriteMemoryAsync(address, data);
-            return JsonSerializer.Serialize(new { ok = true, message = "Memory written" });
+            return SerializeResponse(new { ok = true, message = "Memory written" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to write memory");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to write memory");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -850,17 +880,17 @@ public class UltimateService
         try
         {
             await _client.WriteMemoryBinaryAsync(address, data);
-            return JsonSerializer.Serialize(new { ok = true, message = $"Successfully wrote {data.Length} bytes to address {address}" });
+            return SerializeResponse(new { ok = true, message = $"Successfully wrote {data.Length} bytes to address {address}" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to write binary data");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to write binary data");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -871,17 +901,17 @@ public class UltimateService
         try
         {
             var value = await _client.GetDebugRegisterAsync();
-            return JsonSerializer.Serialize(new { value });
+            return SerializeResponse(new { value });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to get debug register");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to get debug register");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -892,17 +922,17 @@ public class UltimateService
         try
         {
             var result = await _client.SetDebugRegisterAsync(value);
-            return JsonSerializer.Serialize(new { value = result });
+            return SerializeResponse(new { value = result });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to set debug register");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to set debug register");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -915,17 +945,17 @@ public class UltimateService
         try
         {
             await _client.ResetMachineAsync();
-            return JsonSerializer.Serialize(new { ok = true, message = "Machine reset" });
+            return SerializeResponse(new { ok = true, message = "Machine reset" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to reset machine");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to reset machine");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -936,17 +966,17 @@ public class UltimateService
         try
         {
             await _client.RebootMachineAsync();
-            return JsonSerializer.Serialize(new { ok = true, message = "Device rebooting" });
+            return SerializeResponse(new { ok = true, message = "Device rebooting" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to reboot device");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to reboot device");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -957,17 +987,17 @@ public class UltimateService
         try
         {
             await _client.PauseMachineAsync();
-            return JsonSerializer.Serialize(new { ok = true, message = "Machine paused" });
+            return SerializeResponse(new { ok = true, message = "Machine paused" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to pause machine");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to pause machine");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -978,17 +1008,17 @@ public class UltimateService
         try
         {
             await _client.ResumeMachineAsync();
-            return JsonSerializer.Serialize(new { ok = true, message = "Machine resumed" });
+            return SerializeResponse(new { ok = true, message = "Machine resumed" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to resume machine");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to resume machine");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -999,17 +1029,17 @@ public class UltimateService
         try
         {
             await _client.PowerOffMachineAsync();
-            return JsonSerializer.Serialize(new { ok = true, message = "Powering off" });
+            return SerializeResponse(new { ok = true, message = "Powering off" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to power off");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to power off");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -1022,17 +1052,17 @@ public class UltimateService
         try
         {
             await _client.StartStreamAsync(stream, ip, port);
-            return JsonSerializer.Serialize(new { ok = true, message = $"Stream {stream} started" });
+            return SerializeResponse(new { ok = true, message = $"Stream {stream} started" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to start stream");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to start stream");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -1043,17 +1073,17 @@ public class UltimateService
         try
         {
             await _client.StopStreamAsync(stream);
-            return JsonSerializer.Serialize(new { ok = true, message = $"Stream {stream} stopped" });
+            return SerializeResponse(new { ok = true, message = $"Stream {stream} stopped" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to stop stream");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to stop stream");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -1064,17 +1094,17 @@ public class UltimateService
         try
         {
             await _client.MenuButtonAsync();
-            return JsonSerializer.Serialize(new { ok = true, message = "Menu button pressed" });
+            return SerializeResponse(new { ok = true, message = "Menu button pressed" });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to press menu button");
-            return JsonSerializer.Serialize(new { error = ex.Message, errors = ex.ApiErrors });
+            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to press menu button");
-            return JsonSerializer.Serialize(new { error = ex.Message });
+            return SerializeResponse(new { error = ex.Message });
         }
     }
 
@@ -1092,7 +1122,7 @@ public class UltimateService
             
             _serviceLogger.LogInformation($"Generated PRG ({prgBytes.Length} bytes) from BASIC source ({basicSource.Length} chars)");
             
-            return Task.FromResult(JsonSerializer.Serialize(new 
+            return Task.FromResult(SerializeResponse(new 
             { 
                 success = true,
                 prgDataBase64 = base64Prg,
@@ -1104,7 +1134,7 @@ public class UltimateService
         catch (ArgumentException ex)
         {
             _serviceLogger.LogWarning(ex, "BASIC syntax error");
-            return Task.FromResult(JsonSerializer.Serialize(new 
+            return Task.FromResult(SerializeResponse(new 
             { 
                 success = false, 
                 error = ex.Message,
@@ -1114,7 +1144,7 @@ public class UltimateService
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to generate BASIC PRG");
-            return Task.FromResult(JsonSerializer.Serialize(new 
+            return Task.FromResult(SerializeResponse(new 
             { 
                 success = false, 
                 error = ex.Message,
@@ -1122,5 +1152,36 @@ public class UltimateService
             }));
         }
     }
+
+    // MARK: Error Handling & Form Elicitation (MCP SDK v0.7.0+)
+    //
+    // The UltimateService implements comprehensive error handling for form requests
+    // and MCP task support. When a tool call fails:
+    //
+    // 1. UltimateClientException: Maps to API errors with detailed error messages
+    //    - Includes API error details when available (e.g., device timeout)
+    // 
+    // 2. Validation Errors: Caught early with descriptive messages
+    //    - File not found, invalid parameters, insufficient data
+    //
+    // 3. Network/IO Errors: Logged with full context
+    //    - HTTP failures, file access issues
+    //
+    // 4. Form Elicitation: Tools can return structured error objects
+    //    - Client can use these errors to prompt user for missing/invalid input
+    //    - Supports iterative user interaction patterns
+    //
+    // 5. Task Support: Long-running operations (e.g., PlaySidBinary, LoadProgram)
+    //    - Use async/await pattern throughout
+    //    - Proper error propagation via SerializeResponse
+    //    - Session-aware logging for debugging
+    //
+    // Example error response format (MCP SDK compatible):
+    // { "error": "Device timeout", "errors": ["Connection failed"], "code": "TIMEOUT" }
 }
+
+
+
+
+
 
