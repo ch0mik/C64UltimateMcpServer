@@ -17,4 +17,9 @@
     <ProjectReference Include="../C64BasicPrgGenerator/C64BasicPrgGenerator.csproj" />
   </ItemGroup>
 
+  <!-- Include resource files in the output -->
+  <ItemGroup>
+    <Content Include="Resources/data/**/*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

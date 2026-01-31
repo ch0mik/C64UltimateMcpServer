@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using C64UltimateClient;
 using C64UltimateMcpServer.Core;
+using C64UltimateMcpServer.Resources;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.AspNetCore;
 using ModelContextProtocol.Protocol;
@@ -15,6 +16,7 @@ Console.WriteLine($"[Config] Ultimate BaseUrl: {baseUrl}");
 
 // Register UltimateService for DI
 builder.Services.AddScoped<UltimateService>();
+builder.Services.AddScoped<C64ResourceProvider>();
 
 // Configure MCP Server AFTER setting up configuration
 builder.Services
@@ -68,7 +70,8 @@ builder.Services
                 }
             };
         })
-    .WithTools<UltimateService>();
+    .WithTools<UltimateService>()
+    .WithResources<C64ResourceProvider>();
 
 var app = builder.Build();
 

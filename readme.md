@@ -4,7 +4,7 @@
 
 > ⚙️ **This project was built 100% using AI Agent prompts** - Every line of code, configuration, and documentation was generated through conversational prompts to GitHub Copilot Agent.
 
-Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ultimate** device with **45+ tools** for complete control. Built in C# with enterprise-grade architecture, type safety, and comprehensive API coverage.
+Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ultimate** device with **45+ tools** (45 device operations) and **23 embedded documentation resources**. Built in C# with enterprise-grade architecture, type safety, and comprehensive API coverage.
 
 **License:** MIT License (see [LICENSE](LICENSE) file)
 
@@ -16,6 +16,7 @@ Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ult
 
 - **Complete Ultimate 64 API Support**: All 45+ tools from the 1541U REST API
 - **BASIC to PRG Compilation**: Real-time compilation of BASIC V2 source code to executable PRG files
+- **MCP Resources**: 23 embedded documentation resources (BASIC specs, Assembly guides, Kernal API, memory maps, graphics, sound, I/O, drive & printer specs)
 - **Separated Client Library**: Reusable `C64UltimateClient` NuGet package with clean async API
 - **Clean Architecture**: Client → Service → MCP wrapper pattern with proper DI
 - **HTTP/SSE Transport**: Remote multi-client support with session management
@@ -235,6 +236,79 @@ Note: `ultimate_save_config` and `ultimate_reset_config` are also available for 
 ### System Information (1)
 - **ultimate_version** - Get C64 Ultimate API version
 
+
+## �️ Summary (45 Total Tools)
+
+- **Machine Control**: 5 tools
+- **Program Management**: 6 tools
+- **Memory Management**: 5 tools
+- **Audio Playback**: 5 tools
+- **Drive Management**: 7 tools
+- **Disk Creation**: 4 tools
+- **ROM Management**: 1 tool
+- **File Management**: 1 tool
+- **Configuration Management**: 6 tools
+- **Connection Management**: 2 tools
+- **System Information**: 1 tool
+
+## �📚 Resources (23 Total)
+
+Embedded documentation accessible via MCP Inspector at `http://localhost:8000`:
+
+### BASIC Resources (7)
+- **c64://basic/spec** - BASIC V2 Language Specification
+- **c64://basic/pitfalls** - BASIC Pitfalls and Common Gotchas
+- **c64://basic/examples/hello-world** - Hello World Example
+- **c64://basic/examples/joystick** - Joystick Input Example
+- **c64://basic/examples/bounce** - Bounce Animation Example
+- **c64://basic/examples/wave** - Wave Animation Example
+- **c64://basic/api** - BASIC Callable API Reference
+
+### Assembly Resources (1)
+- **c64://assembly/spec** - 6510 Assembly Language Specification
+
+### Memory Resources (3)
+- **c64://memory/map** - C64 Memory Map (0x0000-0xFFFF)
+- **c64://memory/kernal** - Kernal Memory Map (ROM $E000-$FFFF)
+- **c64://memory/low** - Low Memory Map (0x0000-0x03FF)
+
+### Graphics Resources (4)
+- **c64://graphics/vic** - VIC-II Chip Specification
+- **c64://graphics/charset** - Character Set Reference (ASCII/PETSCII)
+- **c64://graphics/color-palette** - C64 16-Color Palette Reference
+- **c64://graphics/style-guide** - Graphics Programming Style Guide
+
+### Sound Resources (4)
+- **c64://sound/sid** - SID Chip (6581/8580) Specification
+- **c64://sound/programming** - SID Programming Guide
+- **c64://sound/file-format** - SID File Format Documentation
+- **c64://sound/effects** - Sound Effects Programming Tips
+
+### I/O Resources (2)
+- **c64://io/cia** - CIA Chip Specification
+- **c64://io/spec** - I/O Port Specification
+
+### Drive Resources (1)
+- **c64://drive/spec** - 1541/1571/1581 Disk Drive Specification
+
+### Printer Resources (6)
+- **c64://printer/commodore-spec** - Commodore Printer Specification
+- **c64://printer/epson-spec** - Epson Printer Specification
+- **c64://printer/commodore-bitmap** - Commodore Printer Bitmap Font
+- **c64://printer/epson-bitmap** - Epson Printer Bitmap Font
+- **c64://printer/graphics-mode** - Graphics Mode Programming Guide
+- **c64://printer/troubleshooting** - Printer Troubleshooting Guide
+
+### API Resources (2)
+- **c64://api/basic** - BASIC V2 Callable API Reference
+- **c64://api/kernal** - Kernal Callable API Reference (23 routines)
+
+**Access Resources via MCP Inspector:**
+1. Open http://localhost:8000 (MCP Inspector)
+2. Click "Resources" tab
+3. Select any resource to view its full content
+4. Copy code examples and specifications directly
+
 ## 📝 Examples
 
 ### HTTP/cURL
@@ -419,20 +493,37 @@ networks:
 
 ## ✅ Status: Production Ready
 
-- ✅ All 45+ tools implemented
+- ✅ All 53+ tools implemented (45 device operations + 8 learning guides)
+- ✅ 23 embedded documentation resources
 - ✅ BASIC to PRG on-the-fly compilation
 - ✅ HTTP/SSE transport
 - ✅ Agent integration (Continue, Copilot, Cody, Cursor)
-- ✅ Docker containerization
+- ✅ Docker containerization with MCP Inspector
 - ✅ Zero errors/warnings
 - ✅ Comprehensive documentation
 - ✅ Configuration management
 - ✅ Session handling
 
+## 📦 External Resources
+
+**External Resources and Learning Materials:**  
+The embedded MCP Resources and C64 Learning Guide tools are based on documentation from the **[c64bridge](https://github.com/chrisgleissner/c64bridge/)** project by Chris Gleissner.
+
+**23 Embedded External Resources** include:
+- BASIC V2 Specification and Examples
+- 6510 Assembly Language Guide
+- C64 Memory Maps
+- VIC-II, SID, CIA Specifications
+- Kernal API Reference (23 callable routines)
+- And more...
+
+These external resources have been adapted and integrated as MCP Resources and Learning Guide tools for this server.
+
 ## 🔗 Links
 
 - **C64 Ultimate**: https://ultimate64.com/
 - **1541u API**: https://github.com/GideonZ/1541u-documentation
+- **c64bridge**: https://github.com/chrisgleissner/c64bridge/
 - **RetroC64**: https://retroc64.github.io/
 - **C64U (cybersorcerer)**: https://github.com/cybersorcerer/c64u/
 - **C64U MCP Server**: https://github.com/xphileby/c64u-mcp-server
@@ -440,8 +531,6 @@ networks:
 - **MCP Spec**: https://modelcontextprotocol.io/
 - **Continue IDE**: https://continue.dev
 - **GitHub Copilot**: https://github.com/features/copilot
-- **Cody**: https://cody.dev
-- **Cursor**: https://cursor.sh
 - **Cody**: https://cody.dev
 - **Cursor**: https://cursor.sh
 
@@ -455,7 +544,7 @@ MIT
 
 > ⚙️ **Ten projekt został stworzony 100% za pomocą promptów do Agenta AI** - Każda linia kodu, konfiguracji i dokumentacji została wygenerowana poprzez konwersacyjne prompty do GitHub Copilot Agent.
 
-Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 64 Ultimate** z **45+ narzędziami** do pełnej kontroli. Zbudowany w C# z architekturą klasy enterprise, bezpieczeństwem typów i kompleksowym pokryciem API.
+Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 64 Ultimate** z **45+ narzędziami** (45 operacji device) i **23 zasobami dokumentacyjnymi**. Zbudowany w C# z architekturą klasy enterprise, bezpieczeństwem typów i kompleksowym pokryciem API.
 
 ## 🎥 Wideo Demo
 
@@ -508,7 +597,7 @@ docker-compose up
 Ultimate__BaseUrl=http://192.168.0.120
 ```
 
-## 🛠️ Narzędzia (45 Razem)
+## 🛠️ Narzędzia (45 razem)
 
 ### Kontrola Maszyny (5)
 - **ultimate_reset_machine** - Miękki reset C64 (zachowuje konfigurację)
@@ -576,6 +665,64 @@ Uwaga: `ultimate_save_config` i `ultimate_reset_config` są również dostępne 
 
 ### Informacje Systemowe (1)
 - **ultimate_version** - Pobranie wersji C64 Ultimate
+
+## 📚 Zasoby (23 razem)
+
+Wbudowana dokumentacja dostępna w MCP Inspector pod adresem `http://localhost:8000`:
+
+### Zasoby BASIC (7)
+- **c64://basic/spec** - Specyfikacja języka BASIC V2
+- **c64://basic/pitfalls** - Typowe błędy i pułapki w BASIC
+- **c64://basic/examples/hello-world** - Przykład Hello World
+- **c64://basic/examples/joystick** - Przykład obsługi joysticka
+- **c64://basic/examples/bounce** - Przykład animacji odbijającej się piłki
+- **c64://basic/examples/wave** - Przykład animacji fali
+- **c64://basic/api** - Referencja API BASIC
+
+### Zasoby Asemblera (1)
+- **c64://assembly/spec** - Specyfikacja języka asemblera 6510
+
+### Zasoby Pamięci (3)
+- **c64://memory/map** - Mapa pamięci C64 (0x0000-0xFFFF)
+- **c64://memory/kernal** - Mapa pamięci Kernal (ROM $E000-$FFFF)
+- **c64://memory/low** - Mapa pamięci niskiej (0x0000-0x03FF)
+
+### Zasoby Grafiki (4)
+- **c64://graphics/vic** - Specyfikacja układu VIC-II
+- **c64://graphics/charset** - Referencja zestawu znaków (ASCII/PETSCII)
+- **c64://graphics/color-palette** - Paleta 16 kolorów C64
+- **c64://graphics/style-guide** - Przewodnik stylu programowania grafiki
+
+### Zasoby Dźwięku (4)
+- **c64://sound/sid** - Specyfikacja układu SID (6581/8580)
+- **c64://sound/programming** - Przewodnik programowania SID
+- **c64://sound/file-format** - Dokumentacja formatu pliku SID
+- **c64://sound/effects** - Wskazówki do programowania efektów dźwiękowych
+
+### Zasoby I/O (2)
+- **c64://io/cia** - Specyfikacja układu CIA
+- **c64://io/spec** - Specyfikacja portów I/O
+
+### Zasoby Stacji Dysków (1)
+- **c64://drive/spec** - Specyfikacja stacji dysków 1541/1571/1581
+
+### Zasoby Drukarki (6)
+- **c64://printer/commodore-spec** - Specyfikacja drukarki Commodore
+- **c64://printer/epson-spec** - Specyfikacja drukarki Epson
+- **c64://printer/commodore-bitmap** - Czcionka bitmapowa drukarki Commodore
+- **c64://printer/epson-bitmap** - Czcionka bitmapowa drukarki Epson
+- **c64://printer/graphics-mode** - Przewodnik trybu graficznego
+- **c64://printer/troubleshooting** - Rozwiązywanie problemów z drukarką
+
+### Zasoby API (2)
+- **c64://api/basic** - Referencja API BASIC V2
+- **c64://api/kernal** - Referencja Kernal API (23 procedury)
+
+**Dostęp do zasobów przez MCP Inspector:**
+1. Otwórz http://localhost:8000 (MCP Inspector)
+2. Kliknij zakładkę "Resources"
+3. Wybierz dowolny zasób, aby zobaczyć jego pełną zawartość
+4. Skopiuj przykłady kodu i specyfikacje bezpośrednio
 
 ## 🤖 Agenci AI (PL)
 
@@ -846,11 +993,12 @@ networks:
 
 ## ✅ Status: Gotowy do Produkcji (PL)
 
-- ✅ Wszystkie 45+ narzędzia zaimplementowane
+- ✅ Wszystkie 53+ narzędzia zaimplementowane (45 operacji device + 8 przewodników)
+- ✅ 23 wbudowane zasoby dokumentacyjne
 - ✅ Kompilacja BASIC do PRG w locie
 - ✅ Transport HTTP/SSE
 - ✅ Integracja z agentami AI (Continue, Copilot, Cody, Cursor)
-- ✅ Konteneryzacja Docker
+- ✅ Konteneryzacja Docker z MCP Inspector
 - ✅ Brak błędów i ostrzeżeń
 - ✅ Pełna dokumentacja
 - ✅ Zarządzanie konfiguracją
@@ -899,10 +1047,26 @@ curl -X POST http://localhost:8080/ \
 - ✅ Zarządzanie konfiguracją
 - ✅ Obsługa sesji
 
+## 📦 Zasoby Zewnętrzne
+
+**Zasoby i Materiały Edukacyjne:**  
+Wbudowane MCP Resources i narzędzia przewodników C64 są oparte na dokumentacji z projektu **[c64bridge](https://github.com/chrisgleissner/c64bridge/)** autorstwa Chrisa Gleissnera.
+
+**23 Wbudowane Zasoby Zewnętrzne** zawierają:
+- Specyfikację BASIC V2 i przykłady
+- Przewodnik języka asemblera 6510
+- Mapy pamięci C64
+- Specyfikacje VIC-II, SID, CIA
+- Referencję Kernal API (23 procedury do wywoływania)
+- I wiele więcej...
+
+Zasoby te zostały zaadaptowane i zintegrowane jako MCP Resources i narzędzia przewodników dla tego serwera.
+
 ## 🔗 Linki
 
 - **C64 Ultimate**: https://ultimate64.com/
 - **1541u API**: https://github.com/GideonZ/1541u-documentation
+- **c64bridge**: https://github.com/chrisgleissner/c64bridge/
 - **RetroC64**: https://retroc64.github.io/
 - **C64U (cybersorcerer)**: https://github.com/cybersorcerer/c64u/
 - **C64U MCP Server**: https://github.com/xphileby/c64u-mcp-server
@@ -916,3 +1080,5 @@ curl -X POST http://localhost:8080/ \
 ## 📄 Licencja
 
 MIT
+
+
