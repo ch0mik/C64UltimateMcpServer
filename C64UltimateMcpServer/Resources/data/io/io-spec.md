@@ -78,7 +78,62 @@ for col in 0..7:
 
 ## 6. Joysticks, Lightpen, Paddles
 
-- **Joysticks:** Digital switches, active‑low. **Port 1 → CIA1 PRB[0..4]**, **Port 2 → CIA1 PRA[0..4]** (see `cia-spec.md` mapping). Joystick‑keyboard contention exists on Port 1.
+### Joystick Control Ports (Critical Details)
+
+**Physical Mapping:**
+- **Port 1** → read via **PEEK(56321)** or **$DC01** (CIA1 PRB)
+- **Port 2** → read via **PEEK(56320)** or **$DC00** (CIA1 PRA)
+
+> **IMPORTANT:** The addresses are REVERSED from the port numbers! Port 1 uses $DC01, Port 2 uses $DC00.
+
+**Joystick Bits (Active-Low):**
+When a direction or fire button is pressed, the corresponding bit goes LOW (0). When idle, bits are HIGH (1).
+
+| Bit | Weight | Meaning |
+|-----|--------|---------|
+| 0   | 1      | UP |
+| 1   | 2      | DOWN |
+| 2   | 4      | LEFT |
+| 3   | 8      | RIGHT |
+| 4   | 16     | FIRE |
+
+**Reading Joystick in BASIC:**
+```basic
+JV1 = PEEK(56321)  : REM Read Port 1
+JV2 = PEEK(56320)  : REM Read Port 2
+
+REM To test individual directions (bits go LOW when pressed):
+IF (JV AND 1)=0 THEN REM UP pressed
+IF (JV AND 2)=0 THEN REM DOWN pressed
+IF (JV AND 4)=0 THEN REM LEFT pressed
+IF (JV AND 8)=0 THEN REM RIGHT pressed
+IF (JV AND 16)=0 THEN REM FIRE pressed
+```
+
+**Idle States:**
+- **Port 1:** Returns 255 (all bits high) when no input
+- **Port 2:** Returns 127 (bits 7,6 set, others high) when no input
+
+> Port 2's idle value is 127, not 255, because bits 6–7 are permanently set.
+
+**Keyboard Interference:**
+Joystick Port 1 shares the keyboard matrix. Moving the joystick can trigger key presses. Use `POKE 56322,224` to disable keyboard, and `POKE 56322,255` to re-enable. Prefer **Port 2** for games to avoid this issue.
+
+**Common Joystick Values (for reference):**
+
+| Position | Port 1 | Port 2 | Port 1 + Fire | Port 2 + Fire |
+|----------|--------|--------|--------------|--------------|
+| Idle | 255 | 127 | - | - |
+| UP | 254 | 126 | 238 | 110 |
+| DOWN | 253 | 125 | 237 | 109 |
+| LEFT | 251 | 123 | 235 | 107 |
+| RIGHT | 247 | 119 | 231 | 103 |
+| UP+LEFT | 250 | 122 | 234 | 106 |
+| UP+RIGHT | 246 | 118 | 230 | 102 |
+| DOWN+LEFT | 249 | 121 | 233 | 105 |
+| DOWN+RIGHT | 245 | 117 | 229 | 101 |
+
+- **Joysticks (alternate details):** Joystick‑keyboard contention exists on Port 1; disable keyboard when using Port 1 for precision control.
 - **Lightpen:** Routed via VIC /LP; also appears as “fire” on CIA1. Use VIC registers for position latch. (Mapping note: see `cia-spec.md`.)
 - **Paddles:** Analog via **SID POTX/POTY**; channel selection via **CIA1 PRA[6:7]** to choose control port.
 

@@ -236,6 +236,17 @@ public class C64ResourceProvider
         return ReadResourceFile(path, "c64://io/io-spec");
     }
 
+    [McpServerResource(
+        UriTemplate = "c64://io/joystick",
+        Name = "Joystick Control Reference",
+        MimeType = "text/markdown")]
+    public ResourceContents GetJoystickReference()
+    {
+        _logger.LogInformation("Fetching joystick reference");
+        var path = Path.Combine(_basePath, "io", "joystick.md");
+        return ReadResourceFile(path, "c64://io/joystick");
+    }
+
     // Drive Resources
 
     [McpServerResource(
