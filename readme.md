@@ -346,24 +346,39 @@ docker run -p 8080:8080 \
 
 ### Custom docker-compose.yml
 ```yaml
-version: '3.8'
 services:
   mcp-server:
     image: sq7mru/c64ultimatemcpserver:latest
     ports:
       - "8080:8080"
+    healthcheck:
+      test: ["CMD", "sh", "-c", "ps x| grep dotnet | grep C64UltimateMcpServer"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       - Ultimate__BaseUrl=http://192.168.0.120
       - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Production
     networks:
       - c64-network
 
-  inspector:
+  mcp-inspector:
     image: mcpuse/inspector:latest
+    container_name: inspector
+    command:
+      - /bin/sh
+      - -c
+      - |
+        npx @mcp-use/inspector \
+          --port 8000 \
+        --url http://mcp-server:8080 
     ports:
       - "8000:8000"
-    environment:
-      - MCP_SERVER_URL=http://mcp-server:8080
+    depends_on:
+      mcp-server:
+          condition: service_healthy
     networks:
       - c64-network
 
@@ -758,24 +773,39 @@ docker run -p 8080:8080 \
 
 ### Niestandardowy docker-compose.yml
 ```yaml
-version: '3.8'
 services:
   mcp-server:
     image: sq7mru/c64ultimatemcpserver:latest
     ports:
       - "8080:8080"
+    healthcheck:
+      test: ["CMD", "sh", "-c", "ps x| grep dotnet | grep C64UltimateMcpServer"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       - Ultimate__BaseUrl=http://192.168.0.120
       - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Production
     networks:
       - c64-network
 
-  inspector:
+  mcp-inspector:
     image: mcpuse/inspector:latest
+    container_name: inspector
+    command:
+      - /bin/sh
+      - -c
+      - |
+        npx @mcp-use/inspector \
+          --port 8000 \
+        --url http://mcp-server:8080 
     ports:
       - "8000:8000"
-    environment:
-      - MCP_SERVER_URL=http://mcp-server:8080
+    depends_on:
+      mcp-server:
+          condition: service_healthy
     networks:
       - c64-network
 
