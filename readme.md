@@ -122,6 +122,7 @@ environment:
   "github.copilot.chat.mcpServers": [
     {
       "name": "C64 Ultimate",
+      "type": "streamable-http",
       "url": "http://localhost:8080"
     }
   ]
@@ -763,6 +764,7 @@ Wbudowana dokumentacja dostępna w MCP Inspector pod adresem `http://localhost:8
   "github.copilot.chat.mcpServers": [
     {
       "name": "C64 Ultimate",
+      "type": "streamable-http",
       "url": "http://localhost:8080"
     }
   ]
