@@ -1,7 +1,6 @@
 ### Generate BASIC PRG and Run It - Full Pipeline
-# Uses: Request variables with JSON path extraction
 # Step 1: Generate PRG with @name generateBasicPrg
-# Step 2: Extract prgDataBase64 from response and run PRG
+# Step 2: Copy prgDataBase64 from result.content[0].text JSON and run PRG
 
 ### STEP 1: Generate BASIC PRG
 # @name generateBasicPrg
@@ -21,15 +20,10 @@ Accept: application/json, text/event-stream
   }
 }
 
-### Extract PRG data from response into file variable
-### View extracted variable
-# @note Extracted PRG Base64: {{prgDataBase64}}
-@prgDataBase64 = {{generateBasicPrg.response.body.result.output}}
-
-
 ###
 ### STEP 2: Run the Generated PRG
-### Uses prgDataBase64 file variable extracted from STEP 1 response
+### Paste prgDataBase64 extracted from:
+### response.result.content[0].text -> JSON -> prgDataBase64
 POST http://localhost:8080/
 Content-Type: application/json
 Accept: application/json, text/event-stream
@@ -41,7 +35,7 @@ Accept: application/json, text/event-stream
   "params": {
     "name": "ultimate_run_prg_binary",
     "arguments": {
-      "prgDataBase64": "{{prgDataBase64}}"
+      "prgDataBase64": "PASTE_BASE64_FROM_STEP_1_HERE"
     }
   }
 }

@@ -38,7 +38,7 @@ Accept: application/json, text/event-stream
   "id": 3,
   "method": "tools/call",
   "params": {
-    "name": "ultimate_get_machine_info"
+    "name": "ultimate_get_drives"
   }
 }
 

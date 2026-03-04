@@ -56,26 +56,4 @@ Accept: application/json, text/event-stream
       "url": "http://example.com/music.sid"
     }
   }
-}}
-
-###
-### Alternative: Use actual endpoints directly via REST
-### (for testing the raw API)
-
-### Direct POST /v1/runners:run_prg with binary
-POST http://192.168.0.120/v1/runners:run_prg
-Content-Type: application/octet-stream
-
-[binary PRG/SID data here]
-
-###
-### Or with form data
-POST http://192.168.0.120/v1/runners:sidplay
-Content-Type: multipart/form-data; boundary=boundary
-
---boundary
-Content-Disposition: form-data; name="sid"; filename="music.sid"
-Content-Type: application/octet-stream
-
-[binary SID data]
---boundary--
+}

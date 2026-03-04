@@ -94,6 +94,39 @@ public class C64ResourceProvider
         return ReadResourceFile(path, "c64://basic/examples/wave");
     }
 
+    [McpServerResource(
+        UriTemplate = "c64://basic/examples/entchen-petscii",
+        Name = "BASIC Entchen PETSCII Demo",
+        MimeType = "text/plain")]
+    public ResourceContents GetBasicEntchenPetscii()
+    {
+        _logger.LogInformation("Fetching BASIC entchen PETSCII example");
+        var path = Path.Combine(_basePath, "basic", "examples", "video", "entchen-petscii.bas");
+        return ReadResourceFile(path, "c64://basic/examples/entchen-petscii");
+    }
+
+    [McpServerResource(
+        UriTemplate = "c64://basic/examples/games/snake",
+        Name = "BASIC Snake Game Example",
+        MimeType = "text/plain")]
+    public ResourceContents GetBasicSnakeGame()
+    {
+        _logger.LogInformation("Fetching BASIC snake game example");
+        var path = Path.Combine(_basePath, "basic", "examples", "games", "snake.bas");
+        return ReadResourceFile(path, "c64://basic/examples/games/snake");
+    }
+
+    [McpServerResource(
+        UriTemplate = "c64://basic/examples/games/tictactoe",
+        Name = "BASIC Tic-Tac-Toe Game Example",
+        MimeType = "text/plain")]
+    public ResourceContents GetBasicTicTacToeGame()
+    {
+        _logger.LogInformation("Fetching BASIC tictactoe game example");
+        var path = Path.Combine(_basePath, "basic", "examples", "games", "tictactoe64_03.bas");
+        return ReadResourceFile(path, "c64://basic/examples/games/tictactoe");
+    }
+
     // Assembly Resources
 
     [McpServerResource(
@@ -177,6 +210,17 @@ public class C64ResourceProvider
         return ReadResourceFile(path, "c64://graphics/petscii");
     }
 
+    [McpServerResource(
+        UriTemplate = "c64://graphics/sprite-charset-best-practices",
+        Name = "Sprite and Charset Best Practices",
+        MimeType = "text/markdown")]
+    public ResourceContents GetSpriteCharsetBestPractices()
+    {
+        _logger.LogInformation("Fetching sprite/charset best practices");
+        var path = Path.Combine(_basePath, "graphics", "sprite-charset-best-practices.md");
+        return ReadResourceFile(path, "c64://graphics/sprite-charset-best-practices");
+    }
+
     // SID Audio Resources
 
     [McpServerResource(
@@ -212,6 +256,17 @@ public class C64ResourceProvider
         return ReadResourceFile(path, "c64://sound/sid-file-structure");
     }
 
+    [McpServerResource(
+        UriTemplate = "c64://sound/sidwave",
+        Name = "SIDWAVE Format Specification",
+        MimeType = "text/markdown")]
+    public ResourceContents GetSidwaveSpec()
+    {
+        _logger.LogInformation("Fetching SIDWAVE specification");
+        var path = Path.Combine(_basePath, "sound", "sidwave.md");
+        return ReadResourceFile(path, "c64://sound/sidwave");
+    }
+
     // I/O Resources
 
     [McpServerResource(
@@ -245,6 +300,28 @@ public class C64ResourceProvider
         _logger.LogInformation("Fetching joystick reference");
         var path = Path.Combine(_basePath, "io", "joystick.md");
         return ReadResourceFile(path, "c64://io/joystick");
+    }
+
+    [McpServerResource(
+        UriTemplate = "c64://io/keyboard-c64",
+        Name = "C64 Keyboard Matrix Reference",
+        MimeType = "text/plain")]
+    public ResourceContents GetKeyboardC64Reference()
+    {
+        _logger.LogInformation("Fetching C64 keyboard matrix reference");
+        var path = Path.Combine(_basePath, "io", "keyboard-c64.txt");
+        return ReadResourceFile(path, "c64://io/keyboard-c64");
+    }
+
+    [McpServerResource(
+        UriTemplate = "c64://io/control-codes-c64",
+        Name = "C64 Control Codes Reference",
+        MimeType = "text/plain")]
+    public ResourceContents GetControlCodesC64Reference()
+    {
+        _logger.LogInformation("Fetching C64 control codes reference");
+        var path = Path.Combine(_basePath, "io", "control-codes-c64.txt");
+        return ReadResourceFile(path, "c64://io/control-codes-c64");
     }
 
     // Drive Resources
@@ -284,6 +361,50 @@ public class C64ResourceProvider
         return ReadResourceFile(path, "c64://printer/epson-spec");
     }
 
+    [McpServerResource(
+        UriTemplate = "c64://printer/spec",
+        Name = "Printer Unified Specification",
+        MimeType = "text/markdown")]
+    public ResourceContents GetPrinterSpec()
+    {
+        _logger.LogInformation("Fetching printer unified specification");
+        var path = Path.Combine(_basePath, "printer", "printer-spec.md");
+        return ReadResourceFile(path, "c64://printer/spec");
+    }
+
+    [McpServerResource(
+        UriTemplate = "c64://printer/prompts",
+        Name = "Printer Prompt Routing Guide",
+        MimeType = "text/markdown")]
+    public ResourceContents GetPrinterPromptsGuide()
+    {
+        _logger.LogInformation("Fetching printer prompts routing guide");
+        var path = Path.Combine(_basePath, "printer", "printer-prompts.md");
+        return ReadResourceFile(path, "c64://printer/prompts");
+    }
+
+    [McpServerResource(
+        UriTemplate = "c64://printer/commodore-bitmap",
+        Name = "Commodore Bitmap Printing",
+        MimeType = "text/markdown")]
+    public ResourceContents GetCommodoreBitmapPrinterSpec()
+    {
+        _logger.LogInformation("Fetching Commodore bitmap printer guide");
+        var path = Path.Combine(_basePath, "printer", "printer-commodore-bitmap.md");
+        return ReadResourceFile(path, "c64://printer/commodore-bitmap");
+    }
+
+    [McpServerResource(
+        UriTemplate = "c64://printer/epson-bitmap",
+        Name = "Epson Bitmap Printing",
+        MimeType = "text/markdown")]
+    public ResourceContents GetEpsonBitmapPrinterSpec()
+    {
+        _logger.LogInformation("Fetching Epson bitmap printer guide");
+        var path = Path.Combine(_basePath, "printer", "printer-epson-bitmap.md");
+        return ReadResourceFile(path, "c64://printer/epson-bitmap");
+    }
+
     // API Resources
 
     [McpServerResource(
@@ -306,6 +427,41 @@ public class C64ResourceProvider
         _logger.LogInformation("Fetching Kernal API specification");
         var path = Path.Combine(_basePath, "api", "kernal-api-spec.md");
         return ReadResourceFile(path, "c64://api/kernal-api");
+    }
+
+    // c64ref-based Resources
+
+    [McpServerResource(
+        UriTemplate = "c64://memory/symbols",
+        Name = "C64 Memory Symbols",
+        MimeType = "text/plain")]
+    public ResourceContents GetMemorySymbols()
+    {
+        _logger.LogInformation("Fetching C64 memory symbols");
+        var path = Path.Combine(_basePath, "memory", "symbols.txt");
+        return ReadResourceFile(path, "c64://memory/symbols");
+    }
+
+    [McpServerResource(
+        UriTemplate = "c64://disasm/basic-rom",
+        Name = "C64 BASIC ROM Disassembly",
+        MimeType = "text/plain")]
+    public ResourceContents GetBasicRomDisassembly()
+    {
+        _logger.LogInformation("Fetching BASIC ROM disassembly");
+        var path = Path.Combine(_basePath, "disasm", "basic-rom.txt");
+        return ReadResourceFile(path, "c64://disasm/basic-rom");
+    }
+
+    [McpServerResource(
+        UriTemplate = "c64://disasm/kernal-rom",
+        Name = "C64 KERNAL ROM Disassembly",
+        MimeType = "text/plain")]
+    public ResourceContents GetKernalRomDisassembly()
+    {
+        _logger.LogInformation("Fetching KERNAL ROM disassembly");
+        var path = Path.Combine(_basePath, "disasm", "kernal-rom.txt");
+        return ReadResourceFile(path, "c64://disasm/kernal-rom");
     }
 
     // Helper methods

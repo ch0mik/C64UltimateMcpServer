@@ -1,0 +1,40 @@
+### Get MCP prompt: c64_basic_program_prompt
+# Prerequisite: run mcp_initialize.http and paste session id below.
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+Mcp-Session-Id: PASTE_SESSION_ID_HERE
+
+{
+  "jsonrpc": "2.0",
+  "id": 11,
+  "method": "prompts/get",
+  "params": {
+    "name": "c64_basic_program_prompt",
+    "arguments": {
+      "goal": "Create a simple snake game in C64 BASIC V2",
+      "level": "beginner"
+    }
+  }
+}
+
+###
+### Get MCP prompt: c64_sid_music_prompt
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+Mcp-Session-Id: PASTE_SESSION_ID_HERE
+
+{
+  "jsonrpc": "2.0",
+  "id": 12,
+  "method": "prompts/get",
+  "params": {
+    "name": "c64_sid_music_prompt",
+    "arguments": {
+      "style": "chiptune",
+      "bpm": 120
+    }
+  }
+}

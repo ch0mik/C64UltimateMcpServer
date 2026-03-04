@@ -7,7 +7,7 @@ Accept: application/json, text/event-stream
   "id": 2,
   "method": "tools/call",
   "params": {
-    "name": "ultimate_play_sid",
+    "name": "ultimate_play_sid_binary",
     "arguments": {
       "sidDataBase64": "PSBEaXIgU0lEIEZpbGUgSGVhZGVyIChCYXNlNjQgZW5jb2RlZCkuIFJlcGxhY2Ugd2l0aCBhY3R1YWwgU0lEIGZpbGUgZGF0YQ=="
     }

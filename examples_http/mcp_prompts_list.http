@@ -1,0 +1,14 @@
+### List MCP prompts
+# Prerequisite: run mcp_initialize.http and paste session id below.
+
+POST http://localhost:8080/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+Mcp-Session-Id: PASTE_SESSION_ID_HERE
+
+{
+  "jsonrpc": "2.0",
+  "id": 10,
+  "method": "prompts/list",
+  "params": {}
+}

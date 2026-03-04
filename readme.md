@@ -4,7 +4,7 @@
 
 > ⚙️ **This project was built 100% using AI Agent prompts** - Every line of code, configuration, and documentation was generated through conversational prompts to GitHub Copilot Agent.
 
-Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ultimate** device with **45+ tools** (45 device operations) and **23 embedded documentation resources**. Built in C# with enterprise-grade architecture, type safety, and comprehensive API coverage.
+Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ultimate** device with **45+ tools** (45 device operations), **14 MCP prompts**, and **38 embedded documentation resources**. Built in C# with enterprise-grade architecture, type safety, and comprehensive API coverage.
 
 **License:** MIT License (see [LICENSE](LICENSE) file)
 
@@ -15,8 +15,9 @@ Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ult
 ## ⚡ Key Features
 
 - **Complete Ultimate 64 API Support**: All 45+ tools from the 1541U REST API
+- **MCP Prompts Support**: 14 prompt templates exposed through `prompts/list` and `prompts/get`
 - **BASIC to PRG Compilation**: Real-time compilation of BASIC V2 source code to executable PRG files
-- **MCP Resources**: 23 embedded documentation resources (BASIC specs, Assembly guides, Kernal API, memory maps, graphics, sound, I/O, drive & printer specs)
+- **MCP Resources**: 38 embedded documentation resources (BASIC specs, Assembly guides, Kernal API, memory maps, graphics, sound, I/O, drive, printer, keyboard/control codes, disassembly)
 - **Separated Client Library**: Reusable `C64UltimateClient` NuGet package with clean async API
 - **Clean Architecture**: Client → Service → MCP wrapper pattern with proper DI
 - **HTTP/SSE Transport**: Remote multi-client support with session management
@@ -237,6 +238,13 @@ Note: `ultimate_save_config` and `ultimate_reset_config` are also available for 
 ### System Information (1)
 - **ultimate_version** - Get C64 Ultimate API version
 
+## 💬 Prompts (14 Total)
+
+- **c64_basic_program_prompt** - Prompt template for generating C64 BASIC V2 programs
+- **c64_sid_music_prompt** - Prompt template for SID composition guidance
+
+Important: prompts are MCP prompts, not tools.  
+Use `prompts/list` and `prompts/get` for prompts, and `tools/call` only for tools.
 
 ## �️ Summary (45 Total Tools)
 
@@ -252,7 +260,7 @@ Note: `ultimate_save_config` and `ultimate_reset_config` are also available for 
 - **Connection Management**: 2 tools
 - **System Information**: 1 tool
 
-## �📚 Resources (23 Total)
+## �📚 Resources (38 Total)
 
 Embedded documentation accessible via MCP Inspector at `http://localhost:8000`:
 
@@ -340,6 +348,38 @@ curl -X POST http://localhost:8080/ \
 
 All 45+ tools have corresponding `.http` files in `examples_http/` for testing
 
+**List Prompts**:
+```bash
+curl -X POST http://localhost:8080/ \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 2,
+    "method": "prompts/list",
+    "params": {}
+  }'
+```
+
+**Get Prompt**:
+```bash
+curl -X POST http://localhost:8080/ \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 3,
+    "method": "prompts/get",
+    "params": {
+      "name": "c64_basic_program_prompt",
+      "arguments": {
+        "goal": "make a starfield",
+        "level": "beginner"
+      }
+    }
+  }'
+```
+
 ### Continue IDE
 
 ```
@@ -362,6 +402,14 @@ curl http://localhost:8080/health
 ```
 
 **List Tools** - See [mcp_list_tools.http](examples_http/mcp_list_tools.http)
+  
+**List Prompts**:
+```bash
+curl -X POST http://localhost:8080/ \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","id":7,"method":"prompts/list","params":{}}'
+```
 
 **Get Version** - See [mcp_get_version.http](examples_http/mcp_get_version.http)
 
@@ -494,8 +542,9 @@ networks:
 
 ## ✅ Status: Production Ready
 
-- ✅ All 53+ tools implemented (45 device operations + 8 learning guides)
-- ✅ 23 embedded documentation resources
+- ✅ 45 production tools implemented for C64 Ultimate operations
+- ✅ 14 MCP prompts implemented
+- ✅ 38 embedded documentation resources
 - ✅ BASIC to PRG on-the-fly compilation
 - ✅ HTTP/SSE transport
 - ✅ Agent integration (Continue, Copilot, Cody, Cursor)
@@ -545,7 +594,7 @@ MIT
 
 > ⚙️ **Ten projekt został stworzony 100% za pomocą promptów do Agenta AI** - Każda linia kodu, konfiguracji i dokumentacji została wygenerowana poprzez konwersacyjne prompty do GitHub Copilot Agent.
 
-Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 64 Ultimate** z **45+ narzędziami** (45 operacji device) i **23 zasobami dokumentacyjnymi**. Zbudowany w C# z architekturą klasy enterprise, bezpieczeństwem typów i kompleksowym pokryciem API.
+Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 64 Ultimate** z **45+ narzędziami** (45 operacji device), **14 promptami MCP** i **38 zasobami dokumentacyjnymi**. Zbudowany w C# z architekturą klasy enterprise, bezpieczeństwem typów i kompleksowym pokryciem API.
 
 ## 🎥 Wideo Demo
 
@@ -667,7 +716,15 @@ Uwaga: `ultimate_save_config` i `ultimate_reset_config` są również dostępne 
 ### Informacje Systemowe (1)
 - **ultimate_version** - Pobranie wersji C64 Ultimate
 
-## 📚 Zasoby (23 razem)
+## 💬 Prompty (14 razem)
+
+- **c64_basic_program_prompt** - Szablon promptu do generowania programów C64 BASIC V2
+- **c64_sid_music_prompt** - Szablon promptu do tworzenia wskazówek kompozycji SID
+
+Ważne: prompty MCP to nie narzędzia.  
+Używaj `prompts/list` i `prompts/get` dla promptów oraz `tools/call` wyłącznie dla narzędzi.
+
+## 📚 Zasoby (38 razem)
 
 Wbudowana dokumentacja dostępna w MCP Inspector pod adresem `http://localhost:8000`:
 
@@ -841,6 +898,38 @@ curl -X POST http://localhost:8080/ \
 
 Wszystkie 45+ narzędzi mają odpowiadające im pliki `.http` w folderze `examples_http/` do testowania
 
+**Lista promptów**:
+```bash
+curl -X POST http://localhost:8080/ \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 2,
+    "method": "prompts/list",
+    "params": {}
+  }'
+```
+
+**Pobranie promptu**:
+```bash
+curl -X POST http://localhost:8080/ \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 3,
+    "method": "prompts/get",
+    "params": {
+      "name": "c64_sid_music_prompt",
+      "arguments": {
+        "style": "chiptune",
+        "bpm": 120
+      }
+    }
+  }'
+```
+
 ### Continue IDE
 
 ```
@@ -995,8 +1084,9 @@ networks:
 
 ## ✅ Status: Gotowy do Produkcji (PL)
 
-- ✅ Wszystkie 53+ narzędzia zaimplementowane (45 operacji device + 8 przewodników)
-- ✅ 23 wbudowane zasoby dokumentacyjne
+- ✅ Zaimplementowano 45 narzędzi produkcyjnych dla operacji C64 Ultimate
+- ✅ Zaimplementowano 2 prompty MCP (`c64_basic_program_prompt`, `c64_sid_music_prompt`)
+- ✅ 24 wbudowane zasoby dokumentacyjne
 - ✅ Kompilacja BASIC do PRG w locie
 - ✅ Transport HTTP/SSE
 - ✅ Integracja z agentami AI (Continue, Copilot, Cody, Cursor)
@@ -1035,6 +1125,11 @@ dotnet run
 curl -X POST http://localhost:8080/ \
   -H "Content-Type: application/json" \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+
+# Sprawdzenie listy promptów
+curl -X POST http://localhost:8080/ \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":2,"method":"prompts/list","params":{}}'
 ```
 
 ## 🎉 Status: Gotowy do Produkcji
@@ -1082,5 +1177,3 @@ Zasoby te zostały zaadaptowane i zintegrowane jako MCP Resources i narzędzia p
 ## 📄 Licencja
 
 MIT
-
-

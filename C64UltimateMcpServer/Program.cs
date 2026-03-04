@@ -1,8 +1,10 @@
 using System.Collections.Concurrent;
+using C64UltimateMcpServer;
 using C64UltimateClient;
 using C64UltimateMcpServer.Core;
 using C64UltimateMcpServer.Resources;
 using Microsoft.Extensions.Logging;
+using ModelContextProtocol;
 using ModelContextProtocol.AspNetCore;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
@@ -10,6 +12,9 @@ using ModelContextProtocol.Server;
 ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> subscriptions = new();
 
 var builder = WebApplication.CreateBuilder(args);
+#pragma warning disable MCPEXP001
+var taskStore = new InMemoryMcpTaskStore();
+#pragma warning restore MCPEXP001
 
 var baseUrl = builder.Configuration["Ultimate:BaseUrl"] ?? "http://192.168.0.120";
 Console.WriteLine($"[Config] Ultimate BaseUrl: {baseUrl}");
@@ -40,12 +45,17 @@ builder.Services
                 }
             ]
         };
+        #pragma warning disable MCPEXP001
+        options.TaskStore = taskStore;
+        options.SendTaskStatusNotifications = true;
+        #pragma warning restore MCPEXP001
         // Note: Custom JsonSerializerOptions are configured per-service (see UltimateService)
-        // MCP SDK v0.7.0+ supports user-defined serialization options
+        // MCP SDK 1.0.0 supports user-defined serialization options
     })
     .WithHttpTransport(options =>
         {
             // Add a RunSessionHandler to remove all subscriptions for the session when it ends
+            #pragma warning disable MCPEXP002
             options.RunSessionHandler = async (httpContext, mcpServer, token) =>
             {
                 if (mcpServer.SessionId == null)
@@ -71,8 +81,29 @@ builder.Services
                     subscriptions.TryRemove(mcpServer.SessionId, out _);
                 }
             };
+            #pragma warning restore MCPEXP002
         })
     .WithTools<UltimateService>()
+    .WithPrompts<C64UltimatePrompts>()
+    .WithSubscribeToResourcesHandler(async (ctx, ct) =>
+    {
+        if (ctx.Server.SessionId is { } sessionId && ctx.Params?.Uri is { } uri)
+        {
+            subscriptions.GetOrAdd(sessionId, _ => new ConcurrentDictionary<string, byte>())
+                .TryAdd(uri, 0);
+        }
+        return new EmptyResult();
+    })
+    .WithUnsubscribeFromResourcesHandler(async (ctx, ct) =>
+    {
+        if (ctx.Server.SessionId is { } sessionId &&
+            ctx.Params?.Uri is { } uri &&
+            subscriptions.TryGetValue(sessionId, out var sessionSubscriptions))
+        {
+            sessionSubscriptions.TryRemove(uri, out _);
+        }
+        return new EmptyResult();
+    })
     .WithResources<C64ResourceProvider>();
 
 var app = builder.Build();
