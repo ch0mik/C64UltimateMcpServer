@@ -2,14 +2,11 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-# Copy solution and project files
+# Copy project sources
 COPY ./ ./
 
-# Restore dependencies
+# Restore dependencies with retries to survive transient NuGet EOF failures in Docker builds
 RUN dotnet restore ./C64UltimateMcpServer/C64UltimateMcpServer.csproj
-
-# Copy everything else
-COPY . .
 
 # Build the application
 WORKDIR "/src/C64UltimateMcpServer"

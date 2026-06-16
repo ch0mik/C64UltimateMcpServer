@@ -1,14 +1,16 @@
 using Microsoft.Extensions.Logging;
-using ModelContextProtocol.Server;
+using ModelContextProtocol;
 using ModelContextProtocol.Protocol;
+using ModelContextProtocol.Server;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text;
 
 namespace C64UltimateMcpServer.Resources;
 
 /// <summary>
-/// Exposes C64 BASIC, Assembly, and documentation resources embedded in the application.
-/// Resources include BASIC specifications, examples, pitfalls, and more from the data directory.
+/// Exposes curated C64 resources while keeping the public c64:// URI contract stable.
 /// </summary>
 [McpServerResourceType]
 public class C64ResourceProvider
@@ -19,516 +21,257 @@ public class C64ResourceProvider
     public C64ResourceProvider(ILogger<C64ResourceProvider> logger)
     {
         _logger = logger;
-        // Get the directory where the application is running
         var assemblyLocation = Assembly.GetExecutingAssembly().Location;
         var assemblyDirectory = Path.GetDirectoryName(assemblyLocation) ?? AppContext.BaseDirectory;
         _basePath = Path.Combine(assemblyDirectory, "Resources", "data");
-        _logger.LogInformation($"C64ResourceProvider initialized with base path: {_basePath}");
+        _logger.LogInformation("C64ResourceProvider initialized with base path: {BasePath}", _basePath);
     }
 
-    // BASIC Resources
-
     [McpServerResource(
-        UriTemplate = "c64://basic/spec",
-        Name = "BASIC V2 Specification",
+        UriTemplate = "c64://resources/index",
+        Name = "C64 Resource Index",
         MimeType = "text/markdown")]
-    public ResourceContents GetBasicSpec()
+    [Description("Browse the curated C64 resource index before choosing a topic-specific document.")]
+    public ResourceContents GetResourceIndex()
     {
-        _logger.LogInformation("Fetching BASIC specification");
-        var path = Path.Combine(_basePath, "basic", "basic-spec.md");
-        return ReadResourceFile(path, "c64://basic/spec");
+        _logger.LogInformation("Fetching resource index");
+        return new TextResourceContents
+        {
+            Uri = "c64://resources/index",
+            Text = C64ResourceCatalog.BuildIndexMarkdown(),
+            MimeType = "text/markdown"
+        };
     }
 
     [McpServerResource(
-        UriTemplate = "c64://basic/pitfalls",
-        Name = "BASIC Pitfalls and Gotchas",
+        UriTemplate = "c64://resources/{category}/{slug}",
+        Name = "C64 Resource Catalog Entry",
         MimeType = "text/markdown")]
-    public ResourceContents GetBasicPitfalls()
+    [Description("Resolve a catalogued C64 resource by category and slug.")]
+    public ResourceContents GetCatalogResource(
+        [AllowedValues("basic", "assembly", "memory", "graphics", "sound", "io", "drive", "printer", "api", "disasm")]
+        string category,
+        string slug)
     {
-        _logger.LogInformation("Fetching BASIC pitfalls");
-        var path = Path.Combine(_basePath, "basic", "basic-pitfalls.md");
-        return ReadResourceFile(path, "c64://basic/pitfalls");
+        var normalizedCategory = category.Trim().ToLowerInvariant();
+        var normalizedSlug = slug.Trim().ToLowerInvariant();
+
+        if (!C64ResourceCatalog.ByCategoryAndSlug.TryGetValue(
+                C64ResourceCatalog.MakeKey(normalizedCategory, normalizedSlug),
+                out var resource))
+        {
+            throw CreateUnknownResourceException($"c64://resources/{normalizedCategory}/{normalizedSlug}");
+        }
+
+        return ReadCatalogResource(resource);
     }
 
-    [McpServerResource(
-        UriTemplate = "c64://basic/examples/hello-world",
-        Name = "BASIC Hello World Example",
-        MimeType = "text/plain")]
-    public ResourceContents GetBasicHelloWorld()
+    [McpServerResource(UriTemplate = "c64://basic/spec", Name = "BASIC V2 Specification", MimeType = "text/markdown")]
+    [Description("Reference for Commodore BASIC V2 syntax, memory layout, and runtime behavior.")]
+    public ResourceContents GetBasicSpec() => GetCatalogResourceByUri("c64://basic/spec");
+
+    [McpServerResource(UriTemplate = "c64://basic/pitfalls", Name = "BASIC Pitfalls and Gotchas", MimeType = "text/markdown")]
+    [Description("Common mistakes, compatibility traps, and debugging tips for BASIC V2.")]
+    public ResourceContents GetBasicPitfalls() => GetCatalogResourceByUri("c64://basic/pitfalls");
+
+    [McpServerResource(UriTemplate = "c64://basic/examples/hello-world", Name = "BASIC Hello World Example", MimeType = "text/plain")]
+    [Description("Minimal BASIC listing that prints a greeting.")]
+    public ResourceContents GetBasicHelloWorld() => GetCatalogResourceByUri("c64://basic/examples/hello-world");
+
+    [McpServerResource(UriTemplate = "c64://basic/examples/joystick", Name = "BASIC Joystick Input Example", MimeType = "text/plain")]
+    [Description("BASIC example that reads joystick input.")]
+    public ResourceContents GetBasicJoystick() => GetCatalogResourceByUri("c64://basic/examples/joystick");
+
+    [McpServerResource(UriTemplate = "c64://basic/examples/bounce", Name = "BASIC Bounce Animation", MimeType = "text/plain")]
+    [Description("Simple bouncing animation in BASIC V2.")]
+    public ResourceContents GetBasicBounce() => GetCatalogResourceByUri("c64://basic/examples/bounce");
+
+    [McpServerResource(UriTemplate = "c64://basic/examples/wave", Name = "BASIC Wave Animation", MimeType = "text/plain")]
+    [Description("Wave animation example for screen effects.")]
+    public ResourceContents GetBasicWave() => GetCatalogResourceByUri("c64://basic/examples/wave");
+
+    [McpServerResource(UriTemplate = "c64://basic/examples/entchen-petscii", Name = "BASIC Entchen PETSCII Demo", MimeType = "text/plain")]
+    [Description("PETSCII demo showing a character-based display.")]
+    public ResourceContents GetBasicEntchenPetscii() => GetCatalogResourceByUri("c64://basic/examples/entchen-petscii");
+
+    [McpServerResource(UriTemplate = "c64://basic/examples/games/snake", Name = "BASIC Snake Game Example", MimeType = "text/plain")]
+    [Description("Small snake game example in BASIC V2.")]
+    public ResourceContents GetBasicSnakeGame() => GetCatalogResourceByUri("c64://basic/examples/games/snake");
+
+    [McpServerResource(UriTemplate = "c64://basic/examples/games/tictactoe", Name = "BASIC Tic-Tac-Toe Game Example", MimeType = "text/plain")]
+    [Description("Two-player tic-tac-toe example in BASIC V2.")]
+    public ResourceContents GetBasicTicTacToeGame() => GetCatalogResourceByUri("c64://basic/examples/games/tictactoe");
+
+    [McpServerResource(UriTemplate = "c64://assembly/spec", Name = "6510 Assembly Specification", MimeType = "text/markdown")]
+    [Description("Overview of supported 6510 assembly syntax, addressing modes, and conventions.")]
+    public ResourceContents GetAssemblySpec() => GetCatalogResourceByUri("c64://assembly/spec");
+
+    [McpServerResource(UriTemplate = "c64://assembly/tooling-notes", Name = "6510 Assembly Tooling Notes", MimeType = "text/markdown")]
+    [Description("Notes about assembly tooling and MCP-compatible source layout.")]
+    public ResourceContents GetAssemblyToolingNotes() => GetCatalogResourceByUri("c64://assembly/tooling-notes");
+
+    [McpServerResource(UriTemplate = "c64://assembly/examples/hello-sys", Name = "MCP-Compatible 6510 Hello SYS Example", MimeType = "text/plain")]
+    [Description("Simple assembly example that boots with SYS.")]
+    public ResourceContents GetAssemblyExampleMcpHelloSys() => GetCatalogResourceByUri("c64://assembly/examples/hello-sys");
+
+    [McpServerResource(UriTemplate = "c64://assembly/examples/text-scroll", Name = "MCP-Compatible 6510 Text Scroll Example", MimeType = "text/plain")]
+    [Description("Text scrolling example for MCP-compatible assembly.")]
+    public ResourceContents GetAssemblyExampleMcpTextScroll() => GetCatalogResourceByUri("c64://assembly/examples/text-scroll");
+
+    [McpServerResource(UriTemplate = "c64://memory/map", Name = "C64 Memory Map", MimeType = "text/markdown")]
+    [Description("General memory layout for the C64.")]
+    public ResourceContents GetMemoryMap() => GetCatalogResourceByUri("c64://memory/map");
+
+    [McpServerResource(UriTemplate = "c64://memory/kernal", Name = "Kernal Memory Map", MimeType = "text/markdown")]
+    [Description("KERNAL memory layout and address overview.")]
+    public ResourceContents GetKernalMemoryMap() => GetCatalogResourceByUri("c64://memory/kernal");
+
+    [McpServerResource(UriTemplate = "c64://memory/low", Name = "Low Memory Map", MimeType = "text/markdown")]
+    [Description("Low-memory usage and reserved areas.")]
+    public ResourceContents GetLowMemoryMap() => GetCatalogResourceByUri("c64://memory/low");
+
+    [McpServerResource(UriTemplate = "c64://graphics/vic-spec", Name = "VIC-II Graphics Specification", MimeType = "text/markdown")]
+    [Description("VIC-II video chip reference covering modes, registers, and screen behavior.")]
+    public ResourceContents GetVicSpec() => GetCatalogResourceByUri("c64://graphics/vic-spec");
+
+    [McpServerResource(UriTemplate = "c64://graphics/charset", Name = "Character Set Reference", MimeType = "text/csv")]
+    [Description("Character set lookup table for C64 screen codes and glyph mapping.")]
+    public ResourceContents GetCharacterSet() => GetCatalogResourceByUri("c64://graphics/charset");
+
+    [McpServerResource(UriTemplate = "c64://graphics/petscii", Name = "PETSCII Style Guide", MimeType = "text/markdown")]
+    [Description("Guidelines for PETSCII composition, layout, and stylistic constraints.")]
+    public ResourceContents GetPetsciiGuide() => GetCatalogResourceByUri("c64://graphics/petscii");
+
+    [McpServerResource(UriTemplate = "c64://graphics/sprite-charset-best-practices", Name = "Sprite and Charset Best Practices", MimeType = "text/markdown")]
+    [Description("Practical advice for mixing sprites, charsets, and screen memory efficiently.")]
+    public ResourceContents GetSpriteCharsetBestPractices() => GetCatalogResourceByUri("c64://graphics/sprite-charset-best-practices");
+
+    [McpServerResource(UriTemplate = "c64://sound/sid-spec", Name = "SID Chip Specification", MimeType = "text/markdown")]
+    [Description("Core SID chip reference with voices, registers, and synthesis capabilities.")]
+    public ResourceContents GetSidSpec() => GetCatalogResourceByUri("c64://sound/sid-spec");
+
+    [McpServerResource(UriTemplate = "c64://sound/sid-programming", Name = "SID Programming Best Practices", MimeType = "text/markdown")]
+    [Description("Practical guidance for composing and programming stable SID playback routines.")]
+    public ResourceContents GetSidProgramming() => GetCatalogResourceByUri("c64://sound/sid-programming");
+
+    [McpServerResource(UriTemplate = "c64://sound/sid-file-structure", Name = "SID File Structure", MimeType = "text/markdown")]
+    [Description("Explains SID file layout, metadata, and loading expectations.")]
+    public ResourceContents GetSidFileStructure() => GetCatalogResourceByUri("c64://sound/sid-file-structure");
+
+    [McpServerResource(UriTemplate = "c64://sound/sidwave", Name = "SIDWAVE Format Specification", MimeType = "text/markdown")]
+    [Description("Reference for the SIDWAVE format and its expected data representation.")]
+    public ResourceContents GetSidwaveSpec() => GetCatalogResourceByUri("c64://sound/sidwave");
+
+    [McpServerResource(UriTemplate = "c64://io/cia-spec", Name = "CIA Chip Specification", MimeType = "text/markdown")]
+    [Description("CIA register and timing reference.")]
+    public ResourceContents GetCiaSpec() => GetCatalogResourceByUri("c64://io/cia-spec");
+
+    [McpServerResource(UriTemplate = "c64://io/io-spec", Name = "I/O Port Specification", MimeType = "text/markdown")]
+    [Description("I/O port behavior and usage reference.")]
+    public ResourceContents GetIoSpec() => GetCatalogResourceByUri("c64://io/io-spec");
+
+    [McpServerResource(UriTemplate = "c64://io/joystick", Name = "Joystick Control Reference", MimeType = "text/markdown")]
+    [Description("Joystick mappings and interaction guidance.")]
+    public ResourceContents GetJoystickReference() => GetCatalogResourceByUri("c64://io/joystick");
+
+    [McpServerResource(UriTemplate = "c64://io/keyboard-c64", Name = "C64 Keyboard Matrix Reference", MimeType = "text/plain")]
+    [Description("Keyboard matrix lookup table.")]
+    public ResourceContents GetKeyboardC64Reference() => GetCatalogResourceByUri("c64://io/keyboard-c64");
+
+    [McpServerResource(UriTemplate = "c64://io/control-codes-c64", Name = "C64 Control Codes Reference", MimeType = "text/plain")]
+    [Description("Control code reference for screen and text output.")]
+    public ResourceContents GetControlCodesC64Reference() => GetCatalogResourceByUri("c64://io/control-codes-c64");
+
+    [McpServerResource(UriTemplate = "c64://drive/spec", Name = "1541 Drive Specification", MimeType = "text/markdown")]
+    [Description("Reference for Commodore 1541 drive behavior, commands, and data layout.")]
+    public ResourceContents GetDriveSpec() => GetCatalogResourceByUri("c64://drive/spec");
+
+    [McpServerResource(UriTemplate = "c64://printer/commodore-spec", Name = "Commodore Printer Specification", MimeType = "text/markdown")]
+    [Description("Commodore printer reference covering control model and device-specific behavior.")]
+    public ResourceContents GetCommodorePrinterSpec() => GetCatalogResourceByUri("c64://printer/commodore-spec");
+
+    [McpServerResource(UriTemplate = "c64://printer/epson-spec", Name = "Epson Printer Specification", MimeType = "text/markdown")]
+    [Description("Epson-compatible printer reference for control sequences and output behavior.")]
+    public ResourceContents GetEpsonPrinterSpec() => GetCatalogResourceByUri("c64://printer/epson-spec");
+
+    [McpServerResource(UriTemplate = "c64://printer/spec", Name = "Printer Unified Specification", MimeType = "text/markdown")]
+    [Description("Unified printer overview bridging Commodore and Epson-oriented workflows.")]
+    public ResourceContents GetPrinterSpec() => GetCatalogResourceByUri("c64://printer/spec");
+
+    [McpServerResource(UriTemplate = "c64://printer/prompts", Name = "Printer Prompt Routing Guide", MimeType = "text/markdown")]
+    [Description("Routing guide for choosing the right printer prompt or printer-related resource.")]
+    public ResourceContents GetPrinterPromptsGuide() => GetCatalogResourceByUri("c64://printer/prompts");
+
+    [McpServerResource(UriTemplate = "c64://printer/commodore-bitmap", Name = "Commodore Bitmap Printing", MimeType = "text/markdown")]
+    [Description("Bitmap-printing guidance for Commodore printer workflows.")]
+    public ResourceContents GetCommodoreBitmapPrinterSpec() => GetCatalogResourceByUri("c64://printer/commodore-bitmap");
+
+    [McpServerResource(UriTemplate = "c64://printer/epson-bitmap", Name = "Epson Bitmap Printing", MimeType = "text/markdown")]
+    [Description("Bitmap-printing guidance for Epson-compatible printer workflows.")]
+    public ResourceContents GetEpsonBitmapPrinterSpec() => GetCatalogResourceByUri("c64://printer/epson-bitmap");
+
+    [McpServerResource(UriTemplate = "c64://api/basic-api", Name = "BASIC API Specification", MimeType = "text/markdown")]
+    [Description("API-oriented reference for BASIC-related routines, contracts, and integration points.")]
+    public ResourceContents GetBasicApiSpec() => GetCatalogResourceByUri("c64://api/basic-api");
+
+    [McpServerResource(UriTemplate = "c64://api/kernal-api", Name = "Kernal API Specification", MimeType = "text/markdown")]
+    [Description("API-oriented reference for KERNAL routines, entry points, and calling expectations.")]
+    public ResourceContents GetKernalApiSpec() => GetCatalogResourceByUri("c64://api/kernal-api");
+
+    [McpServerResource(UriTemplate = "c64://memory/symbols", Name = "C64 Memory Symbols", MimeType = "text/plain")]
+    [Description("Common C64 memory symbols and labels.")]
+    public ResourceContents GetMemorySymbols() => GetCatalogResourceByUri("c64://memory/symbols");
+
+    [McpServerResource(UriTemplate = "c64://disasm/basic-rom", Name = "C64 BASIC ROM Disassembly", MimeType = "text/plain")]
+    [Description("Disassembly listing for the C64 BASIC ROM for low-level inspection and lookup.")]
+    public ResourceContents GetBasicRomDisassembly() => GetCatalogResourceByUri("c64://disasm/basic-rom");
+
+    [McpServerResource(UriTemplate = "c64://disasm/kernal-rom", Name = "C64 KERNAL ROM Disassembly", MimeType = "text/plain")]
+    [Description("Disassembly listing for the C64 KERNAL ROM for low-level inspection and lookup.")]
+    public ResourceContents GetKernalRomDisassembly() => GetCatalogResourceByUri("c64://disasm/kernal-rom");
+
+    private ResourceContents GetCatalogResourceByUri(string uri)
     {
-        _logger.LogInformation("Fetching BASIC Hello World example");
-        var path = Path.Combine(_basePath, "basic", "examples", "video", "hello-world.bas");
-        return ReadResourceFile(path, "c64://basic/examples/hello-world");
+        if (!C64ResourceCatalog.ByUri.TryGetValue(uri, out var resource))
+        {
+            throw CreateUnknownResourceException(uri);
+        }
+
+        _logger.LogInformation("Fetching catalog resource {Uri}", uri);
+        return ReadCatalogResource(resource);
     }
 
-    [McpServerResource(
-        UriTemplate = "c64://basic/examples/joystick",
-        Name = "BASIC Joystick Input Example",
-        MimeType = "text/plain")]
-    public ResourceContents GetBasicJoystick()
+    private ResourceContents ReadCatalogResource(C64ResourceDefinition resource)
     {
-        _logger.LogInformation("Fetching BASIC joystick example");
-        var path = Path.Combine(_basePath, "basic", "examples", "io", "joystick.bas");
-        return ReadResourceFile(path, "c64://basic/examples/joystick");
-    }
+        var filePath = C64ResourceCatalog.BuildAbsolutePath(_basePath, resource);
 
-    [McpServerResource(
-        UriTemplate = "c64://basic/examples/bounce",
-        Name = "BASIC Bounce Animation",
-        MimeType = "text/plain")]
-    public ResourceContents GetBasicBounce()
-    {
-        _logger.LogInformation("Fetching BASIC bounce example");
-        var path = Path.Combine(_basePath, "basic", "examples", "video", "bounce.bas");
-        return ReadResourceFile(path, "c64://basic/examples/bounce");
-    }
+        if (!File.Exists(filePath))
+        {
+            var message = $"Resource file not found for {resource.Uri}: {filePath}";
+            _logger.LogError("{Message}", message);
+            throw new McpProtocolException(message, McpErrorCode.InternalError);
+        }
 
-    [McpServerResource(
-        UriTemplate = "c64://basic/examples/wave",
-        Name = "BASIC Wave Animation",
-        MimeType = "text/plain")]
-    public ResourceContents GetBasicWave()
-    {
-        _logger.LogInformation("Fetching BASIC wave example");
-        var path = Path.Combine(_basePath, "basic", "examples", "video", "wave.bas");
-        return ReadResourceFile(path, "c64://basic/examples/wave");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://basic/examples/entchen-petscii",
-        Name = "BASIC Entchen PETSCII Demo",
-        MimeType = "text/plain")]
-    public ResourceContents GetBasicEntchenPetscii()
-    {
-        _logger.LogInformation("Fetching BASIC entchen PETSCII example");
-        var path = Path.Combine(_basePath, "basic", "examples", "video", "entchen-petscii.bas");
-        return ReadResourceFile(path, "c64://basic/examples/entchen-petscii");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://basic/examples/games/snake",
-        Name = "BASIC Snake Game Example",
-        MimeType = "text/plain")]
-    public ResourceContents GetBasicSnakeGame()
-    {
-        _logger.LogInformation("Fetching BASIC snake game example");
-        var path = Path.Combine(_basePath, "basic", "examples", "games", "snake.bas");
-        return ReadResourceFile(path, "c64://basic/examples/games/snake");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://basic/examples/games/tictactoe",
-        Name = "BASIC Tic-Tac-Toe Game Example",
-        MimeType = "text/plain")]
-    public ResourceContents GetBasicTicTacToeGame()
-    {
-        _logger.LogInformation("Fetching BASIC tictactoe game example");
-        var path = Path.Combine(_basePath, "basic", "examples", "games", "tictactoe64_03.bas");
-        return ReadResourceFile(path, "c64://basic/examples/games/tictactoe");
-    }
-
-    // Assembly Resources
-
-    [McpServerResource(
-        UriTemplate = "c64://assembly/spec",
-        Name = "6510 Assembly Specification",
-        MimeType = "text/markdown")]
-    public ResourceContents GetAssemblySpec()
-    {
-        _logger.LogInformation("Fetching Assembly specification");
-        var path = Path.Combine(_basePath, "assembly", "assembly-spec.md");
-        return ReadResourceFile(path, "c64://assembly/spec");
-    }
-
-    // Memory Resources
-
-    [McpServerResource(
-        UriTemplate = "c64://memory/map",
-        Name = "C64 Memory Map",
-        MimeType = "text/markdown")]
-    public ResourceContents GetMemoryMap()
-    {
-        _logger.LogInformation("Fetching memory map");
-        var path = Path.Combine(_basePath, "memory", "memory-map.md");
-        return ReadResourceFile(path, "c64://memory/map");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://memory/kernal",
-        Name = "Kernal Memory Map",
-        MimeType = "text/markdown")]
-    public ResourceContents GetKernalMemoryMap()
-    {
-        _logger.LogInformation("Fetching Kernal memory map");
-        var path = Path.Combine(_basePath, "memory", "kernal-memory-map.md");
-        return ReadResourceFile(path, "c64://memory/kernal");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://memory/low",
-        Name = "Low Memory Map",
-        MimeType = "text/markdown")]
-    public ResourceContents GetLowMemoryMap()
-    {
-        _logger.LogInformation("Fetching low memory map");
-        var path = Path.Combine(_basePath, "memory", "low-memory-map.md");
-        return ReadResourceFile(path, "c64://memory/low");
-    }
-
-    // VIC-II Resources
-
-    [McpServerResource(
-        UriTemplate = "c64://graphics/vic-spec",
-        Name = "VIC-II Graphics Specification",
-        MimeType = "text/markdown")]
-    public ResourceContents GetVicSpec()
-    {
-        _logger.LogInformation("Fetching VIC specification");
-        var path = Path.Combine(_basePath, "graphics", "vic-spec.md");
-        return ReadResourceFile(path, "c64://graphics/vic-spec");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://graphics/charset",
-        Name = "Character Set Reference",
-        MimeType = "text/csv")]
-    public ResourceContents GetCharacterSet()
-    {
-        _logger.LogInformation("Fetching character set");
-        var path = Path.Combine(_basePath, "graphics", "character-set.csv");
-        return ReadResourceFile(path, "c64://graphics/charset");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://graphics/petscii",
-        Name = "PETSCII Style Guide",
-        MimeType = "text/markdown")]
-    public ResourceContents GetPetsciiGuide()
-    {
-        _logger.LogInformation("Fetching PETSCII style guide");
-        var path = Path.Combine(_basePath, "graphics", "petscii-style-guide.md");
-        return ReadResourceFile(path, "c64://graphics/petscii");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://graphics/sprite-charset-best-practices",
-        Name = "Sprite and Charset Best Practices",
-        MimeType = "text/markdown")]
-    public ResourceContents GetSpriteCharsetBestPractices()
-    {
-        _logger.LogInformation("Fetching sprite/charset best practices");
-        var path = Path.Combine(_basePath, "graphics", "sprite-charset-best-practices.md");
-        return ReadResourceFile(path, "c64://graphics/sprite-charset-best-practices");
-    }
-
-    // SID Audio Resources
-
-    [McpServerResource(
-        UriTemplate = "c64://sound/sid-spec",
-        Name = "SID Chip Specification",
-        MimeType = "text/markdown")]
-    public ResourceContents GetSidSpec()
-    {
-        _logger.LogInformation("Fetching SID specification");
-        var path = Path.Combine(_basePath, "sound", "sid-spec.md");
-        return ReadResourceFile(path, "c64://sound/sid-spec");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://sound/sid-programming",
-        Name = "SID Programming Best Practices",
-        MimeType = "text/markdown")]
-    public ResourceContents GetSidProgramming()
-    {
-        _logger.LogInformation("Fetching SID programming guide");
-        var path = Path.Combine(_basePath, "sound", "sid-programming-best-practices.md");
-        return ReadResourceFile(path, "c64://sound/sid-programming");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://sound/sid-file-structure",
-        Name = "SID File Structure",
-        MimeType = "text/markdown")]
-    public ResourceContents GetSidFileStructure()
-    {
-        _logger.LogInformation("Fetching SID file structure");
-        var path = Path.Combine(_basePath, "sound", "sid-file-structure.md");
-        return ReadResourceFile(path, "c64://sound/sid-file-structure");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://sound/sidwave",
-        Name = "SIDWAVE Format Specification",
-        MimeType = "text/markdown")]
-    public ResourceContents GetSidwaveSpec()
-    {
-        _logger.LogInformation("Fetching SIDWAVE specification");
-        var path = Path.Combine(_basePath, "sound", "sidwave.md");
-        return ReadResourceFile(path, "c64://sound/sidwave");
-    }
-
-    // I/O Resources
-
-    [McpServerResource(
-        UriTemplate = "c64://io/cia-spec",
-        Name = "CIA Chip Specification",
-        MimeType = "text/markdown")]
-    public ResourceContents GetCiaSpec()
-    {
-        _logger.LogInformation("Fetching CIA specification");
-        var path = Path.Combine(_basePath, "io", "cia-spec.md");
-        return ReadResourceFile(path, "c64://io/cia-spec");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://io/io-spec",
-        Name = "I/O Port Specification",
-        MimeType = "text/markdown")]
-    public ResourceContents GetIoSpec()
-    {
-        _logger.LogInformation("Fetching I/O specification");
-        var path = Path.Combine(_basePath, "io", "io-spec.md");
-        return ReadResourceFile(path, "c64://io/io-spec");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://io/joystick",
-        Name = "Joystick Control Reference",
-        MimeType = "text/markdown")]
-    public ResourceContents GetJoystickReference()
-    {
-        _logger.LogInformation("Fetching joystick reference");
-        var path = Path.Combine(_basePath, "io", "joystick.md");
-        return ReadResourceFile(path, "c64://io/joystick");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://io/keyboard-c64",
-        Name = "C64 Keyboard Matrix Reference",
-        MimeType = "text/plain")]
-    public ResourceContents GetKeyboardC64Reference()
-    {
-        _logger.LogInformation("Fetching C64 keyboard matrix reference");
-        var path = Path.Combine(_basePath, "io", "keyboard-c64.txt");
-        return ReadResourceFile(path, "c64://io/keyboard-c64");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://io/control-codes-c64",
-        Name = "C64 Control Codes Reference",
-        MimeType = "text/plain")]
-    public ResourceContents GetControlCodesC64Reference()
-    {
-        _logger.LogInformation("Fetching C64 control codes reference");
-        var path = Path.Combine(_basePath, "io", "control-codes-c64.txt");
-        return ReadResourceFile(path, "c64://io/control-codes-c64");
-    }
-
-    // Drive Resources
-
-    [McpServerResource(
-        UriTemplate = "c64://drive/spec",
-        Name = "1541 Drive Specification",
-        MimeType = "text/markdown")]
-    public ResourceContents GetDriveSpec()
-    {
-        _logger.LogInformation("Fetching drive specification");
-        var path = Path.Combine(_basePath, "drive", "drive-spec.md");
-        return ReadResourceFile(path, "c64://drive/spec");
-    }
-
-    // Printer Resources
-
-    [McpServerResource(
-        UriTemplate = "c64://printer/commodore-spec",
-        Name = "Commodore Printer Specification",
-        MimeType = "text/markdown")]
-    public ResourceContents GetCommodorePrinterSpec()
-    {
-        _logger.LogInformation("Fetching Commodore printer specification");
-        var path = Path.Combine(_basePath, "printer", "printer-commodore.md");
-        return ReadResourceFile(path, "c64://printer/commodore-spec");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://printer/epson-spec",
-        Name = "Epson Printer Specification",
-        MimeType = "text/markdown")]
-    public ResourceContents GetEpsonPrinterSpec()
-    {
-        _logger.LogInformation("Fetching Epson printer specification");
-        var path = Path.Combine(_basePath, "printer", "printer-epson.md");
-        return ReadResourceFile(path, "c64://printer/epson-spec");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://printer/spec",
-        Name = "Printer Unified Specification",
-        MimeType = "text/markdown")]
-    public ResourceContents GetPrinterSpec()
-    {
-        _logger.LogInformation("Fetching printer unified specification");
-        var path = Path.Combine(_basePath, "printer", "printer-spec.md");
-        return ReadResourceFile(path, "c64://printer/spec");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://printer/prompts",
-        Name = "Printer Prompt Routing Guide",
-        MimeType = "text/markdown")]
-    public ResourceContents GetPrinterPromptsGuide()
-    {
-        _logger.LogInformation("Fetching printer prompts routing guide");
-        var path = Path.Combine(_basePath, "printer", "printer-prompts.md");
-        return ReadResourceFile(path, "c64://printer/prompts");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://printer/commodore-bitmap",
-        Name = "Commodore Bitmap Printing",
-        MimeType = "text/markdown")]
-    public ResourceContents GetCommodoreBitmapPrinterSpec()
-    {
-        _logger.LogInformation("Fetching Commodore bitmap printer guide");
-        var path = Path.Combine(_basePath, "printer", "printer-commodore-bitmap.md");
-        return ReadResourceFile(path, "c64://printer/commodore-bitmap");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://printer/epson-bitmap",
-        Name = "Epson Bitmap Printing",
-        MimeType = "text/markdown")]
-    public ResourceContents GetEpsonBitmapPrinterSpec()
-    {
-        _logger.LogInformation("Fetching Epson bitmap printer guide");
-        var path = Path.Combine(_basePath, "printer", "printer-epson-bitmap.md");
-        return ReadResourceFile(path, "c64://printer/epson-bitmap");
-    }
-
-    // API Resources
-
-    [McpServerResource(
-        UriTemplate = "c64://api/basic-api",
-        Name = "BASIC API Specification",
-        MimeType = "text/markdown")]
-    public ResourceContents GetBasicApiSpec()
-    {
-        _logger.LogInformation("Fetching BASIC API specification");
-        var path = Path.Combine(_basePath, "api", "basic-api-spec.md");
-        return ReadResourceFile(path, "c64://api/basic-api");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://api/kernal-api",
-        Name = "Kernal API Specification",
-        MimeType = "text/markdown")]
-    public ResourceContents GetKernalApiSpec()
-    {
-        _logger.LogInformation("Fetching Kernal API specification");
-        var path = Path.Combine(_basePath, "api", "kernal-api-spec.md");
-        return ReadResourceFile(path, "c64://api/kernal-api");
-    }
-
-    // c64ref-based Resources
-
-    [McpServerResource(
-        UriTemplate = "c64://memory/symbols",
-        Name = "C64 Memory Symbols",
-        MimeType = "text/plain")]
-    public ResourceContents GetMemorySymbols()
-    {
-        _logger.LogInformation("Fetching C64 memory symbols");
-        var path = Path.Combine(_basePath, "memory", "symbols.txt");
-        return ReadResourceFile(path, "c64://memory/symbols");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://disasm/basic-rom",
-        Name = "C64 BASIC ROM Disassembly",
-        MimeType = "text/plain")]
-    public ResourceContents GetBasicRomDisassembly()
-    {
-        _logger.LogInformation("Fetching BASIC ROM disassembly");
-        var path = Path.Combine(_basePath, "disasm", "basic-rom.txt");
-        return ReadResourceFile(path, "c64://disasm/basic-rom");
-    }
-
-    [McpServerResource(
-        UriTemplate = "c64://disasm/kernal-rom",
-        Name = "C64 KERNAL ROM Disassembly",
-        MimeType = "text/plain")]
-    public ResourceContents GetKernalRomDisassembly()
-    {
-        _logger.LogInformation("Fetching KERNAL ROM disassembly");
-        var path = Path.Combine(_basePath, "disasm", "kernal-rom.txt");
-        return ReadResourceFile(path, "c64://disasm/kernal-rom");
-    }
-
-    // Helper methods
-
-    private ResourceContents ReadResourceFile(string filePath, string uri)
-    {
         try
         {
-            if (!File.Exists(filePath))
-            {
-                _logger.LogWarning($"Resource file not found: {filePath}");
-                return new TextResourceContents
-                {
-                    Uri = uri,
-                    Text = $"Resource not found: {filePath}",
-                    MimeType = "text/plain"
-                };
-            }
-
             var content = File.ReadAllText(filePath, Encoding.UTF8);
-            var mimeType = GetMimeTypeFromPath(filePath);
 
-            return mimeType switch
+            return new TextResourceContents
             {
-                "text/plain" or "text/markdown" or "text/csv" => new TextResourceContents
-                {
-                    Uri = uri,
-                    Text = content,
-                    MimeType = mimeType
-                },
-                "application/json" => new TextResourceContents
-                {
-                    Uri = uri,
-                    Text = content,
-                    MimeType = mimeType
-                },
-                _ => new TextResourceContents
-                {
-                    Uri = uri,
-                    Text = content,
-                    MimeType = "text/plain"
-                }
+                Uri = resource.Uri,
+                Text = content,
+                MimeType = resource.MimeType
             };
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error reading resource file: {filePath}");
-            return new TextResourceContents
-            {
-                Uri = uri,
-                Text = $"Error reading resource: {ex.Message}",
-                MimeType = "text/plain"
-            };
+            _logger.LogError(ex, "Error reading resource file {FilePath} for {Uri}", filePath, resource.Uri);
+            throw new McpProtocolException($"Failed to read resource {resource.Uri}: {ex.Message}", McpErrorCode.InternalError);
         }
     }
 
-    private string GetMimeTypeFromPath(string filePath)
+    private static McpProtocolException CreateUnknownResourceException(string uri)
     {
-        var extension = Path.GetExtension(filePath).ToLowerInvariant();
-        return extension switch
-        {
-            ".md" => "text/markdown",
-            ".txt" => "text/plain",
-            ".bas" => "text/plain",
-            ".csv" => "text/csv",
-            ".json" => "application/json",
-            _ => "text/plain"
-        };
+        return new McpProtocolException($"Unknown C64 resource: {uri}", McpErrorCode.InvalidParams);
     }
 }

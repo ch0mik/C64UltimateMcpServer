@@ -1,3 +1,13 @@
+---
+type: Reference
+title: Commodore Printer Specification
+description: Commodore printer command reference.
+resource: c64://printer/commodore-spec
+tags:
+- printer
+- reference
+---
+
 # Commodore MPS Printing (Text) — PETSCII + MPS Protocol
 
 **Device:** `4`  | **Secondary address (sa):** `0`=upper/graphics (default), `7`=lower/upper.  
@@ -26,3 +36,4 @@
 ```
 
 **See also:** `printer-commodore-bitmap.md` for images and repetition (`CHR$(26)`), and `printer-spec.md` for routing & differences.
+

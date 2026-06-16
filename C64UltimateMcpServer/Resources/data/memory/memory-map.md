@@ -1,3 +1,13 @@
+---
+type: Reference
+title: C64 Memory Map
+description: General memory layout for the C64.
+resource: c64://memory/map
+tags:
+- memory
+- reference
+---
+
 # C64 Memory Map (Quick Reference)
 
 All addresses are shown as `hex` / `dec`. Group related entries to minimise token usage while keeping lookup simple.
@@ -184,3 +194,4 @@ All addresses are shown as `hex` / `dec`. Group related entries to minimise toke
 ---
 
 This layout keeps the essential Commodore 64 addresses compact for LLM consumption while retaining full coverage of the supplied map.
+

@@ -1,3 +1,14 @@
+---
+type: Reference
+title: Commodore 64 BASIC V2 Specification
+description: Reference for Commodore BASIC V2 syntax, memory layout, and runtime behavior.
+resource: c64://basic/spec
+tags:
+- basic
+- reference
+- c64
+---
+
 # Commodore 64 BASIC V2 Specification
 
 ## 1. Overview

@@ -1,3 +1,13 @@
+---
+type: Reference
+title: Epson Bitmap Printing
+description: Bitmap printing guidance for Epson printers.
+resource: c64://printer/epson-bitmap
+tags:
+- printer
+- guidance
+---
+
 # Epson FX-80 (ESC/P) — Bitmap Graphics
 
 **Data model:** 1 byte per **column**, **8 dots** (MSB=top). Send graphics command + **byte count** `(n + 256*m)` then data. Set line spacing for 8‑dot rows, e.g., `ESC A 8`.
@@ -27,3 +37,4 @@
 ```
 
 **Cross‑ref:** Text controls `printer-epson.md`; overview `printer-spec.md`.
+

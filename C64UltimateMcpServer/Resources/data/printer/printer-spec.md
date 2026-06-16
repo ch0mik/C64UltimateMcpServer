@@ -1,3 +1,13 @@
+---
+type: Reference
+title: Printer Unified Specification
+description: Unified printer guidance across supported devices.
+resource: c64://printer/spec
+tags:
+- printer
+- reference
+---
+
 # Printing with Commodore MPS and Epson FX
 
 **Scope:** C64 → Printer via serial device **4**. Two protocols:
@@ -178,3 +188,4 @@ msg: .byte 27,"E",'H','E','L','L','O',27,"F"
 
 - **C64 Ultimate Printer Emulation:** supports both PETSCII (MPS) and ESC/P (Epson).  
   Ignores advanced DLL commands; `ESC Y` behaves like `ESC L`. Prefer FF (12) for eject.
+

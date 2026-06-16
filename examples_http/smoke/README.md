@@ -1,13 +1,21 @@
-# Smoke Test Set
+# Smoke Scenarios
 
-Use these first after server start. They are non-destructive.
+Run these first after `docker compose up --build`.
 
-Recommended order:
+Order:
 
-1. `../mcp_initialize.http`
-2. `../mcp_list_tools.http`
-3. `../mcp_prompts_list.http`
-4. `../mcp_resources_list.http`
-5. `../mcp_get_version.http`
-6. `../mcp_get_connection.http`
-7. `../mcp_get_drives.http`
+1. `01_mcp_initialize.http`
+2. `02_mcp_tools_list.http`
+3. `03_mcp_prompts_list.http`
+4. `04_mcp_prompts_get.http`
+5. `05_mcp_resources_list.http`
+6. `06_mcp_resources_read.http`
+7. `07_ultimate_version.http`
+8. `08_ultimate_connection.http`
+9. `09_ultimate_drives.http`
+
+Notes:
+
+- Every file is self-contained and performs its own MCP handshake.
+- These requests are non-destructive and are safe as the default manual verification set.
+- If the Ultimate device is offline, only the first six MCP-only files are expected to pass.

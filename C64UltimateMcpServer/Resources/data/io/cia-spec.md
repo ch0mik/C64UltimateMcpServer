@@ -1,3 +1,13 @@
+---
+type: Reference
+title: CIA Chip Specification
+description: CIA register and timing reference.
+resource: c64://io/cia-spec
+tags:
+- io
+- reference
+---
+
 # Commodore 64 CIA Specification
 
 > Purpose: Single source of truth for CIA hardware on the C64 (LLM/MCP).  

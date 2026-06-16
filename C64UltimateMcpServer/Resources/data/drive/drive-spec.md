@@ -1,3 +1,13 @@
+---
+type: Reference
+title: 1541 Drive Specification
+description: 1541 drive commands and behavior reference.
+resource: c64://drive/spec
+tags:
+- drive
+- reference
+---
+
 # Commodore Disk Drives — 1541, 1571, 1581
 
 **Scope:** Commodore floppy drives used with the C64/C128 via the IEC serial bus.  
@@ -213,3 +223,4 @@ Supports subdirectories and partitions. Compatible with C64 and 
 ---
 
 **Cross‑Refs:** [`io/cia-spec.md`](../io/cia-spec.md) · [`printer/printer-spec.md`](../printer/printer-spec.md)
+

@@ -1,0 +1,53 @@
+@host = http://localhost:8080
+
+### 01. MCP initialize
+# @name init
+POST {{host}}/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2025-11-05",
+    "capabilities": {},
+    "clientInfo": {
+      "name": "http-e2e-client",
+      "version": "1.0.0"
+    }
+  }
+}
+
+###
+### 02. MCP initialized notification
+POST {{host}}/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+Mcp-Session-Id: {{init.response.headers.Mcp-Session-Id}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "notifications/initialized"
+}
+
+###
+### 03. Generate a BASIC PRG
+# Result includes `prgDataBase64` for follow-up execution.
+POST {{host}}/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+Mcp-Session-Id: {{init.response.headers.Mcp-Session-Id}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 20,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_generate_basic_prg",
+    "arguments": {
+      "basicSource": "10 PRINT \"HELLO FROM SAFE E2E\"\n20 FOR I=1 TO 10\n30 PRINT I\n40 NEXT I\n50 GOTO 10"
+    }
+  }
+}

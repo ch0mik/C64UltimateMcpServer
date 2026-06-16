@@ -4,7 +4,7 @@
 
 > ⚙️ **This project was built 100% using AI Agent prompts** - Every line of code, configuration, and documentation was generated through conversational prompts to GitHub Copilot Agent.
 
-Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ultimate** device with **45+ tools** (45 device operations), **14 MCP prompts**, and **38 embedded documentation resources**. Built in C# with enterprise-grade architecture, type safety, and comprehensive API coverage.
+Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ultimate** device with **46 MCP tools**, **15 MCP prompts**, and **41 embedded documentation resources**. Built in C# with enterprise-grade architecture, type safety, and comprehensive API coverage.
 
 **License:** MIT License (see [LICENSE](LICENSE) file)
 
@@ -14,13 +14,13 @@ Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ult
 
 ## ⚡ Key Features
 
-- **Complete Ultimate 64 API Support**: All 45+ tools from the 1541U REST API
-- **MCP Prompts Support**: 14 prompt templates exposed through `prompts/list` and `prompts/get`
+- **Complete Ultimate 64 API Support**: 46 MCP tools covering the Ultimate REST API plus PRG generation workflows
+- **MCP Prompts Support**: 15 prompt templates exposed through `prompts/list` and `prompts/get`
 - **BASIC to PRG Compilation**: Real-time compilation of BASIC V2 source code to executable PRG files
-- **MCP Resources**: 38 embedded documentation resources (BASIC specs, Assembly guides, Kernal API, memory maps, graphics, sound, I/O, drive, printer, keyboard/control codes, disassembly)
+- **MCP Resources**: 41 embedded documentation resources (BASIC specs, Assembly guides, Kernal API, memory maps, graphics, sound, I/O, drive, printer, keyboard/control codes, disassembly)
 - **Separated Client Library**: Reusable `C64UltimateClient` NuGet package with clean async API
 - **Clean Architecture**: Client → Service → MCP wrapper pattern with proper DI
-- **HTTP/SSE Transport**: Remote multi-client support with session management
+- **Streamable HTTP Transport**: Remote multi-client support with session-aware MCP interactions
 - **Streaming Support**: Video, audio, and debug streaming capabilities
 - **Binary File Support**: Upload PRG files via base64, file path, or URL
 - **ASP.NET Core 8.0/10.0**: Modern, high-performance web framework
@@ -169,7 +169,7 @@ Ask Cody: List all available config categories
 /c64 load program
 ```
 
-## 🛠️ Tools (45 Total)
+## 🛠️ Tools (46 Total)
 
 ### Machine Control (5)
 - **ultimate_reset_machine** - Soft reset C64 (preserves configuration)
@@ -178,8 +178,9 @@ Ask Cody: List all available config categories
 - **ultimate_resume_machine** - Resume machine execution
 - **ultimate_power_off** - Power off C64
 
-### Program Management (6)
+### Program Management (7)
 - **ultimate_generate_basic_prg** - Generate PRG from BASIC source code with token conversion
+- **ultimate_generate_assembly_prg** - Generate PRG from 6510 assembly source code
 - **ultimate_load_program** - Load PRG program from filesystem
 - **ultimate_run_program** - Load and execute PRG from disk
 - **ultimate_run_prg_binary** - Execute program from binary data, URL or file
@@ -238,15 +239,28 @@ Note: `ultimate_save_config` and `ultimate_reset_config` are also available for 
 ### System Information (1)
 - **ultimate_version** - Get C64 Ultimate API version
 
-## 💬 Prompts (14 Total)
+## 💬 Prompts (15 Total)
 
-- **c64_basic_program_prompt** - Prompt template for generating C64 BASIC V2 programs
-- **c64_sid_music_prompt** - Prompt template for SID composition guidance
+- **basic-program** - BASIC program workflow prompt
+- **assembly-program** - Assembly workflow prompt
+- **assembly-prg-build** - Assembly-to-PRG build workflow prompt
+- **sid-music** - SID composition workflow prompt
+- **graphics-demo** - VIC-II graphics demo workflow prompt
+- **printer-job** - Printer workflow prompt
+- **memory-debug** - Memory inspection / patch workflow prompt
+- **drive-manager** - Drive management workflow prompt
+- **game-loop-basic** - BASIC game loop workflow prompt
+- **petscii-ui-layout** - PETSCII UI layout workflow prompt
+- **keyboard-input-c64** - Keyboard input workflow prompt
+- **sprite-marker-workflow** - Sprite marker workflow prompt
+- **sid-sfx-basic** - SID SFX workflow prompt
+- **c64_basic_program_prompt** - Legacy BASIC prompt template exposed as an MCP prompt
+- **c64_sid_music_prompt** - Legacy SID prompt template exposed as an MCP prompt
 
 Important: prompts are MCP prompts, not tools.  
 Use `prompts/list` and `prompts/get` for prompts, and `tools/call` only for tools.
 
-## �️ Summary (45 Total Tools)
+## Summary (46 Total Tools)
 
 - **Machine Control**: 5 tools
 - **Program Management**: 6 tools
@@ -260,21 +274,26 @@ Use `prompts/list` and `prompts/get` for prompts, and `tools/call` only for tool
 - **Connection Management**: 2 tools
 - **System Information**: 1 tool
 
-## �📚 Resources (38 Total)
+## 📚 Resources (41 Total)
 
 Embedded documentation accessible via MCP Inspector at `http://localhost:8000`:
 
-### BASIC Resources (7)
+### BASIC Resources (9)
 - **c64://basic/spec** - BASIC V2 Language Specification
 - **c64://basic/pitfalls** - BASIC Pitfalls and Common Gotchas
 - **c64://basic/examples/hello-world** - Hello World Example
 - **c64://basic/examples/joystick** - Joystick Input Example
 - **c64://basic/examples/bounce** - Bounce Animation Example
 - **c64://basic/examples/wave** - Wave Animation Example
-- **c64://basic/api** - BASIC Callable API Reference
+- **c64://basic/examples/entchen-petscii** - PETSCII example
+- **c64://basic/examples/games/snake** - Snake example
+- **c64://basic/examples/games/tictactoe** - Tic-tac-toe example
 
-### Assembly Resources (1)
+### Assembly Resources (4)
 - **c64://assembly/spec** - 6510 Assembly Language Specification
+- **c64://assembly/tooling-notes** - 6510 Assembly Tooling Notes for MCP compiler subset
+- **c64://assembly/examples/hello-sys** - Minimal SYS-start assembly example
+- **c64://assembly/examples/text-scroll** - VIC-II text scroller (softscroll + hardscroll) example
 
 ### Memory Resources (3)
 - **c64://memory/map** - C64 Memory Map (0x0000-0xFFFF)
@@ -282,20 +301,23 @@ Embedded documentation accessible via MCP Inspector at `http://localhost:8000`:
 - **c64://memory/low** - Low Memory Map (0x0000-0x03FF)
 
 ### Graphics Resources (4)
-- **c64://graphics/vic** - VIC-II Chip Specification
-- **c64://graphics/charset** - Character Set Reference (ASCII/PETSCII)
-- **c64://graphics/color-palette** - C64 16-Color Palette Reference
-- **c64://graphics/style-guide** - Graphics Programming Style Guide
+- **c64://graphics/vic-spec** - VIC-II Chip Specification
+- **c64://graphics/charset** - Character Set Reference
+- **c64://graphics/petscii** - PETSCII style guide
+- **c64://graphics/sprite-charset-best-practices** - Sprite/charset guidance
 
 ### Sound Resources (4)
-- **c64://sound/sid** - SID Chip (6581/8580) Specification
-- **c64://sound/programming** - SID Programming Guide
-- **c64://sound/file-format** - SID File Format Documentation
-- **c64://sound/effects** - Sound Effects Programming Tips
+- **c64://sound/sid-spec** - SID Chip specification
+- **c64://sound/sid-programming** - SID programming guide
+- **c64://sound/sid-file-structure** - SID file format documentation
+- **c64://sound/sidwave** - SIDWAVE format reference
 
-### I/O Resources (2)
-- **c64://io/cia** - CIA Chip Specification
-- **c64://io/spec** - I/O Port Specification
+### I/O Resources (5)
+- **c64://io/cia-spec** - CIA Chip specification
+- **c64://io/io-spec** - I/O Port specification
+- **c64://io/joystick** - Joystick reference
+- **c64://io/keyboard-c64** - Keyboard matrix reference
+- **c64://io/control-codes-c64** - Control code reference
 
 ### Drive Resources (1)
 - **c64://drive/spec** - 1541/1571/1581 Disk Drive Specification
@@ -303,14 +325,17 @@ Embedded documentation accessible via MCP Inspector at `http://localhost:8000`:
 ### Printer Resources (6)
 - **c64://printer/commodore-spec** - Commodore Printer Specification
 - **c64://printer/epson-spec** - Epson Printer Specification
-- **c64://printer/commodore-bitmap** - Commodore Printer Bitmap Font
-- **c64://printer/epson-bitmap** - Epson Printer Bitmap Font
-- **c64://printer/graphics-mode** - Graphics Mode Programming Guide
-- **c64://printer/troubleshooting** - Printer Troubleshooting Guide
+- **c64://printer/spec** - Unified printer guide
+- **c64://printer/prompts** - Printer prompt routing guide
+- **c64://printer/commodore-bitmap** - Commodore bitmap printing
+- **c64://printer/epson-bitmap** - Epson bitmap printing
 
-### API Resources (2)
-- **c64://api/basic** - BASIC V2 Callable API Reference
-- **c64://api/kernal** - Kernal Callable API Reference (23 routines)
+### API / Reference Resources (5)
+- **c64://api/basic-api** - BASIC callable API reference
+- **c64://api/kernal-api** - Kernal callable API reference
+- **c64://memory/symbols** - Common memory symbols
+- **c64://disasm/basic-rom** - BASIC ROM disassembly extract
+- **c64://disasm/kernal-rom** - KERNAL ROM disassembly extract
 
 **Access Resources via MCP Inspector:**
 1. Open http://localhost:8000 (MCP Inspector)
@@ -322,9 +347,9 @@ Embedded documentation accessible via MCP Inspector at `http://localhost:8000`:
 
 ### HTTP/cURL
 
-All HTTP examples are available in `examples_http/` folder. Key examples:
+HTTP examples are available in `examples_http/` and are grouped by intent. Key examples:
 
-**Reboot Device** - See [mcp_reboot_device.http](examples_http/mcp_reboot_device.http):
+**Reboot Device** - See [91_machine_reboot_device.http](examples_http/dangerous/91_machine_reboot_device.http):
 ```bash
 curl -X POST http://localhost:8080/ \
   -H "Content-Type: application/json" \
@@ -340,13 +365,17 @@ curl -X POST http://localhost:8080/ \
   }'
 ```
 
-**Mount Disk** - See [mcp_mount_disk.http](examples_http/mcp_mount_disk.http)
+**Initialize MCP session** - See [01_mcp_initialize.http](examples_http/smoke/01_mcp_initialize.http)
 
-**Run PRG Binary** - See [TEST_RUN_PRG_BINARY.http](examples_http/TEST_RUN_PRG_BINARY.http)
+**Run PRG Binary** - See [12_tools_run_prg_binary.http](examples_http/e2e/12_tools_run_prg_binary.http)
 
-**Play SID File** - See [TEST_PLAY_SID_BINARY.http](examples_http/TEST_PLAY_SID_BINARY.http)
+**Play SID File** - See [13_tools_play_sid_binary.http](examples_http/e2e/13_tools_play_sid_binary.http)
 
-All 45+ tools have corresponding `.http` files in `examples_http/` for testing
+**Generate Assembly PRG** - See [11_tools_generate_assembly_prg.http](examples_http/e2e/11_tools_generate_assembly_prg.http)
+
+**Generate BASIC PRG** - See [10_tools_generate_basic_prg.http](examples_http/e2e/10_tools_generate_basic_prg.http)
+
+HTTP examples are organized into `examples_http/smoke`, `examples_http/e2e`, and `examples_http/dangerous`.
 
 **List Prompts**:
 ```bash
@@ -388,20 +417,20 @@ curl -X POST http://localhost:8080/ \
 @C64 Reset the C64 and show machine info
 ```
 
-**BASIC Program Example** - See [mcp_generate_basic_prg.http](examples_http/mcp_generate_basic_prg.http) to compile BASIC source code directly to executable PRG files and create your own BASIC PRG binaries.
+**BASIC Program Example** - See [10_tools_generate_basic_prg.http](examples_http/e2e/10_tools_generate_basic_prg.http) to compile BASIC source code directly to executable PRG files and create your own BASIC PRG binaries.
 
 ## 🧪 Testing
 
-See `examples_http/` folder for complete test examples:
+See `examples_http/` for complete smoke/e2e/manual examples:
 
 **Test Basic Connection**:
 ```bash
-# HTTP files: test_basic_connection.http
+# HTTP files: examples_http/smoke/01_mcp_initialize.http and related smoke scenarios
 curl http://localhost:8080/health
 # Response: "C64 Ultimate MCP Server is running"
 ```
 
-**List Tools** - See [mcp_list_tools.http](examples_http/mcp_list_tools.http)
+**List Tools** - See [02_mcp_tools_list.http](examples_http/smoke/02_mcp_tools_list.http)
   
 **List Prompts**:
 ```bash
@@ -411,13 +440,19 @@ curl -X POST http://localhost:8080/ \
   -d '{"jsonrpc":"2.0","id":7,"method":"prompts/list","params":{}}'
 ```
 
-**Get Version** - See [mcp_get_version.http](examples_http/mcp_get_version.http)
+**Get Version** - See [07_ultimate_version.http](examples_http/smoke/07_ultimate_version.http)
 
-**Test SID Binary Upload** - See [TEST_PLAY_SID_BINARY.http](examples_http/TEST_PLAY_SID_BINARY.http)
+**Test SID Binary Upload** - See [13_tools_play_sid_binary.http](examples_http/e2e/13_tools_play_sid_binary.http)
 
-**Test PRG Binary Upload** - See [TEST_RUN_PRG_BINARY.http](examples_http/TEST_RUN_PRG_BINARY.http)
+**Test PRG Binary Upload** - See [12_tools_run_prg_binary.http](examples_http/e2e/12_tools_run_prg_binary.http)
 
-All files in `examples_http/mcp_*.http` correspond to available tools.
+Use `examples_http/smoke` for non-destructive verification, `examples_http/e2e` for safe manual flows, and `examples_http/dangerous` only for explicit state-changing operations.
+
+When a tool reaches the Ultimate device and the device/API is unavailable, the server returns a valid MCP `tools/call` result with `isError: true` and machine-readable `structuredContent` instead of a protocol error. This keeps transport-level success (`HTTP 200`) while exposing execution failures to AI agents for self-correction.
+
+If `Ultimate__BaseUrl` is unreachable, expect this split in manual E2E:
+- PRG generation tools (`ultimate_generate_basic_prg`, `ultimate_generate_assembly_prg`) still succeed locally.
+- Device-bound tools (`ultimate_run_prg_binary`, `ultimate_play_sid_binary`, disk image creation, config/machine/drive actions) return tool errors such as `Connection refused (...)` with `isError: true`.
 
 ## 🐳 Docker Deployment
 
@@ -435,6 +470,8 @@ It automatically connects to the MCP server and displays all available tools wit
 docker compose up --build
 ```
 Builds the image locally and starts both MCP server and inspector.
+
+This workflow has been validated locally. If image build previously failed on transient NuGet traffic, retrying `docker compose up -d --build` should now use the hardened restore flow from the Dockerfile.
 
 **Access:**
 - **MCP Server**: http://localhost:8080 - Main MCP Server endpoint
@@ -522,7 +559,7 @@ networks:
 │         AI Agents                           │
 │  (Continue/Copilot/Cody/Cursor)             │
 └──────────────────┬──────────────────────────┘
-                   │ HTTP/SSE
+                   │ Streamable HTTP
 ┌──────────────────▼──────────────────────────┐
 │      MCP Server (localhost:8080)            │
 │  - HTTP Transport Layer                     │
@@ -544,9 +581,9 @@ networks:
 
 - ✅ 45 production tools implemented for C64 Ultimate operations
 - ✅ 14 MCP prompts implemented
-- ✅ 38 embedded documentation resources
+- ✅ 41 embedded documentation resources
 - ✅ BASIC to PRG on-the-fly compilation
-- ✅ HTTP/SSE transport
+- ✅ Streamable HTTP transport
 - ✅ Agent integration (Continue, Copilot, Cody, Cursor)
 - ✅ Docker containerization with MCP Inspector
 - ✅ Zero errors/warnings
@@ -594,7 +631,7 @@ MIT
 
 > ⚙️ **Ten projekt został stworzony 100% za pomocą promptów do Agenta AI** - Każda linia kodu, konfiguracji i dokumentacji została wygenerowana poprzez konwersacyjne prompty do GitHub Copilot Agent.
 
-Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 64 Ultimate** z **45+ narzędziami** (45 operacji device), **14 promptami MCP** i **38 zasobami dokumentacyjnymi**. Zbudowany w C# z architekturą klasy enterprise, bezpieczeństwem typów i kompleksowym pokryciem API.
+Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 64 Ultimate** z **46 narzędziami MCP**, **15 promptami MCP** i **41 zasobami dokumentacyjnymi**. Zbudowany w C# z architekturą klasy enterprise, bezpieczeństwem typów i kompleksowym pokryciem API.
 
 ## 🎥 Wideo Demo
 
@@ -656,8 +693,9 @@ Ultimate__BaseUrl=http://192.168.0.120
 - **ultimate_resume_machine** - Wznowienie pracy maszyny
 - **ultimate_power_off** - Wyłączenie C64
 
-### Zarządzanie Programami (6)
+### Zarządzanie Programami (7)
 - **ultimate_generate_basic_prg** - Generowanie PRG z kodu BASIC z konwersją do tokenów
+- **ultimate_generate_assembly_prg** - Generowanie PRG z kodu asemblera 6510
 - **ultimate_load_program** - Ładowanie programu PRG z systemu plików
 - **ultimate_run_program** - Uruchomienie programu PRG z dysku
 - **ultimate_run_prg_binary** - Uruchomienie programu z danych binarnych, URL lub pliku
@@ -724,21 +762,26 @@ Uwaga: `ultimate_save_config` i `ultimate_reset_config` są również dostępne 
 Ważne: prompty MCP to nie narzędzia.  
 Używaj `prompts/list` i `prompts/get` dla promptów oraz `tools/call` wyłącznie dla narzędzi.
 
-## 📚 Zasoby (38 razem)
+## 📚 Zasoby (41 razem)
 
 Wbudowana dokumentacja dostępna w MCP Inspector pod adresem `http://localhost:8000`:
 
-### Zasoby BASIC (7)
+### Zasoby BASIC (9)
 - **c64://basic/spec** - Specyfikacja języka BASIC V2
 - **c64://basic/pitfalls** - Typowe błędy i pułapki w BASIC
 - **c64://basic/examples/hello-world** - Przykład Hello World
 - **c64://basic/examples/joystick** - Przykład obsługi joysticka
 - **c64://basic/examples/bounce** - Przykład animacji odbijającej się piłki
 - **c64://basic/examples/wave** - Przykład animacji fali
-- **c64://basic/api** - Referencja API BASIC
+- **c64://basic/examples/entchen-petscii** - Przykład PETSCII
+- **c64://basic/examples/games/snake** - Przykład Snake
+- **c64://basic/examples/games/tictactoe** - Przykład kółko i krzyżyk
 
-### Zasoby Asemblera (1)
+### Zasoby Asemblera (4)
 - **c64://assembly/spec** - Specyfikacja języka asemblera 6510
+- **c64://assembly/tooling-notes** - Notatki narzędziowe dla kompilatora MCP 6510
+- **c64://assembly/examples/hello-sys** - Minimalny przykład assemblera uruchamiany przez SYS
+- **c64://assembly/examples/text-scroll** - Przykład scrollera tekstu VIC-II (softscroll + hardscroll)
 
 ### Zasoby Pamięci (3)
 - **c64://memory/map** - Mapa pamięci C64 (0x0000-0xFFFF)
@@ -746,20 +789,23 @@ Wbudowana dokumentacja dostępna w MCP Inspector pod adresem `http://localhost:8
 - **c64://memory/low** - Mapa pamięci niskiej (0x0000-0x03FF)
 
 ### Zasoby Grafiki (4)
-- **c64://graphics/vic** - Specyfikacja układu VIC-II
-- **c64://graphics/charset** - Referencja zestawu znaków (ASCII/PETSCII)
-- **c64://graphics/color-palette** - Paleta 16 kolorów C64
-- **c64://graphics/style-guide** - Przewodnik stylu programowania grafiki
+- **c64://graphics/vic-spec** - Specyfikacja układu VIC-II
+- **c64://graphics/charset** - Referencja zestawu znaków
+- **c64://graphics/petscii** - Przewodnik stylu PETSCII
+- **c64://graphics/sprite-charset-best-practices** - Dobre praktyki sprite/charset
 
 ### Zasoby Dźwięku (4)
-- **c64://sound/sid** - Specyfikacja układu SID (6581/8580)
-- **c64://sound/programming** - Przewodnik programowania SID
-- **c64://sound/file-format** - Dokumentacja formatu pliku SID
-- **c64://sound/effects** - Wskazówki do programowania efektów dźwiękowych
+- **c64://sound/sid-spec** - Specyfikacja układu SID
+- **c64://sound/sid-programming** - Przewodnik programowania SID
+- **c64://sound/sid-file-structure** - Dokumentacja formatu pliku SID
+- **c64://sound/sidwave** - Referencja formatu SIDWAVE
 
-### Zasoby I/O (2)
-- **c64://io/cia** - Specyfikacja układu CIA
-- **c64://io/spec** - Specyfikacja portów I/O
+### Zasoby I/O (5)
+- **c64://io/cia-spec** - Specyfikacja układu CIA
+- **c64://io/io-spec** - Specyfikacja portów I/O
+- **c64://io/joystick** - Referencja joysticka
+- **c64://io/keyboard-c64** - Macierz klawiatury C64
+- **c64://io/control-codes-c64** - Kody sterujące C64
 
 ### Zasoby Stacji Dysków (1)
 - **c64://drive/spec** - Specyfikacja stacji dysków 1541/1571/1581
@@ -767,14 +813,17 @@ Wbudowana dokumentacja dostępna w MCP Inspector pod adresem `http://localhost:8
 ### Zasoby Drukarki (6)
 - **c64://printer/commodore-spec** - Specyfikacja drukarki Commodore
 - **c64://printer/epson-spec** - Specyfikacja drukarki Epson
-- **c64://printer/commodore-bitmap** - Czcionka bitmapowa drukarki Commodore
-- **c64://printer/epson-bitmap** - Czcionka bitmapowa drukarki Epson
-- **c64://printer/graphics-mode** - Przewodnik trybu graficznego
-- **c64://printer/troubleshooting** - Rozwiązywanie problemów z drukarką
+- **c64://printer/spec** - Ujednolicona specyfikacja drukarki
+- **c64://printer/prompts** - Routing promptów drukarki
+- **c64://printer/commodore-bitmap** - Druk bitmapowy Commodore
+- **c64://printer/epson-bitmap** - Druk bitmapowy Epson
 
-### Zasoby API (2)
-- **c64://api/basic** - Referencja API BASIC V2
-- **c64://api/kernal** - Referencja Kernal API (23 procedury)
+### Zasoby API / Referencyjne (5)
+- **c64://api/basic-api** - Referencja API BASIC V2
+- **c64://api/kernal-api** - Referencja Kernal API
+- **c64://memory/symbols** - Symbole pamięci
+- **c64://disasm/basic-rom** - Fragment disassemblacji BASIC ROM
+- **c64://disasm/kernal-rom** - Fragment disassemblacji KERNAL ROM
 
 **Dostęp do zasobów przez MCP Inspector:**
 1. Otwórz http://localhost:8000 (MCP Inspector)
@@ -872,9 +921,9 @@ Ask Cody: Pokaz dostepne kategorie konfiguracji
 
 ### cURL
 
-Wszystkie przykłady HTTP dostępne w folderze `examples_http/`. Kluczowe przykłady:
+Przykłady HTTP są dostępne w `examples_http/` i pogrupowane według celu. Kluczowe przykłady:
 
-**Zrestartuj urządzenie** - Zobacz [mcp_reboot_device.http](examples_http/mcp_reboot_device.http):
+**Zrestartuj urządzenie** - Zobacz [91_machine_reboot_device.http](examples_http/dangerous/91_machine_reboot_device.http):
 ```bash
 curl -X POST http://localhost:8080/ \
   -H "Content-Type: application/json" \
@@ -890,13 +939,17 @@ curl -X POST http://localhost:8080/ \
   }'
 ```
 
-**Montuj dysk** - Zobacz [mcp_mount_disk.http](examples_http/mcp_mount_disk.http)
+**Inicjalizacja sesji MCP** - Zobacz [01_mcp_initialize.http](examples_http/smoke/01_mcp_initialize.http)
 
-**Uruchom program PRG** - Zobacz [TEST_RUN_PRG_BINARY.http](examples_http/TEST_RUN_PRG_BINARY.http)
+**Uruchom program PRG** - Zobacz [12_tools_run_prg_binary.http](examples_http/e2e/12_tools_run_prg_binary.http)
 
-**Odtwarzaj muzykę SID** - Zobacz [TEST_PLAY_SID_BINARY.http](examples_http/TEST_PLAY_SID_BINARY.http)
+**Odtwarzaj muzykę SID** - Zobacz [13_tools_play_sid_binary.http](examples_http/e2e/13_tools_play_sid_binary.http)
 
-Wszystkie 45+ narzędzi mają odpowiadające im pliki `.http` w folderze `examples_http/` do testowania
+**Generuj PRG z ASM** - Zobacz [11_tools_generate_assembly_prg.http](examples_http/e2e/11_tools_generate_assembly_prg.http)
+
+**Generuj PRG z BASIC** - Zobacz [10_tools_generate_basic_prg.http](examples_http/e2e/10_tools_generate_basic_prg.http)
+
+Przykłady HTTP są uporządkowane w `examples_http/smoke`, `examples_http/e2e` i `examples_http/dangerous`.
 
 **Lista promptów**:
 ```bash
@@ -938,28 +991,34 @@ curl -X POST http://localhost:8080/ \
 @C64 Zrestartuj C64 i pokaż informacje o maszynie
 ```
 
-**Przykład programu BASIC** - Zobacz [mcp_generate_basic_prg.http](examples_http/mcp_generate_basic_prg.http) - zawiera Hello World ze wskazówkami jak tworzyć własne binarne programy BASIC (.prg).
+**Przykład programu BASIC** - Zobacz [10_tools_generate_basic_prg.http](examples_http/e2e/10_tools_generate_basic_prg.http) - zawiera przykład kompilacji BASIC do binarnego programu `.prg`.
 
 ## 🧪 Testowanie (PL)
 
-Wszystkie przykłady testowe znajdują się w folderze `examples_http/`:
+Wszystkie przykłady testowe znajdują się w `examples_http/`:
 
 **Testuj Połączenie**:
 ```bash
-# Pliki HTTP: test_basic_connection.http
+# Pliki HTTP: `examples_http/smoke/01_mcp_initialize.http` i pozostałe scenariusze smoke
 curl http://localhost:8080/health
 # Odpowiedź: "C64 Ultimate MCP Server is running"
 ```
 
-**Lista Narzędzi** - Zobacz [mcp_list_tools.http](examples_http/mcp_list_tools.http)
+**Lista Narzędzi** - Zobacz [02_mcp_tools_list.http](examples_http/smoke/02_mcp_tools_list.http)
 
-**Wersja** - Zobacz [mcp_get_version.http](examples_http/mcp_get_version.http)
+**Wersja** - Zobacz [07_ultimate_version.http](examples_http/smoke/07_ultimate_version.http)
 
-**Test Wgrywania SID** - Zobacz [TEST_PLAY_SID_BINARY.http](examples_http/TEST_PLAY_SID_BINARY.http)
+**Test Wgrywania SID** - Zobacz [13_tools_play_sid_binary.http](examples_http/e2e/13_tools_play_sid_binary.http)
 
-**Test Wgrywania PRG** - Zobacz [TEST_RUN_PRG_BINARY.http](examples_http/TEST_RUN_PRG_BINARY.http)
+**Test Wgrywania PRG** - Zobacz [12_tools_run_prg_binary.http](examples_http/e2e/12_tools_run_prg_binary.http)
 
-Wszystkie pliki w `examples_http/mcp_*.http` odpowiadają dostępnym narzędziom.
+Używaj `examples_http/smoke` do bezpiecznej weryfikacji, `examples_http/e2e` do ręcznych przepływów safe E2E, a `examples_http/dangerous` tylko do operacji zmieniających stan urządzenia.
+
+Gdy narzędzie dochodzi do urządzenia Ultimate, ale samo urządzenie lub jego API jest niedostępne, serwer zwraca poprawny wynik MCP `tools/call` z `isError: true` oraz maszynowo czytelnym `structuredContent`, zamiast błędu protokołu. Dzięki temu transport pozostaje poprawny (`HTTP 200`), a agent AI widzi rzeczywisty błąd wykonania.
+
+Jeżeli `Ultimate__BaseUrl` jest nieosiągalny, w ręcznych E2E oczekiwany jest taki podział:
+- narzędzia generujące PRG lokalnie (`ultimate_generate_basic_prg`, `ultimate_generate_assembly_prg`) przechodzą poprawnie;
+- narzędzia zależne od urządzenia (`ultimate_run_prg_binary`, `ultimate_play_sid_binary`, tworzenie obrazów dysków, operacje config/machine/drive) zwracają błąd toola, np. `Connection refused (...)`, z `isError: true`.
 
 ## 🐳 Wdrażanie Docker (PL)
 
@@ -977,6 +1036,8 @@ Automatycznie łączy się z serwerem MCP i wyświetla wszystkie dostępne narz�
 docker compose up --build
 ```
 Buduje obraz lokalnie i uruchamia zarówno serwer MCP jak i inspector.
+
+Ten przebieg został już lokalnie zweryfikowany. Jeżeli build obrazu wcześniej zatrzymywał się na chwilowych problemach z NuGet, ponowne `docker compose up -d --build` powinno skorzystać z utwardzonego `restore` w Dockerfile.
 
 **Dostęp:**
 - **Serwer MCP**: http://localhost:8080 - Główny punkt końcowy MCP Server
@@ -1064,7 +1125,7 @@ networks:
 │         Agenci AI                           │
 │  (Continue/Copilot/Cody/Cursor)             │
 └──────────────────┬──────────────────────────┘
-                   │ HTTP/SSE
+                   │ Streamable HTTP
 ┌──────────────────▼──────────────────────────┐
 │      Serwer MCP (localhost:8080)            │
 │  - Warstwa Transportu HTTP                  │
@@ -1084,11 +1145,11 @@ networks:
 
 ## ✅ Status: Gotowy do Produkcji (PL)
 
-- ✅ Zaimplementowano 45 narzędzi produkcyjnych dla operacji C64 Ultimate
-- ✅ Zaimplementowano 2 prompty MCP (`c64_basic_program_prompt`, `c64_sid_music_prompt`)
-- ✅ 24 wbudowane zasoby dokumentacyjne
+- ✅ Zaimplementowano 46 narzędzi produkcyjnych dla operacji C64 Ultimate
+- ✅ Zaimplementowano 15 promptów MCP
+- ✅ 41 wbudowanych zasobów dokumentacyjnych
 - ✅ Kompilacja BASIC do PRG w locie
-- ✅ Transport HTTP/SSE
+- ✅ Transport Streamable HTTP
 - ✅ Integracja z agentami AI (Continue, Copilot, Cody, Cursor)
 - ✅ Konteneryzacja Docker z MCP Inspector
 - ✅ Brak błędów i ostrzeżeń
@@ -1134,9 +1195,9 @@ curl -X POST http://localhost:8080/ \
 
 ## 🎉 Status: Gotowy do Produkcji
 
-- ✅ Wszystkie 45+ narzędzia zaimplementowane
+- ✅ Wszystkie 46 narzędzi zaimplementowane
 - ✅ Kompilacja BASIC do PRG w locie
-- ✅ Transport HTTP/SSE
+- ✅ Transport Streamable HTTP
 - ✅ Integracja z agentami AI
 - ✅ Konteneryzacja Docker
 - ✅ Brak błędów i ostrzeżeń

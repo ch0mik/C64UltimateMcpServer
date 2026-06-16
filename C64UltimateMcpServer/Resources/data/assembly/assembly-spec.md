@@ -1,3 +1,14 @@
+---
+type: Reference
+title: 6510 Assembly Specification
+description: Overview of supported 6510 assembly syntax, addressing modes, and conventions.
+resource: c64://assembly/spec
+tags:
+- assembly
+- reference
+- c64
+---
+
 # Language
 
 ## Overview

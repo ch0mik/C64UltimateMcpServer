@@ -1,7 +1,9 @@
 using C64UltimateClient;
 using C64BasicPrgGenerator;
+using C64AssemblyPrgGenerator;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -55,6 +57,37 @@ public class UltimateService
             // Use default options for error fallback to avoid recursion
             return JsonSerializer.Serialize(new { error = "Failed to serialize response", details = ex.Message });
         }
+    }
+
+    private CallToolResult CreateToolResult(object payload, bool isError = false)
+    {
+        return new CallToolResult
+        {
+            IsError = isError,
+            StructuredContent = JsonSerializer.SerializeToElement(payload, _jsonOptions),
+            Content =
+            [
+                new TextContentBlock
+                {
+                    Text = SerializeResponse(payload)
+                }
+            ]
+        };
+    }
+
+    private CallToolResult CreateToolErrorResult(
+        string message,
+        string errorType,
+        bool retryable = false,
+        object? details = null)
+    {
+        return CreateToolResult(new
+        {
+            error = message,
+            errorType,
+            retryable,
+            details
+        }, isError: true);
     }
 
     // Connection Management
@@ -123,7 +156,7 @@ public class UltimateService
     }
 
     [McpServerTool(Name = "ultimate_play_sid_binary")]
-    public async Task<string> PlaySidBinary(string? filePath = null, string? sidDataBase64 = null, string? url = null, int? songNumber = null)
+    public async Task<CallToolResult> PlaySidBinary(string? filePath = null, string? sidDataBase64 = null, string? url = null, int? songNumber = null)
     {
         _serviceLogger.LogInformation($"Playing SID binary (filePath={filePath}, base64={sidDataBase64?.Length ?? 0}, url={url}, song={songNumber})");
         try
@@ -141,7 +174,7 @@ public class UltimateService
                 }
                 catch (Exception ex)
                 {
-                    return SerializeResponse(new { error = $"Invalid base64 data: {ex.Message}" });
+                    return CreateToolErrorResult($"Invalid base64 data: {ex.Message}", "InvalidInput", details: new { parameter = nameof(sidDataBase64) });
                 }
             }
             else if (!string.IsNullOrEmpty(url))
@@ -157,7 +190,7 @@ public class UltimateService
                 }
                 catch (Exception ex)
                 {
-                    return SerializeResponse(new { error = $"Failed to download from URL: {ex.Message}" });
+                    return CreateToolErrorResult($"Failed to download from URL: {ex.Message}", "DownloadFailed", retryable: true, details: new { url });
                 }
             }
             else if (!string.IsNullOrEmpty(filePath))
@@ -165,7 +198,7 @@ public class UltimateService
                 try
                 {
                     if (!File.Exists(filePath))
-                        return SerializeResponse(new { error = $"File not found: {filePath}" });
+                        return CreateToolErrorResult($"File not found: {filePath}", "FileNotFound", details: new { filePath });
                     
                     sidData = await File.ReadAllBytesAsync(filePath);
                     sourceInfo = $"file {filePath} ({sidData.Length} bytes)";
@@ -173,23 +206,23 @@ public class UltimateService
                 }
                 catch (Exception ex)
                 {
-                    return SerializeResponse(new { error = $"Failed to read file: {ex.Message}" });
+                    return CreateToolErrorResult($"Failed to read file: {ex.Message}", "FileReadFailed", details: new { filePath });
                 }
             }
             else
             {
-                return SerializeResponse(new { error = "One of filePath, sidDataBase64, or url must be provided" });
+                return CreateToolErrorResult("One of filePath, sidDataBase64, or url must be provided", "MissingInput");
             }
 
             if (sidData == null || sidData.Length == 0)
-                return SerializeResponse(new { error = "No SID data provided or data is empty" });
+                return CreateToolErrorResult("No SID data provided or data is empty", "InvalidInput");
 
             if (sidData.Length < 4)
-                return SerializeResponse(new { error = "SID file is too small (must be at least 4 bytes for header)" });
+                return CreateToolErrorResult("SID file is too small (must be at least 4 bytes for header)", "InvalidInput");
 
             await _client.PlaySidBinaryAsync(sidData, songNumber);
             
-            return SerializeResponse(new 
+            return CreateToolResult(new 
             { 
                 success = true, 
                 message = $"Playing SID from {sourceInfo}",
@@ -199,12 +232,12 @@ public class UltimateService
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to play SID binary");
-            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
+            return CreateToolErrorResult(ex.Message, "UltimateApiError", retryable: true, details: ex.ApiErrors);
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to play SID binary");
-            return SerializeResponse(new { error = ex.Message });
+            return CreateToolErrorResult(ex.Message, "ExecutionError", retryable: true);
         }
     }
 
@@ -274,7 +307,7 @@ public class UltimateService
     }
 
     [McpServerTool(Name = "ultimate_run_prg_binary")]
-    public async Task<string> RunPrgBinary(string? filePath = null, string? prgDataBase64 = null, string? url = null)
+    public async Task<CallToolResult> RunPrgBinary(string? filePath = null, string? prgDataBase64 = null, string? url = null)
     {
         _serviceLogger.LogInformation($"Running PRG binary (filePath={filePath}, base64={prgDataBase64?.Length ?? 0}, url={url})");
         try
@@ -292,7 +325,7 @@ public class UltimateService
                 }
                 catch (Exception ex)
                 {
-                    return SerializeResponse(new { error = $"Invalid base64 data: {ex.Message}" });
+                    return CreateToolErrorResult($"Invalid base64 data: {ex.Message}", "InvalidInput", details: new { parameter = nameof(prgDataBase64) });
                 }
             }
             else if (!string.IsNullOrEmpty(url))
@@ -308,7 +341,7 @@ public class UltimateService
                 }
                 catch (Exception ex)
                 {
-                    return SerializeResponse(new { error = $"Failed to download from URL: {ex.Message}" });
+                    return CreateToolErrorResult($"Failed to download from URL: {ex.Message}", "DownloadFailed", retryable: true, details: new { url });
                 }
             }
             else if (!string.IsNullOrEmpty(filePath))
@@ -316,7 +349,7 @@ public class UltimateService
                 try
                 {
                     if (!File.Exists(filePath))
-                        return SerializeResponse(new { error = $"File not found: {filePath}" });
+                        return CreateToolErrorResult($"File not found: {filePath}", "FileNotFound", details: new { filePath });
                     
                     prgData = await File.ReadAllBytesAsync(filePath);
                     sourceInfo = $"file {filePath} ({prgData.Length} bytes)";
@@ -324,23 +357,23 @@ public class UltimateService
                 }
                 catch (Exception ex)
                 {
-                    return SerializeResponse(new { error = $"Failed to read file: {ex.Message}" });
+                    return CreateToolErrorResult($"Failed to read file: {ex.Message}", "FileReadFailed", details: new { filePath });
                 }
             }
             else
             {
-                return SerializeResponse(new { error = "One of filePath, prgDataBase64, or url must be provided" });
+                return CreateToolErrorResult("One of filePath, prgDataBase64, or url must be provided", "MissingInput");
             }
 
             if (prgData == null || prgData.Length == 0)
-                return SerializeResponse(new { error = "No PRG data provided or data is empty" });
+                return CreateToolErrorResult("No PRG data provided or data is empty", "InvalidInput");
 
             if (prgData.Length < 2)
-                return SerializeResponse(new { error = "PRG file is too small (must be at least 2 bytes)" });
+                return CreateToolErrorResult("PRG file is too small (must be at least 2 bytes)", "InvalidInput");
 
             await _client.RunProgramBinaryAsync(prgData);
             
-            return SerializeResponse(new 
+            return CreateToolResult(new 
             { 
                 success = true, 
                 message = $"Running PRG from {sourceInfo}",
@@ -350,12 +383,12 @@ public class UltimateService
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to run PRG binary");
-            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
+            return CreateToolErrorResult(ex.Message, "UltimateApiError", retryable: true, details: ex.ApiErrors);
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to run PRG binary");
-            return SerializeResponse(new { error = ex.Message });
+            return CreateToolErrorResult(ex.Message, "ExecutionError", retryable: true);
         }
     }
 
@@ -723,23 +756,23 @@ public class UltimateService
     // Disk Image Creation
 
     [McpServerTool(Name = "ultimate_create_d64")]
-    public async Task<string> CreateD64(string path, int? tracks = null, string? diskname = null)
+    public async Task<CallToolResult> CreateD64(string path, int? tracks = null, string? diskname = null)
     {
         _serviceLogger.LogInformation($"Creating D64 image: {path}");
         try
         {
             await _client.CreateD64Async(path, tracks ?? 35, diskname);
-            return SerializeResponse(new { ok = true, message = "D64 created" });
+            return CreateToolResult(new { ok = true, message = "D64 created", path, tracks = tracks ?? 35, diskname });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to create D64");
-            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
+            return CreateToolErrorResult(ex.Message, "UltimateApiError", retryable: true, details: ex.ApiErrors);
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to create D64");
-            return SerializeResponse(new { error = ex.Message });
+            return CreateToolErrorResult(ex.Message, "ExecutionError", retryable: true);
         }
     }
 
@@ -786,23 +819,23 @@ public class UltimateService
     }
 
     [McpServerTool(Name = "ultimate_create_dnp")]
-    public async Task<string> CreateDnp(string path, int tracks, string? diskname = null)
+    public async Task<CallToolResult> CreateDnp(string path, int tracks, string? diskname = null)
     {
         _serviceLogger.LogInformation($"Creating DNP image: {path}");
         try
         {
             await _client.CreateDnpAsync(path, tracks, diskname);
-            return SerializeResponse(new { ok = true, message = "DNP created" });
+            return CreateToolResult(new { ok = true, message = "DNP created", path, tracks, diskname });
         }
         catch (UltimateClientException ex)
         {
             _serviceLogger.LogError(ex, "Failed to create DNP");
-            return SerializeResponse(new { error = ex.Message, errors = ex.ApiErrors });
+            return CreateToolErrorResult(ex.Message, "UltimateApiError", retryable: true, details: ex.ApiErrors);
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to create DNP");
-            return SerializeResponse(new { error = ex.Message });
+            return CreateToolErrorResult(ex.Message, "ExecutionError", retryable: true);
         }
     }
 
@@ -1108,10 +1141,10 @@ public class UltimateService
         }
     }
 
-    // BASIC Program Generation
+    // Program Generation
 
     [McpServerTool(Name = "ultimate_generate_basic_prg")]
-    public Task<string> GenerateBasicPrg(string basicSource)
+    public Task<CallToolResult> GenerateBasicPrg(string basicSource)
     {
         _serviceLogger.LogInformation("Generating BASIC PRG from source code");
         try
@@ -1122,7 +1155,7 @@ public class UltimateService
             
             _serviceLogger.LogInformation($"Generated PRG ({prgBytes.Length} bytes) from BASIC source ({basicSource.Length} chars)");
             
-            return Task.FromResult(SerializeResponse(new 
+            return Task.FromResult(CreateToolResult(new 
             { 
                 success = true,
                 prgDataBase64 = base64Prg,
@@ -1134,22 +1167,53 @@ public class UltimateService
         catch (ArgumentException ex)
         {
             _serviceLogger.LogWarning(ex, "BASIC syntax error");
-            return Task.FromResult(SerializeResponse(new 
-            { 
-                success = false, 
-                error = ex.Message,
-                errorType = "SyntaxError"
-            }));
+            return Task.FromResult(CreateToolErrorResult(ex.Message, "SyntaxError"));
         }
         catch (Exception ex)
         {
             _serviceLogger.LogError(ex, "Failed to generate BASIC PRG");
-            return Task.FromResult(SerializeResponse(new 
-            { 
-                success = false, 
-                error = ex.Message,
-                errorType = "GenerationError"
+            return Task.FromResult(CreateToolErrorResult(ex.Message, "GenerationError"));
+        }
+    }
+
+    [McpServerTool(Name = "ultimate_generate_assembly_prg")]
+    public Task<CallToolResult> GenerateAssemblyPrg(string assemblySource, bool basicRunLoader = false)
+    {
+        _serviceLogger.LogInformation("Generating assembly PRG from 6510 source code");
+        try
+        {
+            var generator = new AssemblyPrgGenerator();
+            var result = generator.GeneratePrg(assemblySource, basicRunLoader);
+            var prgBase64 = Convert.ToBase64String(result.PrgBytes);
+
+            _serviceLogger.LogInformation(
+                "Generated ASM PRG ({PrgBytes} bytes, origin ${Origin:X4}, basicRunLoader={BasicRunLoader})",
+                result.PrgBytes.Length,
+                result.Origin,
+                basicRunLoader);
+
+            return Task.FromResult(CreateToolResult(new
+            {
+                success = true,
+                prgDataBase64 = prgBase64,
+                sizeBytes = result.PrgBytes.Length,
+                origin = $"0x{result.Origin:X4}",
+                sysAddress = result.Origin,
+                basicRunLoader,
+                note = basicRunLoader
+                    ? "PRG contains BASIC loader line 10 SYS<addr>; start with RUN."
+                    : $"Start with SYS {result.Origin}."
             }));
+        }
+        catch (ArgumentException ex)
+        {
+            _serviceLogger.LogWarning(ex, "Assembly syntax/validation error");
+            return Task.FromResult(CreateToolErrorResult(ex.Message, "AssemblySyntaxError"));
+        }
+        catch (Exception ex)
+        {
+            _serviceLogger.LogError(ex, "Failed to generate ASM PRG");
+            return Task.FromResult(CreateToolErrorResult(ex.Message, "AssemblyGenerationError"));
         }
     }
 

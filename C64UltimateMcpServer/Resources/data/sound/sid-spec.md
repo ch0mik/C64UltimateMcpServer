@@ -1,3 +1,14 @@
+---
+type: Reference
+title: Commodore 64 SID Specification
+description: Technical overview of the SID chip, register map, and voice/filter behavior.
+resource: c64://sound/sid-spec
+tags:
+- sound
+- reference
+- c64
+---
+
 # Commodore 64 SID (MOS 6581 / 8580) — Concise Technical Overview
 
 ## Overview

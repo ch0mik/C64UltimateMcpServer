@@ -1,3 +1,13 @@
+---
+type: Reference
+title: BASIC Pitfalls and Gotchas
+description: Common mistakes, compatibility traps, and debugging tips for BASIC V2.
+resource: c64://basic/pitfalls
+tags:
+- basic
+- safety
+---
+
 # BASIC Pitfalls Quickref
 
 Common mistakes and gotchas when writing Commodore BASIC v2 programs.
@@ -234,3 +244,4 @@ Common mistakes and gotchas when writing Commodore BASIC v2 programs.
 - **Balance GOSUB/RETURN** to avoid stack overflow.
 - **Validate INPUT** to handle user errors gracefully.
 - **Convert between PETSCII and screen codes** when needed.
+

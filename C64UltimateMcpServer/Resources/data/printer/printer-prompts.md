@@ -1,3 +1,13 @@
+---
+type: Reference
+title: Printer Prompt Routing Guide
+description: Prompt routing guide for printer-related tasks.
+resource: c64://printer/prompts
+tags:
+- printer
+- guidance
+---
+
 # Printing Prompts and Routing (for LLM prompt construction)
 
 ## Routing
@@ -27,3 +37,4 @@
 ## Cross‑refs
 
 See `printer-spec.md` (overview), `printer-commodore*.md`, `printer-epson*.md` for details.
+

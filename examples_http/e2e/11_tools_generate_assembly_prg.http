@@ -1,0 +1,53 @@
+@host = http://localhost:8080
+
+### 01. MCP initialize
+# @name init
+POST {{host}}/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2025-11-05",
+    "capabilities": {},
+    "clientInfo": {
+      "name": "http-e2e-client",
+      "version": "1.0.0"
+    }
+  }
+}
+
+###
+### 02. MCP initialized notification
+POST {{host}}/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+Mcp-Session-Id: {{init.response.headers.Mcp-Session-Id}}
+
+{
+  "jsonrpc": "2.0",
+  "method": "notifications/initialized"
+}
+
+###
+### 03. Generate an assembly PRG
+POST {{host}}/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+Mcp-Session-Id: {{init.response.headers.Mcp-Session-Id}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 21,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_generate_assembly_prg",
+    "arguments": {
+      "assemblySource": ".org $1000\nstart:\n    lda #$06\n    sta $d020\n    lda #$00\n    sta $d021\n    rts",
+      "basicRunLoader": false
+    }
+  }
+}

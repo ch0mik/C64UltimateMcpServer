@@ -55,7 +55,7 @@ public class C64UltimatePrompts
             """,
             """
             BASIC workflow:
-            - Restate requirements and reference c64://basic/spec and c64://basic/pitfalls.
+            - Start with c64://resources/index, then reference c64://basic/spec and c64://basic/pitfalls.
             - Produce numbered BASIC V2 listing.
             - Describe verification using screen output and expected READY. state.
             """);
@@ -72,13 +72,13 @@ public class C64UltimatePrompts
         string? hardware = null)
     {
         var focus = string.IsNullOrWhiteSpace(hardware)
-            ? "State which hardware blocks (SID, VIC-II, CIA) are used and why."
+            ? "Start with c64://resources/index, then state which hardware blocks (SID, VIC-II, CIA) are used and why."
             : NormalizeEnumArg(hardware, "hardware", "sid", "vic", "cia", "multi") switch
             {
-                "sid" => "Focus on SID registers and timing (c64://sound/sid-spec).",
-                "vic" => "Focus on VIC-II setup and raster timing (c64://graphics/vic-spec).",
-                "cia" => "Focus on CIA timers/ports and interrupt hand-off (c64://io/cia-spec).",
-                _ => "Coordinate SID, VIC-II, and CIA interactions with contention notes."
+                "sid" => "Start with c64://resources/index, then focus on SID registers and timing (c64://sound/sid-spec).",
+                "vic" => "Start with c64://resources/index, then focus on VIC-II setup and raster timing (c64://graphics/vic-spec).",
+                "cia" => "Start with c64://resources/index, then focus on CIA timers/ports and interrupt hand-off (c64://io/cia-spec).",
+                _ => "Start with c64://resources/index, then coordinate SID, VIC-II, and CIA interactions with contention notes."
             };
 
         return BuildPrompt(
@@ -96,6 +96,46 @@ public class C64UltimatePrompts
     }
 
     [McpServerPrompt(
+        Name = "assembly-prg-build",
+        Title = "6510 Assembly PRG Build Workflow",
+        IconSource = "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg")]
+    [Description("Prepare MCP-compatible 6510 source and compile it with ultimate_generate_assembly_prg.")]
+    public IEnumerable<PromptMessage> AssemblyPrgBuildWorkflow(
+        [Description("Launch mode for compiled PRG")]
+        [AllowedValues("sys", "run")]
+        string launch = "sys")
+    {
+        var launchMode = NormalizeEnumArg(launch, "launch", "sys", "run");
+
+        return BuildPrompt(
+            """
+            Build a 6510 source tailored for ultimate_generate_assembly_prg.
+            Use only supported syntax:
+            - .org or *=
+            - labels
+            - mnemonics/addressing modes
+            - .byte/.word
+            - comments with ';'
+            """,
+            """
+            Avoid unsupported macro ecosystems:
+            - no !source, !bin, +start_at, custom macro packs
+            - no external include dependencies
+            """,
+            launchMode == "run"
+                ? "Set basicRunLoader=true and provide RUN startup instructions."
+                : "Set basicRunLoader=false and provide SYS <origin> startup instructions.",
+            """
+            Reference resources:
+            - c64://resources/index
+            - c64://assembly/spec
+            - c64://assembly/tooling-notes
+            - c64://assembly/examples/hello-sys
+            - c64://assembly/examples/text-scroll
+            """);
+    }
+
+    [McpServerPrompt(
         Name = "sid-music",
         Title = "SID Composition Workflow",
         IconSource = "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg")]
@@ -106,7 +146,7 @@ public class C64UltimatePrompts
             """
             SID composition workflow:
             - Summarize target style, tempo, and structure.
-            - Reference c64://sound/sid-spec, c64://sound/sid-programming, and c64://sound/sidwave.
+            - Start with c64://resources/index, then reference c64://sound/sid-spec, c64://sound/sid-programming, and c64://sound/sidwave.
             - Provide playback and iteration plan.
             """,
             """
@@ -139,7 +179,7 @@ public class C64UltimatePrompts
         return BuildPrompt(
             """
             Graphics workflow:
-            - Summarize VIC-II register writes and memory banking (c64://graphics/vic-spec).
+            - Start with c64://resources/index, then summarize VIC-II register writes and memory banking (c64://graphics/vic-spec).
             - Explain setup, validation, and teardown.
             """,
             modeGuidance);
@@ -166,6 +206,7 @@ public class C64UltimatePrompts
         return BuildPrompt(
             """
             Printer workflow:
+            - Start with c64://resources/index.
             - Confirm printer type and device number.
             - Include open/write/close sequence and page eject (CHR$(12)) where appropriate.
             - Reference c64://printer/spec and c64://printer/prompts.
@@ -183,6 +224,7 @@ public class C64UltimatePrompts
         return BuildPrompt(
             """
             Memory debugging workflow:
+            - Start with c64://resources/index.
             - Restate target address range and expected side effects.
             - Read before write, document diff, and provide rollback.
             - Reference c64://memory/map, c64://memory/low, and c64://memory/kernal.
@@ -199,6 +241,7 @@ public class C64UltimatePrompts
         return BuildPrompt(
             """
             Drive management workflow:
+            - Start with c64://resources/index.
             - Baseline current drive state before changes.
             - Warn about IEC side effects on running workloads.
             - Verify each step after mount/unmount/mode/power operations.
@@ -228,6 +271,7 @@ public class C64UltimatePrompts
             """,
             """
             Reference resources:
+            - c64://resources/index
             - c64://basic/spec
             - c64://basic/pitfalls
             - c64://basic/examples/games/snake
@@ -257,6 +301,7 @@ public class C64UltimatePrompts
             """,
             """
             Reference resources:
+            - c64://resources/index
             - c64://graphics/petscii
             - c64://graphics/charset
             - c64://io/control-codes-c64
@@ -289,6 +334,7 @@ public class C64UltimatePrompts
             """,
             """
             Reference resources:
+            - c64://resources/index
             - c64://io/keyboard-c64
             - c64://io/control-codes-c64
             - c64://io/joystick
@@ -317,6 +363,7 @@ public class C64UltimatePrompts
             """,
             """
             Reference resources:
+            - c64://resources/index
             - c64://graphics/vic-spec
             - c64://graphics/sprite-charset-best-practices
             - c64://assembly/spec
@@ -349,6 +396,7 @@ public class C64UltimatePrompts
             """,
             """
             Reference resources:
+            - c64://resources/index
             - c64://sound/sid-spec
             - c64://sound/sid-programming
             - c64://sound/sidwave

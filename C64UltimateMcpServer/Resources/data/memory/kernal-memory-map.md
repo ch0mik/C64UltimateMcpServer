@@ -1,3 +1,13 @@
+---
+type: Reference
+title: Kernal Memory Map
+description: KERNAL memory layout and address overview.
+resource: c64://memory/kernal
+tags:
+- memory
+- reference
+---
+
 # C64 KERNAL Memory Map — Complete ($E000–$FFFF)
 
 > Purpose: Exhaustive sequential map of KERNAL ROM: callable routines, internal subroutines, constants, tables, IRQ/NMI handlers, and vectors.  
@@ -225,3 +235,4 @@
 | `$FFFA` | 65530 | NMI vec | NMI vector | — | HW | — | RAM at `$0318/9` |
 | `$FFFC` | 65532 | RESET vec | RESET vector | — | HW | — | Points to `$FCE2` |
 | `$FFFE` | 65534 | IRQ/BRK vec | IRQ/BRK vector | — | HW | — | RAM at `$0314/5` |
+

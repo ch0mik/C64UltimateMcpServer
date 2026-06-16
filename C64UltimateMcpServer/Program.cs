@@ -10,6 +10,7 @@ using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 
 ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> subscriptions = new();
+const bool UseStatefulHttpTransport = true;
 
 var builder = WebApplication.CreateBuilder(args);
 #pragma warning disable MCPEXP001
@@ -52,37 +53,7 @@ builder.Services
         // Note: Custom JsonSerializerOptions are configured per-service (see UltimateService)
         // MCP SDK 1.0.0 supports user-defined serialization options
     })
-    .WithHttpTransport(options =>
-        {
-            // Add a RunSessionHandler to remove all subscriptions for the session when it ends
-            #pragma warning disable MCPEXP002
-            options.RunSessionHandler = async (httpContext, mcpServer, token) =>
-            {
-                if (mcpServer.SessionId == null)
-                {
-                    // There is no sessionId if the serverOptions.Stateless is true
-                    await mcpServer.RunAsync(token);
-                    return;
-                }
-                try
-                {
-                    subscriptions[mcpServer.SessionId] = new ConcurrentDictionary<string, byte>();
-                    // Start an instance of SubscriptionMessageSender for this session
-                    using var subscriptionSender = new SubscriptionMessageSender(mcpServer, subscriptions[mcpServer.SessionId]);
-                    await subscriptionSender.StartAsync(token);
-                    // Start an instance of LoggingUpdateMessageSender for this session
-                    using var loggingSender = new LoggingUpdateMessageSender(mcpServer);
-                    await loggingSender.StartAsync(token);
-                    await mcpServer.RunAsync(token);
-                }
-                finally
-                {
-                    // This code runs when the session ends
-                    subscriptions.TryRemove(mcpServer.SessionId, out _);
-                }
-            };
-            #pragma warning restore MCPEXP002
-        })
+    .WithHttpTransport(options => ConfigureHttpTransport(options, subscriptions))
     .WithTools<UltimateService>()
     .WithPrompts<C64UltimatePrompts>()
     .WithSubscribeToResourcesHandler(async (ctx, ct) =>
@@ -116,11 +87,38 @@ app.MapGet("/health", () => "C64 Ultimate MCP Server is running");
 
 app.Run();
 
+static void ConfigureHttpTransport(
+    HttpServerTransportOptions options,
+    ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> subscriptions)
+{
+    options.Stateless = !UseStatefulHttpTransport;
 
+    // Centralized here so future MCP 2.0 transport/session migration touches one place.
+    #pragma warning disable MCPEXP002
+    options.RunSessionHandler = async (httpContext, mcpServer, token) =>
+    {
+        if (mcpServer.SessionId == null)
+        {
+            await mcpServer.RunAsync(token);
+            return;
+        }
 
+        try
+        {
+            subscriptions[mcpServer.SessionId] = new ConcurrentDictionary<string, byte>();
 
+            using var subscriptionSender = new SubscriptionMessageSender(mcpServer, subscriptions[mcpServer.SessionId]);
+            await subscriptionSender.StartAsync(token);
 
+            using var loggingSender = new LoggingUpdateMessageSender(mcpServer);
+            await loggingSender.StartAsync(token);
 
-
-
-
+            await mcpServer.RunAsync(token);
+        }
+        finally
+        {
+            subscriptions.TryRemove(mcpServer.SessionId, out _);
+        }
+    };
+    #pragma warning restore MCPEXP002
+}

@@ -1,3 +1,13 @@
+---
+type: Reference
+title: Kernal API Specification
+description: API reference for Kernal-related helpers.
+resource: c64://api/kernal-api
+tags:
+- api
+- reference
+---
+
 # C64 KERNAL API — Callable Routines (ROM $E000–$FFFF)
 
 > Purpose: Minimal, deduplicated interface spec for **callable** KERNAL API routines.  
@@ -66,3 +76,4 @@ and maintains IRQ/NMI linkage through `$0314–$0318`. Avoid overwriting these u
 | `$FFED` | 65517 | **SCREEN** | Return screen size | — | — | X=cols(40), Y=rows(25) | For cross‑platform compatibility |
 | `$FFF0` | 65520 | **PLOT** | Read/Set cursor | C=1 read; C=0 set; Y=row, X=col | — | On read: X=col, Y=row | Uses PNTR `$00D3`/TBLX `$00D6` |
 | `$FFF3` | 65523 | **IOBASE** | Return I/O base address | — | — | X=lo, Y=hi | Present value `$DC00` (CIA1) |
+

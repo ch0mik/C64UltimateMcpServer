@@ -1,3 +1,13 @@
+---
+type: Reference
+title: BASIC API Specification
+description: API reference for BASIC-related helpers.
+resource: c64://api/basic-api
+tags:
+- api
+- reference
+---
+
 # C64 BASIC API — Callable Routines & Token Dispatch (ROM $A000–$BFFF)
 
 > Purpose: Minimal, deduplicated interface spec for **callable** BASIC API entry points and token dispatch.  
@@ -152,3 +162,4 @@ allows the relocation of program text, redefining top-of-memory, or injecting cu
 | `$AED4` | 44756 | 178 ($B2) | **=** | Equal comparison | — | — | FAC1=0/−1 | Uses REL |
 | `$BFB4` | 49076 | 177 ($B1) | **>** | Greater than comparison | — | — | FAC1=0/−1 | Uses REL/NEGOP |
 | `$B016` | 45078 | 179 ($B3) | **<** | Less than comparison | — | — | FAC1=0/−1 | Uses REL |
+

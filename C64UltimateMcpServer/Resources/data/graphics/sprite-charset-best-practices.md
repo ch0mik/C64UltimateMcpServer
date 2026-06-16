@@ -1,3 +1,13 @@
+---
+type: Reference
+title: Sprite and Charset Best Practices
+description: Practical advice for sprite and charset combinations.
+resource: c64://graphics/sprite-charset-best-practices
+tags:
+- graphics
+- guidance
+---
+
 # Sprite and Charset Workflows Best Practices
 
 This guide provides proven workflows and best practices for creating, managing, and deploying sprites and custom character sets on the Commodore 64.
@@ -317,3 +327,4 @@ When working with sprites and charsets:
 - `c64://docs/petscii-style` - Colour and style guidelines
 - `c64://specs/memory-map` - Memory layout and safe ranges
 - `c64://context/bootstrap` - Safety and workflow rules
+

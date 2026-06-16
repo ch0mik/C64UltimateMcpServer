@@ -1,3 +1,13 @@
+---
+type: Reference
+title: SID File Structure
+description: SID file organization and structure overview.
+resource: c64://sound/sid-file-structure
+tags:
+- sound
+- reference
+---
+
 # SID File Structure (PSID/RSID) — Concise Overview
 
 This guide summarizes the High Voltage SID Collection (HVSC) "PSID file format" header used by classic SID tunes. A SID file consists of:
@@ -89,3 +99,4 @@ SID files do not embed duration. HVSC ships a `Songlengths.md5` database mapping
 - Low-level SID register programming: see `data/sound/sid-spec.md`
 
 References for further reading: HVSC PSID v2NG file format (spec), community resources, and project notes from implementations like SIDman.
+

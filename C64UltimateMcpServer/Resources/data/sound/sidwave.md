@@ -1,3 +1,13 @@
+---
+type: Reference
+title: SIDWAVE Format Specification
+description: Specification for the SIDWAVE format.
+resource: c64://sound/sidwave
+tags:
+- sound
+- reference
+---
+
 # SIDWAVE Format Specification
 
 This document defines **SIDWAVE**, a declarative format for describing structured, modern C64 SID compositions.
@@ -129,3 +139,4 @@ This enables autocomplete, hover info, and validation in VS Code or similar IDEs
 > Use three voices with expressive modulation (PWM, filter sweeps, arpeggios, evolving pads).
 > Output valid YAML conforming to `sidwave.schema.json`.
 > Avoid direct note repetition; reuse and transpose patterns.
+

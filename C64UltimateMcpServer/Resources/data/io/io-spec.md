@@ -1,3 +1,13 @@
+---
+type: Reference
+title: I/O Port Specification
+description: I/O port behavior and usage reference.
+resource: c64://io/io-spec
+tags:
+- io
+- reference
+---
+
 # Commodore 64 I/O Specification
 
 **Scope:** Single source of truth for C64 I/O architecture and programmer interfaces.  
@@ -177,3 +187,4 @@ Joystick Port 1 shares the keyboard matrix. Moving the joystick can trigger key 
 - **Keyboard matrix & scan masks:** C64 OS deep‑dive. citeturn0search0
 - **Datasette lines:** C64‑Wiki Cassette Port; Luigi Di Fraia on FLAG edge; 6510 port overview.
 - **User Port/RS‑232:** C64‑Wiki Serial Port; pagetable UP9600.
+

@@ -1,3 +1,13 @@
+---
+type: Reference
+title: Low Memory Map
+description: Low-memory usage and reserved areas.
+resource: c64://memory/low
+tags:
+- memory
+- reference
+---
+
 # Low Memory Pages 0–3 (Zero Page, Stack, System Work Areas)
 
 > Scope: **$0000–$03FF (0–1023)**: Zero page (BASIC + KERNAL vars), page-1 stack, page-2 system buffers/tables, page-3 vectors + **cassette (tape) buffer**.  
@@ -131,3 +141,4 @@ A=Accumulator, X,Y=index, C=Carry; “—” = not applicable. Pointers are litt
 - **Dynamic keyboard**: preload KEYD ($0277–$0280), set NDX ($00C6), characters are consumed in order; handy for quoted INPUT.  
 - **ROM banking** via $0001: temporarily map out BASIC/KERNAL/CHAR for patching or ROM reads; remember to **disable IRQs** before switching out KERNAL.  
 - **Cassette buffer reuse**: if device 1 not active, use $033C–$03FB for short ML stubs or graphics data; keep header semantics in mind; **do not** run tape I/O concurrently.
+

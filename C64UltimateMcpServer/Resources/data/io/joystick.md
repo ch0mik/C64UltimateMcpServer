@@ -1,3 +1,13 @@
+---
+type: Reference
+title: Joystick Control Reference
+description: Joystick mappings and interaction guidance.
+resource: c64://io/joystick
+tags:
+- io
+- input
+---
+
 # Commodore 64 Joystick Reference
 
 ## Quick Summary
@@ -39,3 +49,4 @@
 **DOWN only:** Port 1=253, Port 2=125
 **LEFT only:** Port 1=251, Port 2=123
 **RIGHT only:** Port 1=247, Port 2=119
+

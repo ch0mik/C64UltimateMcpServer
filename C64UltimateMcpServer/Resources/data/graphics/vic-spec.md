@@ -1,3 +1,13 @@
+---
+type: Reference
+title: VIC-II Graphics Specification
+description: VIC-II registers, timing, and graphics setup reference.
+resource: c64://graphics/vic-spec
+tags:
+- graphics
+- reference
+---
+
 # MOS 6567/6569 VIC-II Quick Reference
 
 Source: <https://www.zimmers.net/cbmpics/cbm/c64/vic-ii.txt>
@@ -274,3 +284,4 @@ Graphics mode is selected by the following bits in $d011 and $d016:
 - Doubled lines: assert bad line late (cycles 54-57) so RC wraps to 0 and same line renders twice.
 - DMA Delay: create bad line while sequencer idle (cycle 15-53). Initial three fetches see $ff or CPU opcode low nibble; VC misalignment shifts display horizontally without copying data.
 - Sprite stretching: toggle `MxYE` around cycle 16 to repeat or skip line increments; manipulating `MCBASE` permits arbitrary vertical scaling or double rendering.
+

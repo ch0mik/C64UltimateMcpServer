@@ -1,3 +1,13 @@
+---
+type: Reference
+title: SID Programming Best Practices
+description: Programming advice for SID music and sound effects.
+resource: c64://sound/sid-programming
+tags:
+- sound
+- guidance
+---
+
 # SID Programming Best Practices - Perfect Scale Generation
 
 ## Overview
@@ -196,3 +206,4 @@ This methodology can be applied to create more complex musical compositions whil
 
 *Document created: December 2024*  
 *Based on successful MCP server + C64 Ultimate testing session*
+

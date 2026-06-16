@@ -1,3 +1,13 @@
+---
+type: Reference
+title: PETSCII Style Guide
+description: PETSCII composition and layout guidance.
+resource: c64://graphics/petscii
+tags:
+- graphics
+- reference
+---
+
 # PETSCII Style Guide
 
 Colour presets and character codes for C64 PETSCII art. Target: LLM optimization.
@@ -104,3 +114,4 @@ Returns: `petsciiCodes[]`, `bitmapHex`, `rowHex`, `program`, dimensions
 - `c64://specs/charset` - Full PETSCII/screen code mappings
 - `c64://specs/vic` - VIC-II registers, colour RAM
 - `c64://specs/basic` - BASIC screen commands
+

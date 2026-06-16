@@ -1,3 +1,13 @@
+---
+type: Reference
+title: Commodore Bitmap Printing
+description: Bitmap printing guidance for Commodore printers.
+resource: c64://printer/commodore-bitmap
+tags:
+- printer
+- guidance
+---
+
 # Commodore MPS — Bitmap Images (Bit Image Mode)
 
 **Enter:** `CHR$(8)`  | **Exit:** `CHR$(15)` (or any printable char)  
@@ -29,3 +39,4 @@
 - Keep within line buffer; printer auto-prints when ~480 dots are filled.
 
 **Cross‑ref:** Basic text controls in `printer-commodore.md`; overview in `printer-spec.md`.
+

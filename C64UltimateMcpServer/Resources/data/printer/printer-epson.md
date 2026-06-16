@@ -1,3 +1,13 @@
+---
+type: Reference
+title: Epson Printer Specification
+description: Epson printer command reference.
+resource: c64://printer/epson-spec
+tags:
+- printer
+- reference
+---
+
 # Epson FX-80 (ESC/P) — Text Controls
 
 **Protocol:** ASCII with ESC sequences (`ESC` = `CHR$(27)`).
@@ -28,3 +38,4 @@
 ```
 
 **Cross‑ref:** Bitmap (`printer-epson-bitmap.md`); overview & routing (`printer-spec.md`).
+
