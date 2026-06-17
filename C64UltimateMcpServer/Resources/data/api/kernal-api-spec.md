@@ -16,7 +16,7 @@ tags:
 
 ## Use of Low Memory ($0000–$03FF)
 
-The KERNAL relies on the [low memory region](./memory/low-memory-map.md) for all I/O and interrupt control. It shares this space with BASIC.
+The KERNAL relies on the [low memory region](../memory/low-memory-map.md) for all I/O and interrupt control. It shares this space with BASIC.
 
 | Range | Purpose | Key Variables / Vectors |
 |:------|:---------|:------------------------|
@@ -76,4 +76,75 @@ and maintains IRQ/NMI linkage through `$0314–$0318`. Avoid overwriting these u
 | `$FFED` | 65517 | **SCREEN** | Return screen size | — | — | X=cols(40), Y=rows(25) | For cross‑platform compatibility |
 | `$FFF0` | 65520 | **PLOT** | Read/Set cursor | C=1 read; C=0 set; Y=row, X=col | — | On read: X=col, Y=row | Uses PNTR `$00D3`/TBLX `$00D6` |
 | `$FFF3` | 65523 | **IOBASE** | Return I/O base address | — | — | X=lo, Y=hi | Present value `$DC00` (CIA1) |
+
+## Practical Usage Notes
+
+### Screen Output
+
+Use `CHROUT` (`$FFD2`) for simple text or control-code output:
+
+```asm
+.org $C000
+start:
+    lda #$48
+    jsr $FFD2
+    rts
+```
+
+This writes through the current output channel. Call `CLRCHN` (`$FFCC`) first if previous code may have redirected output to a file, disk, or printer.
+
+### Keyboard Input
+
+Use `GETIN` (`$FFE4`) when a program should poll input without blocking:
+
+```asm
+.org $C000
+wait_key:
+    jsr $FFE4
+    beq wait_key
+    rts
+```
+
+Use `CHRIN` (`$FFCF`) for input from the current input channel. The keyboard path is line-oriented, so `GETIN` is usually better for game loops, menus, and hotkeys.
+
+### Long-Running Loops
+
+Call `STOP` (`$FFE1`) in generated demos that may otherwise run forever:
+
+```asm
+.org $C000
+loop:
+    jsr $FFE1
+    beq done
+    inc $D020
+    jmp loop
+done:
+    rts
+```
+
+This keeps generated code friendlier during testing and on real hardware.
+
+### File And Device I/O
+
+The usual sequence is:
+
+1. `SETLFS` (`$FFBA`) with logical file, device, and secondary address.
+2. `SETNAM` (`$FFBD`) with filename length and pointer.
+3. `OPEN` (`$FFC0`), then `CHKIN` or `CHKOUT`.
+4. `CHRIN` or `CHROUT` for byte transfer.
+5. `CLRCHN` (`$FFCC`) and `CLOSE` (`$FFC3`) when finished.
+
+Check carry/status after file operations and read `READST` (`$FFB7`) when device status matters.
+
+### Register Preservation
+
+Assume KERNAL calls may modify registers unless the routine contract says otherwise. If a generated routine needs values after a call, push them to the stack or store them in documented scratch memory first.
+
+# Citations
+
+[1] Local reference notes: `C:\Retro\Commodore\c64-voice-controll\mcp-c64\docs\txt\commodore-64-programmers-reference.txt`
+
+[2] Local source notes: `C:\Retro\Commodore\c64-voice-controll\mcp-c64\docs\txt\butterfield-ml-for-commodore-computers.txt`
+
+[3] Related MCP resource: `c64://assembly/ml-kernal-quickstart`
 

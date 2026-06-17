@@ -30,12 +30,14 @@ public static class C64ResourceCatalog
         new("c64://basic/examples/games/snake", "basic", "examples/games/snake", "BASIC Snake Game Example", "Small snake game example in BASIC V2.", "text/plain", ["basic", "examples", "games", "snake.bas"], ["basic", "example", "game"]),
         new("c64://basic/examples/games/tictactoe", "basic", "examples/games/tictactoe", "BASIC Tic-Tac-Toe Game Example", "Two-player tic-tac-toe example in BASIC V2.", "text/plain", ["basic", "examples", "games", "tictactoe64_03.bas"], ["basic", "example", "game"]),
         new("c64://assembly/spec", "assembly", "spec", "6510 Assembly Specification", "Overview of supported syntax and assembly conventions.", "text/markdown", ["assembly", "assembly-spec.md"], ["assembly", "reference"]),
-        new("c64://assembly/tooling-notes", "assembly", "tooling-notes", "6510 Assembly Tooling Notes", "Notes about assembly tooling and MCP-compatible source layout.", "text/markdown", ["assembly", "assembler-tooling-notes.md"], ["assembly", "tooling"]),
-        new("c64://assembly/examples/hello-sys", "assembly", "examples/hello-sys", "MCP-Compatible 6510 Hello SYS Example", "Simple assembly example that boots with SYS.", "text/plain", ["assembly", "examples", "hello-sys.asm"], ["assembly", "example"]),
-        new("c64://assembly/examples/text-scroll", "assembly", "examples/text-scroll", "MCP-Compatible 6510 Text Scroll Example", "Text scrolling example for MCP-compatible assembly.", "text/plain", ["assembly", "examples", "text-scroll.asm"], ["assembly", "example"]),
+        new("c64://assembly/tooling-notes", "assembly", "tooling-notes", "6510 Assembly Tooling Notes", "Notes about assembly tooling and the source layout supported by ultimate_generate_assembly_prg.", "text/markdown", ["assembly", "assembler-tooling-notes.md"], ["assembly", "tooling"]),
+        new("c64://assembly/ml-kernal-quickstart", "assembly", "ml-kernal-quickstart", "Machine Language KERNAL Quickstart", "Practical 6510 assembly quickstart for SYS loaders, screen output, keyboard polling, and RUN/STOP handling.", "text/markdown", ["assembly", "ml-kernal-quickstart.md"], ["assembly", "kernal", "quickstart"]),
+        new("c64://assembly/examples/hello-sys", "assembly", "examples/hello-sys", "6510 Hello SYS Example", "Simple assembly example that boots with SYS and uses the built-in assembly PRG generator syntax.", "text/plain", ["assembly", "examples", "hello-sys.asm"], ["assembly", "example"]),
+        new("c64://assembly/examples/text-scroll", "assembly", "examples/text-scroll", "6510 Text Scroll Example", "Text scrolling example using the built-in assembly PRG generator syntax.", "text/plain", ["assembly", "examples", "text-scroll.asm"], ["assembly", "example"]),
         new("c64://memory/map", "memory", "map", "C64 Memory Map", "General memory layout for the C64.", "text/markdown", ["memory", "memory-map.md"], ["memory", "reference"]),
         new("c64://memory/kernal", "memory", "kernal", "Kernal Memory Map", "KERNAL memory layout and address overview.", "text/markdown", ["memory", "kernal-memory-map.md"], ["memory", "reference"]),
         new("c64://memory/low", "memory", "low", "Low Memory Map", "Low-memory usage and reserved areas.", "text/markdown", ["memory", "low-memory-map.md"], ["memory", "reference"]),
+        new("c64://memory/mapping-notes", "memory", "mapping-notes", "C64 Practical Memory Mapping Notes", "Practical notes for using C64 memory locations safely from BASIC and 6510 assembly.", "text/markdown", ["memory", "mapping-notes.md"], ["memory", "mapping", "safety"]),
         new("c64://graphics/vic-spec", "graphics", "vic-spec", "VIC-II Graphics Specification", "VIC-II registers, timing, and graphics setup reference.", "text/markdown", ["graphics", "vic-spec.md"], ["graphics", "reference"]),
         new("c64://graphics/charset", "graphics", "charset", "Character Set Reference", "Character set and glyph reference in CSV format.", "text/csv", ["graphics", "character-set.csv"], ["graphics", "reference"]),
         new("c64://graphics/petscii", "graphics", "petscii", "PETSCII Style Guide", "PETSCII composition and layout guidance.", "text/markdown", ["graphics", "petscii-style-guide.md"], ["graphics", "reference"]),
@@ -58,6 +60,14 @@ public static class C64ResourceCatalog
         new("c64://printer/epson-bitmap", "printer", "epson-bitmap", "Epson Bitmap Printing", "Bitmap printing guidance for Epson printers.", "text/markdown", ["printer", "printer-epson-bitmap.md"], ["printer", "guidance"]),
         new("c64://api/basic-api", "api", "basic-api", "BASIC API Specification", "API reference for BASIC-related helpers.", "text/markdown", ["api", "basic-api-spec.md"], ["api", "reference"]),
         new("c64://api/kernal-api", "api", "kernal-api", "Kernal API Specification", "API reference for Kernal-related helpers.", "text/markdown", ["api", "kernal-api-spec.md"], ["api", "reference"]),
+        new("c64://examples/index", "examples", "index", "C64 Example Source Index", "MCP resource index for local C64 BASIC, assembly, and cc65 example sources.", "text/markdown", ["examples", "index.md"], ["examples", "source", "reference"]),
+        new("c64://examples/c64-ai-toolchain-catalog", "examples", "c64-ai-toolchain-catalog", "C64AIToolChain Example Catalog", "MCP resource catalog for MIT-licensed C64AIToolChain C and assembly examples.", "text/markdown", ["examples", "c64-ai-toolchain-catalog.md"], ["examples", "cc65", "assembly", "reference"]),
+        new("c64://examples/assembly/raster-bars-demo", "examples", "assembly/raster-bars-demo", "Raster Bars Assembly Demo", "Raster colour bars demo skeleton using the built-in assembly PRG generator syntax.", "text/plain", ["examples", "assembly", "raster-bars-demo.asm"], ["examples", "assembly", "demo"]),
+        new("c64://examples/assembly/sprite-demo", "examples", "assembly/sprite-demo", "Single Sprite Assembly Demo", "Single sprite setup and movement demo using the built-in assembly PRG generator syntax.", "text/plain", ["examples", "assembly", "sprite-demo.asm"], ["examples", "assembly", "sprite"]),
+        new("c64://examples/assembly/joystick-game-loop", "examples", "assembly/joystick-game-loop", "Joystick Game Loop Assembly Skeleton", "Joystick-driven game loop skeleton using the built-in assembly PRG generator syntax.", "text/plain", ["examples", "assembly", "joystick-game-loop.asm"], ["examples", "assembly", "game"]),
+        new("c64://examples/assembly/mcp-c64-hello-world", "examples", "assembly/mcp-c64-hello-world", "MCP-C64 Hello World Assembly Example", "Adaptation of the mcp-c64 assembly hello world example for the built-in assembly PRG generator.", "text/plain", ["examples", "assembly", "mcp-c64-hello-world.asm"], ["examples", "assembly", "source"]),
+        new("c64://examples/basic/mcp-c64-token-test", "examples", "basic/mcp-c64-token-test", "MCP-C64 BASIC Token Test Example", "Adaptation of the mcp-c64 BASIC tokenization example for the built-in BASIC PRG generator.", "text/plain", ["examples", "basic", "mcp-c64-token-test.bas"], ["examples", "basic", "source"]),
+        new("c64://sources/classic-c64-references", "sources", "classic-c64-references", "Classic C64 Reference Source Catalog", "Local source catalog for classic C64 books and manuals used to curate MCP resources.", "text/markdown", ["sources", "classic-c64-references.md"], ["sources", "reference", "okf"]),
         new("c64://memory/symbols", "memory", "symbols", "C64 Memory Symbols", "Common C64 memory symbols and labels.", "text/plain", ["memory", "symbols.txt"], ["memory", "reference"]),
         new("c64://disasm/basic-rom", "disasm", "basic-rom", "C64 BASIC ROM Disassembly", "Disassembly extract for the BASIC ROM.", "text/plain", ["disasm", "basic-rom.txt"], ["disasm", "reference"]),
         new("c64://disasm/kernal-rom", "disasm", "kernal-rom", "C64 KERNAL ROM Disassembly", "Disassembly extract for the KERNAL ROM.", "text/plain", ["disasm", "kernal-rom.txt"], ["disasm", "reference"])
@@ -94,11 +104,13 @@ public static class C64ResourceCatalog
         builder.AppendLine();
         builder.AppendLine("## Fast routing");
         builder.AppendLine("- BASIC programs: `c64://basic/spec`, `c64://basic/pitfalls`, then BASIC examples.");
-        builder.AppendLine("- Assembly work: `c64://assembly/spec`, `c64://assembly/tooling-notes`, then assembly examples.");
+        builder.AppendLine("- Assembly work: `c64://assembly/spec`, `c64://assembly/tooling-notes`, `c64://assembly/ml-kernal-quickstart`, then assembly examples.");
+        builder.AppendLine("- Example source discovery: `c64://examples/index`.");
         builder.AppendLine("- SID and audio: `c64://sound/sid-spec`, `c64://sound/sid-programming`, `c64://sound/sidwave`.");
         builder.AppendLine("- VIC-II and PETSCII: `c64://graphics/vic-spec`, `c64://graphics/petscii`, `c64://graphics/charset`.");
-        builder.AppendLine("- Memory and debugging: `c64://memory/map`, `c64://memory/low`, `c64://memory/kernal`, `c64://memory/symbols`.");
+        builder.AppendLine("- Memory and debugging: `c64://memory/map`, `c64://memory/low`, `c64://memory/kernal`, `c64://memory/mapping-notes`, `c64://memory/symbols`.");
         builder.AppendLine("- Drives, printer, and I/O: `c64://drive/spec`, `c64://printer/spec`, `c64://io/io-spec`, `c64://io/cia-spec`.");
+        builder.AppendLine("- Source provenance: `c64://sources/classic-c64-references`.");
         builder.AppendLine();
 
         foreach (var category in Categories)

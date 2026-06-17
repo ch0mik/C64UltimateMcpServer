@@ -1,7 +1,7 @@
 ---
 type: Reference
 title: 6510 Assembly Tooling Notes
-description: Notes about assembly tooling and MCP-compatible source layout.
+description: Notes about assembly tooling and the source layout supported by ultimate_generate_assembly_prg.
 resource: c64://assembly/tooling-notes
 tags:
 - assembly
@@ -30,7 +30,7 @@ This MCP server exposes `ultimate_generate_assembly_prg` for compiling textual 6
 - Macro systems like `!source`, `!bin`, `+start_at`, `+draw_text`
 - External file includes
 
-Use the MCP-native examples under `c64://assembly/examples/*` as the primary reference set.
+Use the built-in generator examples under `c64://assembly/examples/*` as the primary reference set.
 
 ## Launching compiled PRG
 

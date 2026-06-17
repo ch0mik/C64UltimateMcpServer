@@ -1,4 +1,4 @@
-; MCP-compatible 6510 sample (no macros/includes)
+; 6510 sample for the built-in assembly PRG generator (no macros/includes)
 .org $C000
 
 start:

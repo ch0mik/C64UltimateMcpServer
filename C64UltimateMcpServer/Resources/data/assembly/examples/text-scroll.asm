@@ -1,4 +1,4 @@
-; MCP-compatible 6510 text scroller
+; 6510 text scroller for the built-in assembly PRG generator
 ; Inspired by the classic VIC-II hardscroll + softscroll pattern from Codebase64 text scrolling notes.
 ; Strategy:
 ; - softscroll with $D016 lower 3 bits (7..0)

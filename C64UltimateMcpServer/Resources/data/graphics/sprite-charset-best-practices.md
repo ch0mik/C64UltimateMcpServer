@@ -41,6 +41,21 @@ Sprites are enabled via VIC-II registers:
 - `$D000-$D00F` - X/Y coordinates for sprites 0-7
 - `$07F8-$07FF` - Sprite data pointers (screen memory + $03F8)
 
+### Pointer, Priority, and Collision Workflow
+
+Use this sequence when generating a sprite demo or debugging a missing sprite:
+
+1. Choose the active VIC bank and screen base before assigning sprite pointers.
+2. Put each sprite frame on a 64-byte boundary; the sprite consumes 63 bytes and the final byte is unused padding.
+3. Store the pointer value at screen base + `$03F8` + sprite number. In the default screen, sprite 0 uses `$07F8`.
+4. Set X/Y with `$D000/$D001` for sprite 0, `$D002/$D003` for sprite 1, and so on.
+5. If X is 256 or greater, set the matching bit in `$D010`; clear it when X is below 256.
+6. Set colour in `$D027-$D02E`, then enable the sprite bit in `$D015`.
+7. Use `$D01B` only after the sprite appears; priority bugs are easier to diagnose after position and pointer are known good.
+8. Read `$D01E` for sprite-to-sprite collision and `$D01F` for sprite-to-background collision. Reading these registers clears the latched collision bits.
+
+For the default screen at `$0400`, pointer `$0D` selects sprite data at `$0340`, `$0E` selects `$0380`, and `$0F` selects `$03C0`. These are useful for tiny demos that use the cassette buffer and do not need tape.
+
 ### Safe Sprite Data Locations
 
 Use these memory ranges to avoid conflicts:
@@ -138,7 +153,7 @@ You don't need to redefine all 256 characters:
 
 **Requirements**:
 
-- Precise raster interrupt timing (see c64://specs/vic)
+- Precise raster interrupt timing (see `c64://graphics/vic-spec`)
 - Fast register updates (< 63 cycles between sprite positions)
 - Pre-calculated Y-coordinate tables for performance
 
@@ -248,7 +263,7 @@ Custom charsets have minimal performance impact:
 
 1. Use PETSCII style guide for colour selection
 2. Test on both PAL and NTSC if possible
-3. Maintain sufficient contrast (see c64://docs/petscii-style)
+3. Maintain sufficient contrast (see `c64://graphics/petscii`)
 4. Avoid adjacent similar-hue colours
 
 ## Tool Integration
@@ -277,7 +292,7 @@ The tool:
 
 When working with sprites and charsets:
 
-1. Use memory ranges documented in c64://specs/memory-map
+1. Use memory ranges documented in `c64://memory/map` and `c64://memory/mapping-notes`
 2. Avoid BASIC program area ($0801-$9FFF) unless controlling it
 3. Preserve zero page ($0000-$00FF) and stack ($0100-$01FF)
 4. Use the `c64_memory` operations `read` and `write` for safe access
@@ -318,13 +333,13 @@ When working with sprites and charsets:
 5. **Handle Errors**: Check return values and screen output
 6. **Optimize Last**: Get it working, then optimize if needed
 7. **Verify Hardware**: Test on real C64 or accurate emulator
-8. **Read Resources**: Consult c64://specs/vic for register details
+8. **Read Resources**: Consult `c64://graphics/vic-spec` for register details
 
 ## Related Resources
 
-- `c64://specs/vic` - Complete VIC-II register reference
-- `c64://specs/charset` - Character code mappings
-- `c64://docs/petscii-style` - Colour and style guidelines
-- `c64://specs/memory-map` - Memory layout and safe ranges
-- `c64://context/bootstrap` - Safety and workflow rules
+- `c64://graphics/vic-spec` - Complete VIC-II register reference
+- `c64://graphics/charset` - Character code mappings
+- `c64://graphics/petscii` - Colour and style guidelines
+- `c64://memory/map` - Memory layout and safe ranges
+- `c64://memory/mapping-notes` - Practical memory placement and banking notes
 

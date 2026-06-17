@@ -49,7 +49,7 @@ public class C64ResourceProvider
         MimeType = "text/markdown")]
     [Description("Resolve a catalogued C64 resource by category and slug.")]
     public ResourceContents GetCatalogResource(
-        [AllowedValues("basic", "assembly", "memory", "graphics", "sound", "io", "drive", "printer", "api", "disasm")]
+        [AllowedValues("basic", "assembly", "memory", "graphics", "sound", "io", "drive", "printer", "api", "disasm", "examples", "sources")]
         string category,
         string slug)
     {
@@ -107,15 +107,19 @@ public class C64ResourceProvider
     public ResourceContents GetAssemblySpec() => GetCatalogResourceByUri("c64://assembly/spec");
 
     [McpServerResource(UriTemplate = "c64://assembly/tooling-notes", Name = "6510 Assembly Tooling Notes", MimeType = "text/markdown")]
-    [Description("Notes about assembly tooling and MCP-compatible source layout.")]
+    [Description("Notes about assembly tooling and the source layout supported by ultimate_generate_assembly_prg.")]
     public ResourceContents GetAssemblyToolingNotes() => GetCatalogResourceByUri("c64://assembly/tooling-notes");
 
-    [McpServerResource(UriTemplate = "c64://assembly/examples/hello-sys", Name = "MCP-Compatible 6510 Hello SYS Example", MimeType = "text/plain")]
-    [Description("Simple assembly example that boots with SYS.")]
+    [McpServerResource(UriTemplate = "c64://assembly/ml-kernal-quickstart", Name = "Machine Language KERNAL Quickstart", MimeType = "text/markdown")]
+    [Description("Practical 6510 assembly quickstart for SYS loaders, screen output, keyboard polling, and RUN/STOP handling.")]
+    public ResourceContents GetAssemblyMlKernalQuickstart() => GetCatalogResourceByUri("c64://assembly/ml-kernal-quickstart");
+
+    [McpServerResource(UriTemplate = "c64://assembly/examples/hello-sys", Name = "6510 Hello SYS Example", MimeType = "text/plain")]
+    [Description("Simple assembly example that boots with SYS and uses the built-in assembly PRG generator syntax.")]
     public ResourceContents GetAssemblyExampleMcpHelloSys() => GetCatalogResourceByUri("c64://assembly/examples/hello-sys");
 
-    [McpServerResource(UriTemplate = "c64://assembly/examples/text-scroll", Name = "MCP-Compatible 6510 Text Scroll Example", MimeType = "text/plain")]
-    [Description("Text scrolling example for MCP-compatible assembly.")]
+    [McpServerResource(UriTemplate = "c64://assembly/examples/text-scroll", Name = "6510 Text Scroll Example", MimeType = "text/plain")]
+    [Description("Text scrolling example using the built-in assembly PRG generator syntax.")]
     public ResourceContents GetAssemblyExampleMcpTextScroll() => GetCatalogResourceByUri("c64://assembly/examples/text-scroll");
 
     [McpServerResource(UriTemplate = "c64://memory/map", Name = "C64 Memory Map", MimeType = "text/markdown")]
@@ -129,6 +133,10 @@ public class C64ResourceProvider
     [McpServerResource(UriTemplate = "c64://memory/low", Name = "Low Memory Map", MimeType = "text/markdown")]
     [Description("Low-memory usage and reserved areas.")]
     public ResourceContents GetLowMemoryMap() => GetCatalogResourceByUri("c64://memory/low");
+
+    [McpServerResource(UriTemplate = "c64://memory/mapping-notes", Name = "C64 Practical Memory Mapping Notes", MimeType = "text/markdown")]
+    [Description("Practical notes for using C64 memory locations safely from BASIC and 6510 assembly.")]
+    public ResourceContents GetMemoryMappingNotes() => GetCatalogResourceByUri("c64://memory/mapping-notes");
 
     [McpServerResource(UriTemplate = "c64://graphics/vic-spec", Name = "VIC-II Graphics Specification", MimeType = "text/markdown")]
     [Description("VIC-II video chip reference covering modes, registers, and screen behavior.")]
@@ -217,6 +225,38 @@ public class C64ResourceProvider
     [McpServerResource(UriTemplate = "c64://api/kernal-api", Name = "Kernal API Specification", MimeType = "text/markdown")]
     [Description("API-oriented reference for KERNAL routines, entry points, and calling expectations.")]
     public ResourceContents GetKernalApiSpec() => GetCatalogResourceByUri("c64://api/kernal-api");
+
+    [McpServerResource(UriTemplate = "c64://examples/index", Name = "C64 Example Source Index", MimeType = "text/markdown")]
+    [Description("MCP resource index for local C64 BASIC, assembly, and cc65 example sources.")]
+    public ResourceContents GetExampleSourceIndex() => GetCatalogResourceByUri("c64://examples/index");
+
+    [McpServerResource(UriTemplate = "c64://examples/c64-ai-toolchain-catalog", Name = "C64AIToolChain Example Catalog", MimeType = "text/markdown")]
+    [Description("MCP resource catalog for MIT-licensed C64AIToolChain C and assembly examples.")]
+    public ResourceContents GetExampleC64AiToolChainCatalog() => GetCatalogResourceByUri("c64://examples/c64-ai-toolchain-catalog");
+
+    [McpServerResource(UriTemplate = "c64://examples/assembly/raster-bars-demo", Name = "Raster Bars Assembly Demo", MimeType = "text/plain")]
+    [Description("Raster colour bars demo skeleton using the built-in assembly PRG generator syntax.")]
+    public ResourceContents GetExampleAssemblyRasterBarsDemo() => GetCatalogResourceByUri("c64://examples/assembly/raster-bars-demo");
+
+    [McpServerResource(UriTemplate = "c64://examples/assembly/sprite-demo", Name = "Single Sprite Assembly Demo", MimeType = "text/plain")]
+    [Description("Single sprite setup and movement demo using the built-in assembly PRG generator syntax.")]
+    public ResourceContents GetExampleAssemblySpriteDemo() => GetCatalogResourceByUri("c64://examples/assembly/sprite-demo");
+
+    [McpServerResource(UriTemplate = "c64://examples/assembly/joystick-game-loop", Name = "Joystick Game Loop Assembly Skeleton", MimeType = "text/plain")]
+    [Description("Joystick-driven game loop skeleton using the built-in assembly PRG generator syntax.")]
+    public ResourceContents GetExampleAssemblyJoystickGameLoop() => GetCatalogResourceByUri("c64://examples/assembly/joystick-game-loop");
+
+    [McpServerResource(UriTemplate = "c64://examples/assembly/mcp-c64-hello-world", Name = "MCP-C64 Hello World Assembly Example", MimeType = "text/plain")]
+    [Description("Adaptation of the mcp-c64 assembly hello world example for the built-in assembly PRG generator.")]
+    public ResourceContents GetExampleMcpC64AssemblyHelloWorld() => GetCatalogResourceByUri("c64://examples/assembly/mcp-c64-hello-world");
+
+    [McpServerResource(UriTemplate = "c64://examples/basic/mcp-c64-token-test", Name = "MCP-C64 BASIC Token Test Example", MimeType = "text/plain")]
+    [Description("Adaptation of the mcp-c64 BASIC tokenization example for the built-in BASIC PRG generator.")]
+    public ResourceContents GetExampleMcpC64BasicTokenTest() => GetCatalogResourceByUri("c64://examples/basic/mcp-c64-token-test");
+
+    [McpServerResource(UriTemplate = "c64://sources/classic-c64-references", Name = "Classic C64 Reference Source Catalog", MimeType = "text/markdown")]
+    [Description("Local source catalog for classic C64 books and manuals used to curate MCP resources.")]
+    public ResourceContents GetClassicC64ReferenceSources() => GetCatalogResourceByUri("c64://sources/classic-c64-references");
 
     [McpServerResource(UriTemplate = "c64://memory/symbols", Name = "C64 Memory Symbols", MimeType = "text/plain")]
     [Description("Common C64 memory symbols and labels.")]

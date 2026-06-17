@@ -64,7 +64,7 @@ Border matching: Set border=background for seamless look.
 **PETSCII codes** ($00-$FF): Used in BASIC strings, CHR$(), keyboard input, PRINT statements
 **Screen codes** ($00-$FF): Values directly written to screen memory ($0400-$07E7)
 
-Conversion: Screen code ≠ PETSCII code. Use charset reference (c64://specs/charset) for mapping.
+Conversion: Screen code ≠ PETSCII code. Use charset reference (`c64://graphics/charset`) for mapping.
 
 **Usage**:
 - BASIC/printing: Use PETSCII codes with CHR$() or PRINT
@@ -111,7 +111,7 @@ Returns: `petsciiCodes[]`, `bitmapHex`, `rowHex`, `program`, dimensions
 
 ## Related Resources
 
-- `c64://specs/charset` - Full PETSCII/screen code mappings
-- `c64://specs/vic` - VIC-II registers, colour RAM
-- `c64://specs/basic` - BASIC screen commands
+- `c64://graphics/charset` - Full PETSCII/screen code mappings
+- `c64://graphics/vic-spec` - VIC-II registers, colour RAM
+- `c64://basic/spec` - BASIC screen commands
 

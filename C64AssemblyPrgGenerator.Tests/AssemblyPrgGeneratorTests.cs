@@ -91,4 +91,62 @@ public class AssemblyPrgGeneratorTests
             }
         }
     }
+
+    [Fact]
+    public void GeneratePrg_ExampleResource_McpC64HelloWorld_Compiles()
+    {
+        var sourcePath = Path.GetFullPath(Path.Combine(
+            AppContext.BaseDirectory,
+            "..",
+            "..",
+            "..",
+            "..",
+            "C64UltimateMcpServer",
+            "Resources",
+            "data",
+            "examples",
+            "assembly",
+            "mcp-c64-hello-world.asm"));
+        var source = File.ReadAllText(sourcePath);
+
+        var sut = new AssemblyPrgGenerator();
+        var result = sut.GeneratePrg(source, basicRunLoader: true);
+
+        Assert.Equal((ushort)0xC000, result.Origin);
+        Assert.True(result.BasicRunLoader);
+        Assert.True(result.PrgBytes.Length > 32);
+        Assert.Equal(0x01, result.PrgBytes[0]);
+        Assert.Equal(0x08, result.PrgBytes[1]);
+    }
+
+    [Theory]
+    [InlineData("mcp-c64-hello-world.asm")]
+    [InlineData("raster-bars-demo.asm")]
+    [InlineData("sprite-demo.asm")]
+    [InlineData("joystick-game-loop.asm")]
+    public void GeneratePrg_AssemblyExampleResources_CompileWithBasicLoader(string fileName)
+    {
+        var sourcePath = Path.GetFullPath(Path.Combine(
+            AppContext.BaseDirectory,
+            "..",
+            "..",
+            "..",
+            "..",
+            "C64UltimateMcpServer",
+            "Resources",
+            "data",
+            "examples",
+            "assembly",
+            fileName));
+        var source = File.ReadAllText(sourcePath);
+
+        var sut = new AssemblyPrgGenerator();
+        var result = sut.GeneratePrg(source, basicRunLoader: true);
+
+        Assert.Equal((ushort)0xC000, result.Origin);
+        Assert.True(result.BasicRunLoader);
+        Assert.True(result.PrgBytes.Length > 16);
+        Assert.Equal(0x01, result.PrgBytes[0]);
+        Assert.Equal(0x08, result.PrgBytes[1]);
+    }
 }
