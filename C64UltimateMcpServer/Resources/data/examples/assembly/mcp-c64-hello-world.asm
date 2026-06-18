@@ -1,6 +1,5 @@
 ; Adaptation of mcp-c64 asm/hello/hello_world.asm for the built-in assembly PRG generator.
-; Source provenance:
-; C:\Retro\Commodore\c64-voice-controll\mcp-c64\asm\hello\hello_world.asm
+; Source family: mcp-c64 asm hello world example.
 ;
 ; Use with ultimate_generate_assembly_prg and basicRunLoader=true.
 .org $C000

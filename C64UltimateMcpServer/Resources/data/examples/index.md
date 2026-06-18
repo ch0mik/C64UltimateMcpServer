@@ -1,7 +1,7 @@
 ---
 type: Reference
-title: C64 Example Source Index
-description: MCP resource index for local C64 BASIC, assembly, and cc65 example sources.
+title: C64 Embedded Example Index
+description: MCP resource index for embedded C64 BASIC and assembly examples.
 resource: c64://examples/index
 tags:
 - examples
@@ -9,21 +9,19 @@ tags:
 - reference
 ---
 
-# C64 Example Source Index
+# C64 Embedded Example Index
 
-This resource routes agents to local example sources that can inform generated C64 programs. Examples listed here are not all directly supported by the current MCP generators.
+This resource routes agents to examples embedded in the MCP server under `Resources/data`. It must remain portable across local runs, containers, and packaged deployments, so entries use `c64://` resource URIs instead of host-specific file paths.
 
 ## Recommended First Imports
 
-| Source | Local file | MCP fit |
+| Source | Embedded resource | Fit |
 | --- | --- | --- |
 | MCP raster bars demo | `c64://examples/assembly/raster-bars-demo` | Good first demo/effect skeleton for colour timing and RUN/STOP-friendly loops. |
 | MCP sprite demo | `c64://examples/assembly/sprite-demo` | Good first sprite setup example with pointer, copied sprite data, movement, and cleanup. |
 | MCP joystick game loop | `c64://examples/assembly/joystick-game-loop` | Good first game-loop skeleton using joystick port 2, screen RAM, and frame pacing. |
-| mcp-c64 assembly hello world | `C:\Retro\Commodore\c64-voice-controll\mcp-c64\asm\hello\hello_world.asm` | Good fit for `ultimate_generate_assembly_prg` after syntax compatibility review. |
-| mcp-c64 BASIC token test | `C:\Retro\Commodore\c64-voice-controll\mcp-c64\basic\token\token_test.bas` | Good fit for `ultimate_generate_basic_prg` after token/control-code compatibility review. |
-| mcp-c64 fire demo | `C:\Retro\Commodore\c64-voice-controll\mcp-c64\asm\graphics\fire_demo.asm` | Useful assembly graphics example; depends on included library. |
-| mcp-c64 line draw library | `C:\Retro\Commodore\c64-voice-controll\mcp-c64\asm\graphics\line_draw_library.asm` | Useful assembly library material; import only with a compatible include strategy. |
+| mcp-c64 assembly hello world adaptation | `c64://examples/assembly/mcp-c64-hello-world` | Good fit for `ultimate_generate_assembly_prg`; already adapted for the built-in assembly PRG generator. |
+| mcp-c64 BASIC token test adaptation | `c64://examples/basic/mcp-c64-token-test` | Good fit for `ultimate_generate_basic_prg`; already embedded as a BASIC source resource. |
 
 ## Agent Starting Points
 
@@ -36,27 +34,28 @@ This resource routes agents to local example sources that can inform generated C
 | BASIC token/control-code behavior | `c64://examples/basic/mcp-c64-token-test` |
 | Larger game references | `c64://examples/c64-ai-toolchain-catalog` |
 
-## C64AIToolChain Reference Set
+## C64AIToolChain-Derived Knowledge
 
-`C64AIToolChain` is MIT licensed and contains many complete C64 examples. Treat these as reference material until this MCP server has a cc65/C workflow.
+The server embeds compact examples and source-derived notes from the MIT-licensed C64AIToolChain review. Larger games and cc65 projects are not referenced by host file path; agents should use the embedded summaries and examples below.
 
-| Area | Candidate files | Notes |
+| Area | Embedded starting point | Notes |
 | --- | --- | --- |
-| Assembly games | `snake/snake.s`, `snake2/snake.s`, `tetris_v1/tetris.s`, `tetris_v2/tetris.s`, `pacman/pacman.s` | Useful for gameplay loops, zero-page layout, joystick handling, and AI/demo behavior. |
-| Assembly helpers | `dreadline/fastscroll.s` | Useful for optimized scrolling patterns. |
-| cc65 effects | `starfield/starfield.c`, `rasterbars/rasterbars.c`, `fire/fire.c`, `plasma/plasma.c`, `scroller/scroller.c` | Useful for C-level algorithms and visual effects, not directly compilable by current MCP tools. |
-| cc65 games | `pong/pong.c`, `breakout/breakout.c`, `arkanoid/arkanoid.c`, `invaders/invaders.c`, `meteor/meteor.c`, `dreadline/dreadline.c` | Larger examples for game structure, assets, collisions, scoring, and sound. |
+| Assembly game loops | `c64://examples/assembly/joystick-game-loop` | Useful for gameplay loops, zero-page state, joystick handling, and screen RAM updates. |
+| Assembly visual effects | `c64://examples/assembly/raster-bars-demo` | Useful for frame pacing, colour effects, and RUN/STOP-friendly loops. |
+| Sprite movement | `c64://examples/assembly/sprite-demo` | Useful for sprite pointers, copied sprite data, movement, and cleanup. |
+| cc65-style effects | `c64://examples/c64-ai-toolchain-catalog` | Algorithm notes for starfields, raster bars, fire, plasma, and scrollers; translate to BASIC or supported assembly before compiling. |
+| cc65-style games | `c64://examples/c64-ai-toolchain-catalog` | Design notes for collision, scoring, levels, waves, and sound; reference-only until a C compiler workflow exists. |
 
 ## Import Policy
 
-- Only place examples in `Resources/data` when they are useful to MCP clients.
+- Keep resources self-contained under `Resources/data`; do not expose host-specific absolute paths.
 - Keep examples small enough to be read in one resource call where possible.
-- Prefer working BASIC or single-file assembly examples before larger cc65 examples.
-- Mark cc65 examples clearly as reference-only until a C compiler workflow exists.
-- Preserve source attribution and license notes when copying from `C64AIToolChain`.
+- Prefer working BASIC or single-file assembly examples before larger cc65-derived notes.
+- Mark cc65-derived material clearly as reference-only until a C compiler workflow exists.
+- Preserve source attribution and license notes in metadata without requiring access to the original local checkout.
 
 # Citations
 
-[1] Local source repository: `C:\Retro\Commodore\c64-voice-controll\mcp-c64`
+[1] Source family: mcp-c64 example sources, adapted into embedded `c64://examples/...` resources.
 
-[2] Local MIT-licensed source repository: `C:\Retro\Commodore\c64-voice-controll\C64AIToolChain`
+[2] Source family: MIT-licensed C64AIToolChain examples, summarized into embedded MCP resources.

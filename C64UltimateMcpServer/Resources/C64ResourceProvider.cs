@@ -226,12 +226,12 @@ public class C64ResourceProvider
     [Description("API-oriented reference for KERNAL routines, entry points, and calling expectations.")]
     public ResourceContents GetKernalApiSpec() => GetCatalogResourceByUri("c64://api/kernal-api");
 
-    [McpServerResource(UriTemplate = "c64://examples/index", Name = "C64 Example Source Index", MimeType = "text/markdown")]
-    [Description("MCP resource index for local C64 BASIC, assembly, and cc65 example sources.")]
+    [McpServerResource(UriTemplate = "c64://examples/index", Name = "C64 Embedded Example Index", MimeType = "text/markdown")]
+    [Description("MCP resource index for embedded C64 BASIC and assembly examples.")]
     public ResourceContents GetExampleSourceIndex() => GetCatalogResourceByUri("c64://examples/index");
 
-    [McpServerResource(UriTemplate = "c64://examples/c64-ai-toolchain-catalog", Name = "C64AIToolChain Example Catalog", MimeType = "text/markdown")]
-    [Description("MCP resource catalog for MIT-licensed C64AIToolChain C and assembly examples.")]
+    [McpServerResource(UriTemplate = "c64://examples/c64-ai-toolchain-catalog", Name = "C64AIToolChain-Derived Embedded Notes", MimeType = "text/markdown")]
+    [Description("Embedded MCP notes derived from MIT-licensed C64AIToolChain C and assembly examples.")]
     public ResourceContents GetExampleC64AiToolChainCatalog() => GetCatalogResourceByUri("c64://examples/c64-ai-toolchain-catalog");
 
     [McpServerResource(UriTemplate = "c64://examples/assembly/raster-bars-demo", Name = "Raster Bars Assembly Demo", MimeType = "text/plain")]
@@ -254,8 +254,8 @@ public class C64ResourceProvider
     [Description("Adaptation of the mcp-c64 BASIC tokenization example for the built-in BASIC PRG generator.")]
     public ResourceContents GetExampleMcpC64BasicTokenTest() => GetCatalogResourceByUri("c64://examples/basic/mcp-c64-token-test");
 
-    [McpServerResource(UriTemplate = "c64://sources/classic-c64-references", Name = "Classic C64 Reference Source Catalog", MimeType = "text/markdown")]
-    [Description("Local source catalog for classic C64 books and manuals used to curate MCP resources.")]
+    [McpServerResource(UriTemplate = "c64://sources/classic-c64-references", Name = "Classic C64 Reference Provenance", MimeType = "text/markdown")]
+    [Description("Provenance notes for classic C64 books and manuals used to curate embedded MCP resources.")]
     public ResourceContents GetClassicC64ReferenceSources() => GetCatalogResourceByUri("c64://sources/classic-c64-references");
 
     [McpServerResource(UriTemplate = "c64://memory/symbols", Name = "C64 Memory Symbols", MimeType = "text/plain")]

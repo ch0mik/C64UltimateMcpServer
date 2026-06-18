@@ -101,6 +101,6 @@ This is useful for visual demos or generated experiments that may otherwise run 
 
 # Citations
 
-[1] Local source notes: `C:\Retro\Commodore\c64-voice-controll\mcp-c64\docs\txt\butterfield-ml-for-commodore-computers.txt`
+[1] Source-derived notes from Machine Language for the Commodore 64 and Other Commodore Computers.
 
-[2] Local reference notes: `C:\Retro\Commodore\c64-voice-controll\mcp-c64\docs\txt\commodore-64-programmers-reference.txt`
+[2] Source-derived notes from Commodore 64 Programmer's Reference Guide.

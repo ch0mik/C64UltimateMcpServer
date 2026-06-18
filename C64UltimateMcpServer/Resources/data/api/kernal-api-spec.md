@@ -16,7 +16,7 @@ tags:
 
 ## Use of Low Memory ($0000–$03FF)
 
-The KERNAL relies on the [low memory region](../memory/low-memory-map.md) for all I/O and interrupt control. It shares this space with BASIC.
+The KERNAL relies on the low memory region (`c64://memory/low`) for all I/O and interrupt control. It shares this space with BASIC.
 
 | Range | Purpose | Key Variables / Vectors |
 |:------|:---------|:------------------------|
@@ -142,9 +142,9 @@ Assume KERNAL calls may modify registers unless the routine contract says otherw
 
 # Citations
 
-[1] Local reference notes: `C:\Retro\Commodore\c64-voice-controll\mcp-c64\docs\txt\commodore-64-programmers-reference.txt`
+[1] Source-derived notes from Commodore 64 Programmer's Reference Guide.
 
-[2] Local source notes: `C:\Retro\Commodore\c64-voice-controll\mcp-c64\docs\txt\butterfield-ml-for-commodore-computers.txt`
+[2] Source-derived notes from Machine Language for the Commodore 64 and Other Commodore Computers.
 
 [3] Related MCP resource: `c64://assembly/ml-kernal-quickstart`
 

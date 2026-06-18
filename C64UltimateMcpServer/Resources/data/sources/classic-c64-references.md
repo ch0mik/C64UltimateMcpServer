@@ -1,7 +1,7 @@
 ---
 type: Reference
-title: Classic C64 Reference Source Catalog
-description: Local source catalog for classic C64 books and manuals used to curate MCP resources.
+title: Classic C64 Reference Provenance
+description: Provenance notes for classic C64 books and manuals used to curate embedded MCP resources.
 resource: c64://sources/classic-c64-references
 tags:
 - sources
@@ -9,20 +9,21 @@ tags:
 - okf
 ---
 
-# Classic C64 Reference Source Catalog
+# Classic C64 Reference Provenance
 
-This resource records local source material that can inform curated MCP resources. These files are large transcriptions or PDFs, so they should be treated as source material rather than embedded wholesale into the MCP resource catalog.
+This resource records source provenance for curated MCP resources. The original books/manuals are large reference works, so this MCP server embeds compact, task-oriented notes instead of requiring access to host-specific source files.
 
-## Local Source Set
+## Source Set
 
-| Source | Local file | Best use |
+| Source | Embedded use |
 | --- | --- | --- |
-| Machine Language for the Commodore 64 and Other Commodore Computers | `C:\Retro\Commodore\c64-voice-controll\mcp-c64\docs\txt\butterfield-ml-for-commodore-computers.txt` | Assembly learning notes, KERNAL calls, monitor/debugging workflow, BASIC and machine-language integration. |
-| Commodore 64 Programmer's Reference Guide | `C:\Retro\Commodore\c64-voice-controll\mcp-c64\docs\txt\commodore-64-programmers-reference.txt` | BASIC, graphics, sound, KERNAL routines, memory map, chip specifications, screen and character-code references. |
-| Mapping the Commodore 64 | `C:\Retro\Commodore\c64-voice-controll\mcp-c64\docs\txt\leemon-mapping-the-c64.txt` | Practical memory-location notes, zero page and system variable behavior, I/O area details, screen/color tables, keycodes. |
+| Machine Language for the Commodore 64 and Other Commodore Computers | Assembly learning notes, KERNAL calls, monitor/debugging workflow, BASIC and machine-language integration. |
+| Commodore 64 Programmer's Reference Guide | BASIC, graphics, sound, KERNAL routines, memory map, chip specifications, screen and character-code references. |
+| Mapping the Commodore 64 | Practical memory-location notes, zero page and system variable behavior, I/O area details, screen/color tables, keycodes. |
 
 ## Resource Policy
 
+- Do not require host-specific absolute paths from MCP resources.
 - Do not copy full book/manual transcriptions into `Resources/data`.
 - Prefer compact OKF documents with frontmatter, tables, examples, and citations.
 - Use paraphrased technical notes unless a short quote is needed.
@@ -38,8 +39,8 @@ This resource records local source material that can inform curated MCP resource
 
 # Citations
 
-[1] Local TXT source: `C:\Retro\Commodore\c64-voice-controll\mcp-c64\docs\txt\butterfield-ml-for-commodore-computers.txt`
+[1] Machine Language for the Commodore 64 and Other Commodore Computers.
 
-[2] Local TXT source: `C:\Retro\Commodore\c64-voice-controll\mcp-c64\docs\txt\commodore-64-programmers-reference.txt`
+[2] Commodore 64 Programmer's Reference Guide.
 
-[3] Local TXT source: `C:\Retro\Commodore\c64-voice-controll\mcp-c64\docs\txt\leemon-mapping-the-c64.txt`
+[3] Mapping the Commodore 64.

@@ -4,7 +4,7 @@
 
 > ⚙️ **This project was built 100% using AI Agent prompts** - Every line of code, configuration, and documentation was generated through conversational prompts to GitHub Copilot Agent.
 
-Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ultimate** device with **46 MCP tools**, **15 MCP prompts**, and **41 embedded documentation resources**. Built in C# with enterprise-grade architecture, type safety, and comprehensive API coverage.
+Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ultimate** device with **46 MCP tools**, **15 MCP prompts**, and **51 embedded documentation resources**. Built in C# with enterprise-grade architecture, type safety, and comprehensive API coverage.
 
 **License:** MIT License (see [LICENSE](LICENSE) file)
 
@@ -17,7 +17,7 @@ Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ult
 - **Complete Ultimate 64 API Support**: 46 MCP tools covering the Ultimate REST API plus PRG generation workflows
 - **MCP Prompts Support**: 15 prompt templates exposed through `prompts/list` and `prompts/get`
 - **BASIC to PRG Compilation**: Real-time compilation of BASIC V2 source code to executable PRG files
-- **MCP Resources**: 41 embedded documentation resources (BASIC specs, Assembly guides, Kernal API, memory maps, graphics, sound, I/O, drive, printer, keyboard/control codes, disassembly)
+- **MCP Resources**: 51 embedded documentation resources (BASIC specs, Assembly guides, examples, source catalogs, Kernal API, memory maps, graphics, sound, I/O, drive, printer, keyboard/control codes, disassembly)
 - **Separated Client Library**: Reusable `C64UltimateClient` NuGet package with clean async API
 - **Clean Architecture**: Client → Service → MCP wrapper pattern with proper DI
 - **Streamable HTTP Transport**: Remote multi-client support with session-aware MCP interactions
@@ -29,6 +29,19 @@ Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ult
 - **Structured Logging**: Separate loggers for client and service layers
 - **Production-Ready**: Zero errors/warnings, comprehensive error handling
 - **Agent Integration**: Works with Continue, Copilot, Cody, Cursor, Claude Desktop
+
+## 🧠 Embedded Knowledge Resources
+
+The server exposes a curated MCP resource catalog under `c64://resources/index`. The resources are stored in `C64UltimateMcpServer/Resources/data` as OKF-style markdown or plain-text assets and are wired through `C64ResourceCatalog` and `C64ResourceProvider`.
+
+Recent additions make the resource set more useful for agents writing Commodore 64 games, demos, and hardware-aware programs:
+
+- **Source provenance**: `c64://sources/classic-c64-references` records the classic C64 books/manuals used as source material without requiring host-specific source paths.
+- **Example routing**: `c64://examples/index` and `c64://examples/c64-ai-toolchain-catalog` route agents to embedded examples that work with the built-in PRG generators and portable C64AIToolChain-derived notes.
+- **Ready-to-use assembly examples**: `c64://examples/assembly/raster-bars-demo`, `c64://examples/assembly/sprite-demo`, and `c64://examples/assembly/joystick-game-loop` provide compact, tested starting points for demos and games.
+- **Practical coding references**: `c64://assembly/ml-kernal-quickstart`, `c64://memory/mapping-notes`, expanded KERNAL API notes, and improved sprite/charset guidance help agents choose safe memory locations, KERNAL calls, and VIC-II workflows.
+
+The embedded examples are intentionally small and aligned with the built-in BASIC/assembly PRG generators. Larger C/cc65 examples are indexed as reference material until a C compiler workflow is added.
 
 ## 🚀 Quick Start
 
@@ -222,15 +235,15 @@ Ask Cody: List all available config categories
 ### File Management (1)
 - **ultimate_get_file_info** - Get file information
 
-### Configuration Management (6)
+### Configuration Management (8)
 - **ultimate_get_config_categories** - Get list of available configuration categories
 - **ultimate_get_config_category** - Get all settings in a category
 - **ultimate_get_config_item** - Get single configuration value
 - **ultimate_set_config_item** - Set configuration value
 - **ultimate_bulk_config_update** - Update multiple settings at once
+- **ultimate_save_config** - Save current configuration to flash
 - **ultimate_load_config** - Load configuration from flash
-
-Note: `ultimate_save_config` and `ultimate_reset_config` are also available for configuration management
+- **ultimate_reset_config** - Reset configuration to defaults
 
 ### Connection Management (2)
 - **ultimate_get_connection** - Get current connection settings
@@ -263,18 +276,18 @@ Use `prompts/list` and `prompts/get` for prompts, and `tools/call` only for tool
 ## Summary (46 Total Tools)
 
 - **Machine Control**: 5 tools
-- **Program Management**: 6 tools
+- **Program Management**: 7 tools
 - **Memory Management**: 5 tools
 - **Audio Playback**: 5 tools
 - **Drive Management**: 7 tools
 - **Disk Creation**: 4 tools
 - **ROM Management**: 1 tool
 - **File Management**: 1 tool
-- **Configuration Management**: 6 tools
+- **Configuration Management**: 8 tools
 - **Connection Management**: 2 tools
 - **System Information**: 1 tool
 
-## 📚 Resources (41 Total)
+## 📚 Resources (51 Total)
 
 Embedded documentation accessible via MCP Inspector at `http://localhost:8000`:
 
@@ -289,16 +302,19 @@ Embedded documentation accessible via MCP Inspector at `http://localhost:8000`:
 - **c64://basic/examples/games/snake** - Snake example
 - **c64://basic/examples/games/tictactoe** - Tic-tac-toe example
 
-### Assembly Resources (4)
+### Assembly Resources (5)
 - **c64://assembly/spec** - 6510 Assembly Language Specification
 - **c64://assembly/tooling-notes** - 6510 Assembly Tooling Notes for MCP compiler subset
+- **c64://assembly/ml-kernal-quickstart** - Machine-language KERNAL quickstart
 - **c64://assembly/examples/hello-sys** - Minimal SYS-start assembly example
 - **c64://assembly/examples/text-scroll** - VIC-II text scroller (softscroll + hardscroll) example
 
-### Memory Resources (3)
+### Memory Resources (5)
 - **c64://memory/map** - C64 Memory Map (0x0000-0xFFFF)
 - **c64://memory/kernal** - Kernal Memory Map (ROM $E000-$FFFF)
 - **c64://memory/low** - Low Memory Map (0x0000-0x03FF)
+- **c64://memory/mapping-notes** - Practical memory placement and banking notes
+- **c64://memory/symbols** - Common memory symbols
 
 ### Graphics Resources (4)
 - **c64://graphics/vic-spec** - VIC-II Chip Specification
@@ -330,10 +346,23 @@ Embedded documentation accessible via MCP Inspector at `http://localhost:8000`:
 - **c64://printer/commodore-bitmap** - Commodore bitmap printing
 - **c64://printer/epson-bitmap** - Epson bitmap printing
 
-### API / Reference Resources (5)
+### API Resources (2)
 - **c64://api/basic-api** - BASIC callable API reference
 - **c64://api/kernal-api** - Kernal callable API reference
-- **c64://memory/symbols** - Common memory symbols
+
+### Example Resources (7)
+- **c64://examples/index** - Example source routing index
+- **c64://examples/c64-ai-toolchain-catalog** - C64AIToolChain-derived embedded notes
+- **c64://examples/assembly/raster-bars-demo** - Raster bars assembly demo
+- **c64://examples/assembly/sprite-demo** - Single sprite assembly demo
+- **c64://examples/assembly/joystick-game-loop** - Joystick game loop assembly skeleton
+- **c64://examples/assembly/mcp-c64-hello-world** - MCP-C64 hello world assembly example
+- **c64://examples/basic/mcp-c64-token-test** - MCP-C64 BASIC tokenization example
+
+### Source Catalog Resources (1)
+- **c64://sources/classic-c64-references** - Classic C64 reference provenance
+
+### Disassembly Resources (2)
 - **c64://disasm/basic-rom** - BASIC ROM disassembly extract
 - **c64://disasm/kernal-rom** - KERNAL ROM disassembly extract
 
@@ -579,9 +608,9 @@ networks:
 
 ## ✅ Status: Production Ready
 
-- ✅ 45 production tools implemented for C64 Ultimate operations
-- ✅ 14 MCP prompts implemented
-- ✅ 41 embedded documentation resources
+- ✅ 46 production tools implemented for C64 Ultimate operations
+- ✅ 15 MCP prompts implemented
+- ✅ 51 embedded documentation resources
 - ✅ BASIC to PRG on-the-fly compilation
 - ✅ Streamable HTTP transport
 - ✅ Agent integration (Continue, Copilot, Cody, Cursor)
@@ -631,7 +660,7 @@ MIT
 
 > ⚙️ **Ten projekt został stworzony 100% za pomocą promptów do Agenta AI** - Każda linia kodu, konfiguracji i dokumentacji została wygenerowana poprzez konwersacyjne prompty do GitHub Copilot Agent.
 
-Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 64 Ultimate** z **46 narzędziami MCP**, **15 promptami MCP** i **41 zasobami dokumentacyjnymi**. Zbudowany w C# z architekturą klasy enterprise, bezpieczeństwem typów i kompleksowym pokryciem API.
+Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 64 Ultimate** z **46 narzędziami MCP**, **15 promptami MCP** i **51 zasobami dokumentacyjnymi**. Zbudowany w C# z architekturą klasy enterprise, bezpieczeństwem typów i kompleksowym pokryciem API.
 
 ## 🎥 Wideo Demo
 
@@ -684,7 +713,7 @@ docker-compose up
 Ultimate__BaseUrl=http://192.168.0.120
 ```
 
-## 🛠️ Narzędzia (45 razem)
+## 🛠️ Narzędzia (46 razem)
 
 ### Kontrola Maszyny (5)
 - **ultimate_reset_machine** - Miękki reset C64 (zachowuje konfigurację)
@@ -737,15 +766,15 @@ Ultimate__BaseUrl=http://192.168.0.120
 ### Zarządzanie Plikami (1)
 - **ultimate_get_file_info** - Pobranie informacji o pliku
 
-### Zarządzanie Konfiguracją (6)
+### Zarządzanie Konfiguracją (8)
 - **ultimate_get_config_categories** - Pobranie listy dostępnych kategorii konfiguracyjnych
 - **ultimate_get_config_category** - Pobranie ustawień całej kategorii
 - **ultimate_get_config_item** - Pobranie wartości pojedynczego ustawienia
 - **ultimate_set_config_item** - Zmiana wartości ustawienia
 - **ultimate_bulk_config_update** - Masowa zmiana wielu ustawień jednocześnie
+- **ultimate_save_config** - Zapisanie bieżącej konfiguracji
 - **ultimate_load_config** - Załadowanie konfiguracji
-
-Uwaga: `ultimate_save_config` i `ultimate_reset_config` są również dostępne do zarządzania konfiguracją
+- **ultimate_reset_config** - Przywrócenie konfiguracji domyślnej
 
 ### Zarządzanie Połączeniem (2)
 - **ultimate_get_connection** - Pobranie aktualnych ustawień połączenia
@@ -754,15 +783,28 @@ Uwaga: `ultimate_save_config` i `ultimate_reset_config` są również dostępne 
 ### Informacje Systemowe (1)
 - **ultimate_version** - Pobranie wersji C64 Ultimate
 
-## 💬 Prompty (14 razem)
+## 💬 Prompty (15 razem)
 
+- **basic-program** - Przepływ pracy dla programu BASIC
+- **assembly-program** - Przepływ pracy dla programu asemblerowego
+- **assembly-prg-build** - Budowanie PRG z kodu asemblera
+- **sid-music** - Przepływ pracy dla kompozycji SID
+- **graphics-demo** - Przepływ pracy dla dema graficznego VIC-II
+- **printer-job** - Przepływ pracy dla drukarki
+- **memory-debug** - Inspekcja i modyfikacja pamięci
+- **drive-manager** - Zarządzanie stacjami dysków
+- **game-loop-basic** - Pętla gry w BASIC
+- **petscii-ui-layout** - Projektowanie interfejsu PETSCII
+- **keyboard-input-c64** - Obsługa wejścia z klawiatury
+- **sprite-marker-workflow** - Przepływ pracy dla znaczników sprite
+- **sid-sfx-basic** - Efekty dźwiękowe SID z BASIC
 - **c64_basic_program_prompt** - Szablon promptu do generowania programów C64 BASIC V2
 - **c64_sid_music_prompt** - Szablon promptu do tworzenia wskazówek kompozycji SID
 
 Ważne: prompty MCP to nie narzędzia.  
 Używaj `prompts/list` i `prompts/get` dla promptów oraz `tools/call` wyłącznie dla narzędzi.
 
-## 📚 Zasoby (41 razem)
+## 📚 Zasoby (51 razem)
 
 Wbudowana dokumentacja dostępna w MCP Inspector pod adresem `http://localhost:8000`:
 
@@ -777,16 +819,19 @@ Wbudowana dokumentacja dostępna w MCP Inspector pod adresem `http://localhost:8
 - **c64://basic/examples/games/snake** - Przykład Snake
 - **c64://basic/examples/games/tictactoe** - Przykład kółko i krzyżyk
 
-### Zasoby Asemblera (4)
+### Zasoby Asemblera (5)
 - **c64://assembly/spec** - Specyfikacja języka asemblera 6510
 - **c64://assembly/tooling-notes** - Notatki narzędziowe dla kompilatora MCP 6510
+- **c64://assembly/ml-kernal-quickstart** - Szybki start machine language i KERNAL
 - **c64://assembly/examples/hello-sys** - Minimalny przykład assemblera uruchamiany przez SYS
 - **c64://assembly/examples/text-scroll** - Przykład scrollera tekstu VIC-II (softscroll + hardscroll)
 
-### Zasoby Pamięci (3)
+### Zasoby Pamięci (5)
 - **c64://memory/map** - Mapa pamięci C64 (0x0000-0xFFFF)
 - **c64://memory/kernal** - Mapa pamięci Kernal (ROM $E000-$FFFF)
 - **c64://memory/low** - Mapa pamięci niskiej (0x0000-0x03FF)
+- **c64://memory/mapping-notes** - Praktyczne notatki o rozmieszczaniu kodu i bankowaniu
+- **c64://memory/symbols** - Symbole pamięci
 
 ### Zasoby Grafiki (4)
 - **c64://graphics/vic-spec** - Specyfikacja układu VIC-II
@@ -818,10 +863,23 @@ Wbudowana dokumentacja dostępna w MCP Inspector pod adresem `http://localhost:8
 - **c64://printer/commodore-bitmap** - Druk bitmapowy Commodore
 - **c64://printer/epson-bitmap** - Druk bitmapowy Epson
 
-### Zasoby API / Referencyjne (5)
+### Zasoby API (2)
 - **c64://api/basic-api** - Referencja API BASIC V2
 - **c64://api/kernal-api** - Referencja Kernal API
-- **c64://memory/symbols** - Symbole pamięci
+
+### Zasoby Przykładów (7)
+- **c64://examples/index** - Indeks routingu przykładów źródłowych
+- **c64://examples/c64-ai-toolchain-catalog** - Osadzone notatki pochodzące z C64AIToolChain
+- **c64://examples/assembly/raster-bars-demo** - Demo raster bars w asemblerze
+- **c64://examples/assembly/sprite-demo** - Demo pojedynczego sprite'a w asemblerze
+- **c64://examples/assembly/joystick-game-loop** - Szkielet pętli gry z joystickiem
+- **c64://examples/assembly/mcp-c64-hello-world** - Przykład hello world z MCP-C64
+- **c64://examples/basic/mcp-c64-token-test** - Przykład tokenizacji BASIC z MCP-C64
+
+### Zasoby Katalogów Źródeł (1)
+- **c64://sources/classic-c64-references** - Pochodzenie klasycznych źródeł referencyjnych C64
+
+### Zasoby Disassembly (2)
 - **c64://disasm/basic-rom** - Fragment disassemblacji BASIC ROM
 - **c64://disasm/kernal-rom** - Fragment disassemblacji KERNAL ROM
 
@@ -1147,7 +1205,7 @@ networks:
 
 - ✅ Zaimplementowano 46 narzędzi produkcyjnych dla operacji C64 Ultimate
 - ✅ Zaimplementowano 15 promptów MCP
-- ✅ 41 wbudowanych zasobów dokumentacyjnych
+- ✅ 51 wbudowanych zasobów dokumentacyjnych
 - ✅ Kompilacja BASIC do PRG w locie
 - ✅ Transport Streamable HTTP
 - ✅ Integracja z agentami AI (Continue, Copilot, Cody, Cursor)

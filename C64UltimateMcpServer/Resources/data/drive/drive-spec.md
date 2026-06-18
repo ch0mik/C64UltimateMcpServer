@@ -222,5 +222,5 @@ Supports subdirectories and partitions. Compatible with C64 and 
 
 ---
 
-**Cross‑Refs:** [`io/cia-spec.md`](../io/cia-spec.md) · [`printer/printer-spec.md`](../printer/printer-spec.md)
+**Cross‑Refs:** `c64://io/cia-spec` · `c64://printer/spec`
 

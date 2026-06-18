@@ -48,7 +48,7 @@ Use this resource when a task needs advice about where to place code/data, how t
 
 # Citations
 
-[1] Local source notes: `C:\Retro\Commodore\c64-voice-controll\mcp-c64\docs\txt\leemon-mapping-the-c64.txt`
+[1] Source-derived notes from Mapping the Commodore 64.
 
 [2] Related MCP resource: `c64://memory/map`
 

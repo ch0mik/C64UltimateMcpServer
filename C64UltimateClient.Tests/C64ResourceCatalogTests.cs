@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using C64UltimateMcpServer.Resources;
 using Microsoft.Extensions.Logging.Abstractions;
 using ModelContextProtocol;
@@ -15,6 +16,16 @@ namespace C64UltimateClient.Tests;
 
 public class C64ResourceCatalogTests
 {
+    private static readonly string ResourceDataRoot = Path.GetFullPath(Path.Combine(
+        AppContext.BaseDirectory,
+        "..",
+        "..",
+        "..",
+        "..",
+        "C64UltimateMcpServer",
+        "Resources",
+        "data"));
+
     [Fact]
     public void Catalog_ShouldContainUniqueUrisAndNonEmptyMetadata()
     {
@@ -29,14 +40,7 @@ public class C64ResourceCatalogTests
             Assert.NotEmpty(resource.RelativePathSegments);
 
             var filePath = Path.GetFullPath(Path.Combine(
-                AppContext.BaseDirectory,
-                "..",
-                "..",
-                "..",
-                "..",
-                "C64UltimateMcpServer",
-                "Resources",
-                "data",
+                ResourceDataRoot,
                 Path.Combine(resource.RelativePathSegments)));
 
             Assert.True(File.Exists(filePath), $"Missing resource file: {filePath}");
@@ -57,6 +61,81 @@ public class C64ResourceCatalogTests
         Assert.Contains("c64://basic/spec", index);
         Assert.Contains("c64://resources/index", index);
         Assert.Contains("c64://sound/sid-spec", index);
+    }
+
+    [Fact]
+    public void ResourceFiles_ShouldBePortableAndSelfContained()
+    {
+        var forbiddenPatterns = new[]
+        {
+            @"C:\",
+            "C:/",
+            @"Users\",
+            "OneDrive",
+            "Local path",
+            "Local file",
+            @"mcp-c64\",
+            @"C64AIToolChain\",
+            "../",
+            @"..\"
+        };
+
+        foreach (var resource in C64ResourceCatalog.All)
+        {
+            var filePath = Path.GetFullPath(Path.Combine(
+                ResourceDataRoot,
+                Path.Combine(resource.RelativePathSegments)));
+            var content = File.ReadAllText(filePath);
+
+            foreach (var forbiddenPattern in forbiddenPatterns)
+            {
+                Assert.DoesNotContain(forbiddenPattern, content, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+    }
+
+    [Fact]
+    public void Catalog_ShouldNotHaveOrphanResourceFiles()
+    {
+        var catalogPaths = C64ResourceCatalog.All
+            .Select(resource => Path.GetFullPath(Path.Combine(
+                ResourceDataRoot,
+                Path.Combine(resource.RelativePathSegments))))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var files = Directory
+            .EnumerateFiles(ResourceDataRoot, "*", SearchOption.AllDirectories)
+            .Select(Path.GetFullPath)
+            .ToArray();
+
+        foreach (var file in files)
+        {
+            Assert.Contains(file, catalogPaths);
+        }
+    }
+
+    [Fact]
+    public void MarkdownFrontmatterResourceUris_ShouldMatchCatalog()
+    {
+        var resourcesByPath = C64ResourceCatalog.All.ToDictionary(
+            resource => Path.GetFullPath(Path.Combine(
+                ResourceDataRoot,
+                Path.Combine(resource.RelativePathSegments))),
+            StringComparer.OrdinalIgnoreCase);
+
+        foreach (var file in Directory.EnumerateFiles(ResourceDataRoot, "*.md", SearchOption.AllDirectories))
+        {
+            var content = File.ReadAllText(file);
+            var match = Regex.Match(content, @"(?m)^resource:\s*(c64://\S+)\s*$");
+
+            if (!resourcesByPath.TryGetValue(Path.GetFullPath(file), out var resource))
+            {
+                Assert.Fail($"Markdown resource file is not in catalog: {file}");
+            }
+
+            Assert.True(match.Success, $"Missing frontmatter resource URI: {file}");
+            Assert.Equal(resource.Uri, match.Groups[1].Value);
+        }
     }
 
     [Fact]
