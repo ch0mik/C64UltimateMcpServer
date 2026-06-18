@@ -74,6 +74,7 @@ public class C64ResourceCatalogTests
             "OneDrive",
             "Local path",
             "Local file",
+            "mcp-c64",
             @"mcp-c64\",
             @"C64AIToolChain\",
             "../",

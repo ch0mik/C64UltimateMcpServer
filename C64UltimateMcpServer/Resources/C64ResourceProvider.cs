@@ -230,9 +230,13 @@ public class C64ResourceProvider
     [Description("MCP resource index for embedded C64 BASIC and assembly examples.")]
     public ResourceContents GetExampleSourceIndex() => GetCatalogResourceByUri("c64://examples/index");
 
-    [McpServerResource(UriTemplate = "c64://examples/c64-ai-toolchain-catalog", Name = "C64AIToolChain-Derived Embedded Notes", MimeType = "text/markdown")]
-    [Description("Embedded MCP notes derived from MIT-licensed C64AIToolChain C and assembly examples.")]
-    public ResourceContents GetExampleC64AiToolChainCatalog() => GetCatalogResourceByUri("c64://examples/c64-ai-toolchain-catalog");
+    [McpServerResource(UriTemplate = "c64://examples/game-demo-patterns", Name = "Game And Demo Pattern Notes", MimeType = "text/markdown")]
+    [Description("Embedded MCP notes for C64 game and demo patterns derived from MIT-licensed source examples.")]
+    public ResourceContents GetExampleGameDemoPatterns() => GetCatalogResourceByUri("c64://examples/game-demo-patterns");
+
+    [McpServerResource(UriTemplate = "c64://examples/assembly/dreadline-fastscroll-generator", Name = "Dreadline Fastscroll Generator Example", MimeType = "text/plain")]
+    [Description("Dreadline-derived row fastscroll adapted to compile with the built-in assembly PRG generator.")]
+    public ResourceContents GetExampleAssemblyDreadlineFastscrollGenerator() => GetCatalogResourceByUri("c64://examples/assembly/dreadline-fastscroll-generator");
 
     [McpServerResource(UriTemplate = "c64://examples/assembly/raster-bars-demo", Name = "Raster Bars Assembly Demo", MimeType = "text/plain")]
     [Description("Raster colour bars demo skeleton using the built-in assembly PRG generator syntax.")]
@@ -246,13 +250,25 @@ public class C64ResourceProvider
     [Description("Joystick-driven game loop skeleton using the built-in assembly PRG generator syntax.")]
     public ResourceContents GetExampleAssemblyJoystickGameLoop() => GetCatalogResourceByUri("c64://examples/assembly/joystick-game-loop");
 
-    [McpServerResource(UriTemplate = "c64://examples/assembly/mcp-c64-hello-world", Name = "MCP-C64 Hello World Assembly Example", MimeType = "text/plain")]
-    [Description("Adaptation of the mcp-c64 assembly hello world example for the built-in assembly PRG generator.")]
-    public ResourceContents GetExampleMcpC64AssemblyHelloWorld() => GetCatalogResourceByUri("c64://examples/assembly/mcp-c64-hello-world");
+    [McpServerResource(UriTemplate = "c64://examples/assembly/hires-fire-line-demo", Name = "HIRES Fire Line Demo", MimeType = "text/plain")]
+    [Description("Embedded upstream HIRES line/fire demo source; reference material that depends on the line draw library resource.")]
+    public ResourceContents GetExampleAssemblyHiresFireLineDemo() => GetCatalogResourceByUri("c64://examples/assembly/hires-fire-line-demo");
 
-    [McpServerResource(UriTemplate = "c64://examples/basic/mcp-c64-token-test", Name = "MCP-C64 BASIC Token Test Example", MimeType = "text/plain")]
-    [Description("Adaptation of the mcp-c64 BASIC tokenization example for the built-in BASIC PRG generator.")]
-    public ResourceContents GetExampleMcpC64BasicTokenTest() => GetCatalogResourceByUri("c64://examples/basic/mcp-c64-token-test");
+    [McpServerResource(UriTemplate = "c64://examples/assembly/hello-world-kernal", Name = "KERNAL Hello World Assembly Example", MimeType = "text/plain")]
+    [Description("Adaptation of an upstream C64 assembly hello world example for the built-in assembly PRG generator.")]
+    public ResourceContents GetExampleAssemblyHelloWorldKernal() => GetCatalogResourceByUri("c64://examples/assembly/hello-world-kernal");
+
+    [McpServerResource(UriTemplate = "c64://examples/assembly/hires-dot-burst-generator", Name = "HIRES Dot Burst Generator Example", MimeType = "text/plain")]
+    [Description("HIRES fire/line demo idea adapted to compile with the built-in assembly PRG generator.")]
+    public ResourceContents GetExampleAssemblyHiresDotBurstGenerator() => GetCatalogResourceByUri("c64://examples/assembly/hires-dot-burst-generator");
+
+    [McpServerResource(UriTemplate = "c64://examples/assembly/hires-line-draw-library", Name = "HIRES Line Draw Library", MimeType = "text/plain")]
+    [Description("Embedded upstream HIRES line drawing and dot stepping library reference.")]
+    public ResourceContents GetExampleAssemblyHiresLineDrawLibrary() => GetCatalogResourceByUri("c64://examples/assembly/hires-line-draw-library");
+
+    [McpServerResource(UriTemplate = "c64://examples/basic/token-control-codes", Name = "BASIC Token And Control Codes Example", MimeType = "text/plain")]
+    [Description("Adaptation of an upstream C64 BASIC tokenization example for the built-in BASIC PRG generator.")]
+    public ResourceContents GetExampleBasicTokenControlCodes() => GetCatalogResourceByUri("c64://examples/basic/token-control-codes");
 
     [McpServerResource(UriTemplate = "c64://sources/classic-c64-references", Name = "Classic C64 Reference Provenance", MimeType = "text/markdown")]
     [Description("Provenance notes for classic C64 books and manuals used to curate embedded MCP resources.")]

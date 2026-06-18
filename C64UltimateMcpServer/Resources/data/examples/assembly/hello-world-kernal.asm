@@ -1,5 +1,5 @@
-; Adaptation of mcp-c64 asm/hello/hello_world.asm for the built-in assembly PRG generator.
-; Source family: mcp-c64 asm hello world example.
+; Adaptation of an upstream C64 assembly hello-world example for the built-in assembly PRG generator.
+; Source family: C64 assembly hello world example.
 ;
 ; Use with ultimate_generate_assembly_prg and basicRunLoader=true.
 .org $C000

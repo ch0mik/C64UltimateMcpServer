@@ -4,7 +4,7 @@
 
 > ⚙️ **This project was built 100% using AI Agent prompts** - Every line of code, configuration, and documentation was generated through conversational prompts to GitHub Copilot Agent.
 
-Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ultimate** device with **46 MCP tools**, **15 MCP prompts**, and **51 embedded documentation resources**. Built in C# with enterprise-grade architecture, type safety, and comprehensive API coverage.
+Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ultimate** device with **46 MCP tools**, **15 MCP prompts**, and **55 embedded documentation resources**. Built in C# with enterprise-grade architecture, type safety, and comprehensive API coverage.
 
 **License:** MIT License (see [LICENSE](LICENSE) file)
 
@@ -17,7 +17,7 @@ Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ult
 - **Complete Ultimate 64 API Support**: 46 MCP tools covering the Ultimate REST API plus PRG generation workflows
 - **MCP Prompts Support**: 15 prompt templates exposed through `prompts/list` and `prompts/get`
 - **BASIC to PRG Compilation**: Real-time compilation of BASIC V2 source code to executable PRG files
-- **MCP Resources**: 51 embedded documentation resources (BASIC specs, Assembly guides, examples, source catalogs, Kernal API, memory maps, graphics, sound, I/O, drive, printer, keyboard/control codes, disassembly)
+- **MCP Resources**: 55 embedded documentation resources (BASIC specs, Assembly guides, examples, source catalogs, Kernal API, memory maps, graphics, sound, I/O, drive, printer, keyboard/control codes, disassembly)
 - **Separated Client Library**: Reusable `C64UltimateClient` NuGet package with clean async API
 - **Clean Architecture**: Client → Service → MCP wrapper pattern with proper DI
 - **Streamable HTTP Transport**: Remote multi-client support with session-aware MCP interactions
@@ -37,8 +37,10 @@ The server exposes a curated MCP resource catalog under `c64://resources/index`.
 Recent additions make the resource set more useful for agents writing Commodore 64 games, demos, and hardware-aware programs:
 
 - **Source provenance**: `c64://sources/classic-c64-references` records the classic C64 books/manuals used as source material without requiring host-specific source paths.
-- **Example routing**: `c64://examples/index` and `c64://examples/c64-ai-toolchain-catalog` route agents to embedded examples that work with the built-in PRG generators and portable C64AIToolChain-derived notes.
+- **Example routing**: `c64://examples/index` and `c64://examples/game-demo-patterns` route agents to embedded examples that work with the built-in PRG generators and portable game/demo pattern notes.
 - **Ready-to-use assembly examples**: `c64://examples/assembly/raster-bars-demo`, `c64://examples/assembly/sprite-demo`, and `c64://examples/assembly/joystick-game-loop` provide compact, tested starting points for demos and games.
+- **Generator-tested adaptations**: `c64://examples/assembly/hires-dot-burst-generator` and `c64://examples/assembly/dreadline-fastscroll-generator` preserve source ideas from upstream C64 sources/C64AIToolChain in forms that compile through `ultimate_generate_assembly_prg`.
+- **Embedded reference sources**: `c64://examples/assembly/hires-fire-line-demo` and `c64://examples/assembly/hires-line-draw-library` preserve the upstream HIRES graphics demo/library inside the MCP server.
 - **Practical coding references**: `c64://assembly/ml-kernal-quickstart`, `c64://memory/mapping-notes`, expanded KERNAL API notes, and improved sprite/charset guidance help agents choose safe memory locations, KERNAL calls, and VIC-II workflows.
 
 The embedded examples are intentionally small and aligned with the built-in BASIC/assembly PRG generators. Larger C/cc65 examples are indexed as reference material until a C compiler workflow is added.
@@ -287,7 +289,7 @@ Use `prompts/list` and `prompts/get` for prompts, and `tools/call` only for tool
 - **Connection Management**: 2 tools
 - **System Information**: 1 tool
 
-## 📚 Resources (51 Total)
+## 📚 Resources (55 Total)
 
 Embedded documentation accessible via MCP Inspector at `http://localhost:8000`:
 
@@ -350,14 +352,33 @@ Embedded documentation accessible via MCP Inspector at `http://localhost:8000`:
 - **c64://api/basic-api** - BASIC callable API reference
 - **c64://api/kernal-api** - Kernal callable API reference
 
-### Example Resources (7)
+### Example Resources (11)
 - **c64://examples/index** - Example source routing index
-- **c64://examples/c64-ai-toolchain-catalog** - C64AIToolChain-derived embedded notes
+- **c64://examples/game-demo-patterns** - Game and demo pattern notes
+- **c64://examples/assembly/dreadline-fastscroll-generator** - Dreadline-derived fastscroll generator example
 - **c64://examples/assembly/raster-bars-demo** - Raster bars assembly demo
 - **c64://examples/assembly/sprite-demo** - Single sprite assembly demo
 - **c64://examples/assembly/joystick-game-loop** - Joystick game loop assembly skeleton
-- **c64://examples/assembly/mcp-c64-hello-world** - MCP-C64 hello world assembly example
-- **c64://examples/basic/mcp-c64-token-test** - MCP-C64 BASIC tokenization example
+- **c64://examples/assembly/hires-fire-line-demo** - HIRES fire/line demo reference
+- **c64://examples/assembly/hello-world-kernal** - KERNAL hello world assembly example
+- **c64://examples/assembly/hires-dot-burst-generator** - HIRES dot burst generator example
+- **c64://examples/assembly/hires-line-draw-library** - HIRES line draw library reference
+- **c64://examples/basic/token-control-codes** - BASIC token/control-code example
+
+Example provenance:
+
+| Resource | Origin | Notes |
+| --- | --- | --- |
+| `c64://examples/assembly/raster-bars-demo` | C64 Ultimate MCP Server | Compact generator-tested demo written for `ultimate_generate_assembly_prg`. |
+| `c64://examples/assembly/sprite-demo` | C64 Ultimate MCP Server | Compact generator-tested sprite setup/movement demo. |
+| `c64://examples/assembly/joystick-game-loop` | C64 Ultimate MCP Server | Compact generator-tested joystick/game-loop skeleton. |
+| `c64://examples/assembly/hello-world-kernal` | upstream C64 sources | Embedded adaptation of the upstream C64 assembly hello-world example for the built-in assembly PRG generator. |
+| `c64://examples/basic/token-control-codes` | upstream C64 sources | Embedded BASIC token/control-code example for the built-in BASIC PRG generator. |
+| `c64://examples/assembly/hires-fire-line-demo` | upstream C64 sources | Embedded reference source for the HIRES fire/line demo; kept as reference because it uses an include-style library split. |
+| `c64://examples/assembly/hires-line-draw-library` | upstream C64 sources | Embedded reference source for the HIRES line drawing and dot-stepping library. |
+| `c64://examples/assembly/hires-dot-burst-generator` | upstream C64 adaptation | Single-file HIRES bitmap demo adapted from the fire/line idea and verified with `ultimate_generate_assembly_prg`. |
+| `c64://examples/assembly/dreadline-fastscroll-generator` | C64AIToolChain-derived adaptation | Dreadline fastscroll idea translated from ca65 macro style to generator-tested plain 6510 loops. |
+| `c64://examples/game-demo-patterns` | pattern review | Portable embedded notes summarizing useful C/cc65 and assembly game/demo patterns. |
 
 ### Source Catalog Resources (1)
 - **c64://sources/classic-c64-references** - Classic C64 reference provenance
@@ -610,7 +631,7 @@ networks:
 
 - ✅ 46 production tools implemented for C64 Ultimate operations
 - ✅ 15 MCP prompts implemented
-- ✅ 51 embedded documentation resources
+- ✅ 55 embedded documentation resources
 - ✅ BASIC to PRG on-the-fly compilation
 - ✅ Streamable HTTP transport
 - ✅ Agent integration (Continue, Copilot, Cody, Cursor)
@@ -660,7 +681,7 @@ MIT
 
 > ⚙️ **Ten projekt został stworzony 100% za pomocą promptów do Agenta AI** - Każda linia kodu, konfiguracji i dokumentacji została wygenerowana poprzez konwersacyjne prompty do GitHub Copilot Agent.
 
-Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 64 Ultimate** z **46 narzędziami MCP**, **15 promptami MCP** i **51 zasobami dokumentacyjnymi**. Zbudowany w C# z architekturą klasy enterprise, bezpieczeństwem typów i kompleksowym pokryciem API.
+Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 64 Ultimate** z **46 narzędziami MCP**, **15 promptami MCP** i **55 zasobami dokumentacyjnymi**. Zbudowany w C# z architekturą klasy enterprise, bezpieczeństwem typów i kompleksowym pokryciem API.
 
 ## 🎥 Wideo Demo
 
@@ -804,7 +825,7 @@ Ultimate__BaseUrl=http://192.168.0.120
 Ważne: prompty MCP to nie narzędzia.  
 Używaj `prompts/list` i `prompts/get` dla promptów oraz `tools/call` wyłącznie dla narzędzi.
 
-## 📚 Zasoby (51 razem)
+## 📚 Zasoby (55 razem)
 
 Wbudowana dokumentacja dostępna w MCP Inspector pod adresem `http://localhost:8000`:
 
@@ -867,14 +888,33 @@ Wbudowana dokumentacja dostępna w MCP Inspector pod adresem `http://localhost:8
 - **c64://api/basic-api** - Referencja API BASIC V2
 - **c64://api/kernal-api** - Referencja Kernal API
 
-### Zasoby Przykładów (7)
+### Zasoby Przykładów (11)
 - **c64://examples/index** - Indeks routingu przykładów źródłowych
-- **c64://examples/c64-ai-toolchain-catalog** - Osadzone notatki pochodzące z C64AIToolChain
+- **c64://examples/game-demo-patterns** - Notatki o wzorcach gier i dem
+- **c64://examples/assembly/dreadline-fastscroll-generator** - Przykład fastscroll pochodzący z Dreadline, dostosowany do generatora
 - **c64://examples/assembly/raster-bars-demo** - Demo raster bars w asemblerze
 - **c64://examples/assembly/sprite-demo** - Demo pojedynczego sprite'a w asemblerze
 - **c64://examples/assembly/joystick-game-loop** - Szkielet pętli gry z joystickiem
-- **c64://examples/assembly/mcp-c64-hello-world** - Przykład hello world z MCP-C64
-- **c64://examples/basic/mcp-c64-token-test** - Przykład tokenizacji BASIC z MCP-C64
+- **c64://examples/assembly/hires-fire-line-demo** - Referencyjne demo HIRES fire/line z zewnętrznego źródła C64
+- **c64://examples/assembly/hello-world-kernal** - Przykład hello world z zewnętrznego źródła C64
+- **c64://examples/assembly/hires-dot-burst-generator** - Przykład HIRES dot burst z zewnętrznego źródła C64 dostosowany do generatora
+- **c64://examples/assembly/hires-line-draw-library** - Referencyjna biblioteka HIRES line draw z zewnętrznego źródła C64
+- **c64://examples/basic/token-control-codes** - Przykład tokenizacji BASIC z zewnętrznego źródła C64
+
+Pochodzenie przykładów:
+
+| Zasób | Pochodzenie | Uwagi |
+| --- | --- | --- |
+| `c64://examples/assembly/raster-bars-demo` | C64 Ultimate MCP Server | Kompaktowe demo sprawdzone przez `ultimate_generate_assembly_prg`. |
+| `c64://examples/assembly/sprite-demo` | C64 Ultimate MCP Server | Kompaktowe demo konfiguracji i ruchu sprite'a, sprawdzone generatorem. |
+| `c64://examples/assembly/joystick-game-loop` | C64 Ultimate MCP Server | Szkielet pętli gry z joystickiem, sprawdzony generatorem. |
+| `c64://examples/assembly/hello-world-kernal` | zewnętrzne źródło C64 | Osadzona adaptacja przykładu assembly hello-world dla wbudowanego generatora PRG. |
+| `c64://examples/basic/token-control-codes` | zewnętrzne źródło C64 | Osadzony przykład BASIC token/control-code dla wbudowanego generatora BASIC PRG. |
+| `c64://examples/assembly/hires-fire-line-demo` | zewnętrzne źródło C64 | Osadzone źródło referencyjne demo HIRES fire/line; zostaje jako reference, bo używa podziału z biblioteką include. |
+| `c64://examples/assembly/hires-line-draw-library` | zewnętrzne źródło C64 | Osadzone źródło referencyjne biblioteki HIRES line drawing i dot stepping. |
+| `c64://examples/assembly/hires-dot-burst-generator` | adaptacja z zewnętrznego źródła C64 | Jednoplikowe demo HIRES bitmap oparte na idei fire/line, sprawdzone przez `ultimate_generate_assembly_prg`. |
+| `c64://examples/assembly/dreadline-fastscroll-generator` | adaptacja z C64AIToolChain | Pomysł fastscroll z Dreadline przepisany ze stylu ca65/macro na zwykłe pętle 6510 sprawdzone generatorem. |
+| `c64://examples/game-demo-patterns` | przegląd wzorców | Przenośne notatki z użytecznych wzorców gier/dem w C/cc65 i assembly. |
 
 ### Zasoby Katalogów Źródeł (1)
 - **c64://sources/classic-c64-references** - Pochodzenie klasycznych źródeł referencyjnych C64
@@ -1205,7 +1245,7 @@ networks:
 
 - ✅ Zaimplementowano 46 narzędzi produkcyjnych dla operacji C64 Ultimate
 - ✅ Zaimplementowano 15 promptów MCP
-- ✅ 51 wbudowanych zasobów dokumentacyjnych
+- ✅ 55 wbudowanych zasobów dokumentacyjnych
 - ✅ Kompilacja BASIC do PRG w locie
 - ✅ Transport Streamable HTTP
 - ✅ Integracja z agentami AI (Continue, Copilot, Cody, Cursor)

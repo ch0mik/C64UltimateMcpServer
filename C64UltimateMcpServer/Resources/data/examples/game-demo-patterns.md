@@ -1,8 +1,8 @@
 ---
 type: Reference
-title: C64AIToolChain-Derived Embedded Notes
-description: Embedded MCP notes derived from MIT-licensed C64AIToolChain C and assembly examples.
-resource: c64://examples/c64-ai-toolchain-catalog
+title: Game And Demo Pattern Notes
+description: Embedded MCP notes for C64 game and demo patterns derived from MIT-licensed source examples.
+resource: c64://examples/game-demo-patterns
 tags:
 - examples
 - cc65
@@ -10,9 +10,9 @@ tags:
 - reference
 ---
 
-# C64AIToolChain-Derived Embedded Notes
+# Game And Demo Pattern Notes
 
-This resource captures portable, embedded notes derived from a review of the MIT-licensed C64AIToolChain examples. It intentionally avoids host-specific file paths so the MCP server works the same from a local build, a package, or a container.
+This resource captures portable, embedded notes for C64 game and demo patterns. It intentionally avoids host-specific file paths so the MCP server works the same from a local build, a package, or a container.
 
 Current MCP generators support BASIC and a compact assembly dialect. Treat C/cc65 examples as reference material unless a future cc65 workflow is added.
 
@@ -24,6 +24,8 @@ Current MCP generators support BASIC and a compact assembly dialect. Treat C/cc6
 | Tetris-style board state | `c64://memory/mapping-notes` plus `c64://examples/assembly/joystick-game-loop` | Keep board arrays compact, separate input/update/draw phases, and document zero-page scratch use. |
 | Pac-Man-style actors | `c64://examples/assembly/joystick-game-loop` | Model each actor as position/direction/state bytes, then update one actor per frame or per tick. |
 | Fast scroll helper | `c64://assembly/examples/text-scroll` | Demonstrates softscroll plus hardscroll concepts in a generator-friendly source shape. |
+| Dreadline row fastscroll | `c64://examples/assembly/dreadline-fastscroll-generator` | ca65 macro scroller translated into plain generator-friendly 6510 loops. |
+| HIRES line/dot routines | `c64://examples/assembly/hires-dot-burst-generator`, `c64://examples/assembly/hires-fire-line-demo`, and `c64://examples/assembly/hires-line-draw-library` | Compilable bitmap-mode adaptation plus reference source for dot plotting, angle stepping, and line-style movement. |
 
 ## C/cc65 Patterns To Translate
 
@@ -31,7 +33,7 @@ Current MCP generators support BASIC and a compact assembly dialect. Treat C/cc6
 | --- | --- | --- |
 | Starfield | BASIC arrays or assembly screen RAM writes | Compact visual effect using screen/color RAM and pseudo-random movement. |
 | Raster bars | `c64://examples/assembly/raster-bars-demo` | Small VIC colour effect reference for frame pacing and border/background updates. |
-| Fire | BASIC or assembly table update loop | Procedural effect pattern: update a buffer, diffuse/decay values, map to colour RAM. |
+| Fire | BASIC or assembly table update loop; compare with `c64://examples/assembly/hires-fire-line-demo` for HIRES graphics structure | Procedural effect pattern: update a buffer, diffuse/decay values, map to colour RAM. |
 | Plasma | BASIC precomputed tables or assembly byte tables | Classic demo effect based on lookup tables and repeated screen/color updates. |
 | Pong | BASIC or assembly game loop | Simple input, collision, scoring, and frame update structure. |
 | Breakout/Arkanoid | BASIC or assembly tile grid | Brick-grid collision, paddle/ball mechanics, levels, and score state. |

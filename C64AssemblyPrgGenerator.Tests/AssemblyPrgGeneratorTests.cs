@@ -106,7 +106,7 @@ public class AssemblyPrgGeneratorTests
             "data",
             "examples",
             "assembly",
-            "mcp-c64-hello-world.asm"));
+            "hello-world-kernal.asm"));
         var source = File.ReadAllText(sourcePath);
 
         var sut = new AssemblyPrgGenerator();
@@ -120,10 +120,12 @@ public class AssemblyPrgGeneratorTests
     }
 
     [Theory]
-    [InlineData("mcp-c64-hello-world.asm")]
+    [InlineData("hello-world-kernal.asm")]
     [InlineData("raster-bars-demo.asm")]
     [InlineData("sprite-demo.asm")]
     [InlineData("joystick-game-loop.asm")]
+    [InlineData("dreadline-fastscroll-generator.asm")]
+    [InlineData("hires-dot-burst-generator.asm")]
     public void GeneratePrg_AssemblyExampleResources_CompileWithBasicLoader(string fileName)
     {
         var sourcePath = Path.GetFullPath(Path.Combine(
