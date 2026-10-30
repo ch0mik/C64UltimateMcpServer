@@ -1,0 +1,1547 @@
+{
+  "tools": {
+    "tools": [
+      {
+        "name": "ultimate_generate_basic_prg",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "basicSource": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "basicSource"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_reset_config",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_load_drive_rom",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "drive": {
+              "type": "string"
+            },
+            "file": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "drive",
+            "file"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_play_sid_binary",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "filePath": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            },
+            "sidDataBase64": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            },
+            "url": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            },
+            "songNumber": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "default": null
+            }
+          }
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_version",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_play_sid",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "file": {
+              "type": "string"
+            },
+            "songNumber": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "file"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_unmount_disk",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "drive": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "drive"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_set_connection",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "hostname": {
+              "type": "string"
+            },
+            "port": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "hostname"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_get_drives",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_get_connection",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_pause_machine",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_stop_stream",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "stream": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "stream"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_play_mod",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "file": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "file"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_run_program",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "file": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "file"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_menu_button",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_write_memory",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "address": {
+              "type": "string"
+            },
+            "data": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "address",
+            "data"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_run_prg_binary",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "filePath": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            },
+            "prgDataBase64": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            },
+            "url": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            }
+          }
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_get_file_info",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_save_config",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_create_d71",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "diskname": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "path"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_load_config",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_set_debug_register",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_create_d81",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "diskname": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "path"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_read_memory",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "address": {
+              "type": "string"
+            },
+            "length": {
+              "type": "integer",
+              "default": 256
+            }
+          },
+          "required": [
+            "address"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_generate_assembly_prg",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "assemblySource": {
+              "type": "string"
+            },
+            "basicRunLoader": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          "required": [
+            "assemblySource"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_set_drive_mode",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "drive": {
+              "type": "string"
+            },
+            "mode": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "drive",
+            "mode"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_set_config_item",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string"
+            },
+            "item": {
+              "type": "string"
+            },
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "category",
+            "item",
+            "value"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_create_d64",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "tracks": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "default": null
+            },
+            "diskname": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "path"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_bulk_config_update",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "config": true
+          },
+          "required": [
+            "config"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_get_config_category",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "category"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_create_dnp",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "tracks": {
+              "type": "integer"
+            },
+            "diskname": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "path",
+            "tracks"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_get_config_categories",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_write_memory_binary",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "address": {
+              "type": "string"
+            },
+            "data": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "address",
+            "data"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_turn_drive_off",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "drive": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "drive"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_run_cartridge",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "file": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "file"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_start_stream",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "stream": {
+              "type": "string"
+            },
+            "ip": {
+              "type": "string"
+            },
+            "port": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "stream",
+            "ip"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_mount_disk",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "drive": {
+              "type": "string"
+            },
+            "file": {
+              "type": "string"
+            },
+            "type": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            },
+            "mode": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "drive",
+            "file"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_reset_drive",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "drive": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "drive"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_reboot_device",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_load_program",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "file": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "file"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_get_config_item",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string"
+            },
+            "item": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "category",
+            "item"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_get_debug_register",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_power_off",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_resume_machine",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_reset_machine",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      },
+      {
+        "name": "ultimate_turn_drive_on",
+        "description": "",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "drive": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "drive"
+          ]
+        },
+        "execution": {
+          "taskSupport": "optional"
+        }
+      }
+    ]
+  },
+  "prompts": {
+    "prompts": [
+      {
+        "name": "keyboard-input-c64",
+        "title": "C64 Keyboard Input Workflow",
+        "description": "Design robust keyboard input handling for C64 programs.",
+        "arguments": [
+          {
+            "name": "mode",
+            "description": "Input mode",
+            "required": false
+          }
+        ],
+        "icons": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg"
+          }
+        ]
+      },
+      {
+        "name": "petscii-ui-layout",
+        "title": "PETSCII UI Layout Workflow",
+        "description": "Generate PETSCII-driven UI/board layouts with clear positioning rules.",
+        "arguments": [],
+        "icons": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg"
+          }
+        ]
+      },
+      {
+        "name": "sprite-marker-workflow",
+        "title": "Sprite Marker Workflow",
+        "description": "Create and drive sprite markers for board/game selection UX.",
+        "arguments": [],
+        "icons": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg"
+          }
+        ]
+      },
+      {
+        "name": "graphics-demo",
+        "title": "Graphics Demo Workflow",
+        "description": "Create VIC-II graphics demos with safe setup and validation.",
+        "arguments": [
+          {
+            "name": "mode",
+            "description": "Target VIC-II technique",
+            "required": false
+          }
+        ],
+        "icons": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg"
+          }
+        ]
+      },
+      {
+        "name": "memory-debug",
+        "title": "Memory Debug Workflow",
+        "description": "Inspect or patch memory ranges with reversible steps.",
+        "arguments": [],
+        "icons": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg"
+          }
+        ]
+      },
+      {
+        "name": "c64_basic_program_prompt",
+        "title": "C64 BASIC Program Prompt",
+        "description": "Creates a ready-to-use prompt for writing a BASIC V2 program for C64.",
+        "arguments": [
+          {
+            "name": "goal",
+            "description": "What the program should do",
+            "required": true
+          },
+          {
+            "name": "level",
+            "description": "Complexity level of the generated program",
+            "required": false
+          }
+        ],
+        "icons": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg"
+          }
+        ]
+      },
+      {
+        "name": "sid-sfx-basic",
+        "title": "SID SFX for BASIC Games",
+        "description": "Design compact SID sound effects suitable for BASIC-driven games.",
+        "arguments": [
+          {
+            "name": "style",
+            "description": "SFX style",
+            "required": false
+          }
+        ],
+        "icons": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg"
+          }
+        ]
+      },
+      {
+        "name": "drive-manager",
+        "title": "Drive Manager Workflow",
+        "description": "Mount, create, and control drives with verification steps.",
+        "arguments": [],
+        "icons": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg"
+          }
+        ]
+      },
+      {
+        "name": "game-loop-basic",
+        "title": "BASIC Game Loop Workflow",
+        "description": "Design a performant C64 BASIC game loop (input, update, render).",
+        "arguments": [],
+        "icons": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg"
+          }
+        ]
+      },
+      {
+        "name": "sid-music",
+        "title": "SID Composition Workflow",
+        "description": "Compose SID music with iterative verification.",
+        "arguments": [],
+        "icons": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg"
+          }
+        ]
+      },
+      {
+        "name": "c64_sid_music_prompt",
+        "title": "C64 SID Music Prompt",
+        "description": "Creates a prompt for generating SID composition guidance.",
+        "arguments": [
+          {
+            "name": "style",
+            "description": "Mood or style of the track",
+            "required": false
+          },
+          {
+            "name": "bpm",
+            "description": "Tempo in BPM",
+            "required": false
+          }
+        ],
+        "icons": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg"
+          }
+        ]
+      },
+      {
+        "name": "basic-program",
+        "title": "BASIC Program Workflow",
+        "description": "Plan, implement, and verify Commodore BASIC v2 programs safely.",
+        "arguments": [],
+        "icons": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg"
+          }
+        ]
+      },
+      {
+        "name": "assembly-program",
+        "title": "Assembly Program Workflow",
+        "description": "Author 6502/6510 assembly routines with precise hardware guidance.",
+        "arguments": [
+          {
+            "name": "hardware",
+            "description": "Optional focus area for the routine",
+            "required": false
+          }
+        ],
+        "icons": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg"
+          }
+        ]
+      },
+      {
+        "name": "assembly-prg-build",
+        "title": "6510 Assembly PRG Build Workflow",
+        "description": "Prepare MCP-compatible 6510 source and compile it with ultimate_generate_assembly_prg.",
+        "arguments": [
+          {
+            "name": "launch",
+            "description": "Launch mode for compiled PRG",
+            "required": false
+          }
+        ],
+        "icons": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg"
+          }
+        ]
+      },
+      {
+        "name": "printer-job",
+        "title": "Printer Job Workflow",
+        "description": "Send formatted output to Commodore or Epson printers.",
+        "arguments": [
+          {
+            "name": "printerType",
+            "description": "Printer family",
+            "required": false
+          }
+        ],
+        "icons": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/2/23/Commodore_C%3D_logo.svg"
+          }
+        ]
+      }
+    ]
+  },
+  "resources": {
+    "resources": [
+      {
+        "name": "VIC-II Graphics Specification",
+        "uri": "c64://graphics/vic-spec",
+        "description": "VIC-II video chip reference covering modes, registers, and screen behavior.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "C64 Resource Index",
+        "uri": "c64://resources/index",
+        "description": "Browse the curated C64 resource index before choosing a topic-specific document.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "C64 Practical Memory Mapping Notes",
+        "uri": "c64://memory/mapping-notes",
+        "description": "Practical notes for using C64 memory locations safely from BASIC and 6510 assembly.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "C64 Memory Map",
+        "uri": "c64://memory/map",
+        "description": "General memory layout for the C64.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "Single Sprite Assembly Demo",
+        "uri": "c64://examples/assembly/sprite-demo",
+        "description": "Single sprite setup and movement demo using the built-in assembly PRG generator syntax.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "Printer Prompt Routing Guide",
+        "uri": "c64://printer/prompts",
+        "description": "Routing guide for choosing the right printer prompt or printer-related resource.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "C64 Embedded Example Index",
+        "uri": "c64://examples/index",
+        "description": "MCP resource index for embedded C64 BASIC and assembly examples.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "BASIC Tic-Tac-Toe Game Example",
+        "uri": "c64://basic/examples/games/tictactoe",
+        "description": "Two-player tic-tac-toe example in BASIC V2.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "C64 KERNAL ROM Disassembly",
+        "uri": "c64://disasm/kernal-rom",
+        "description": "Disassembly listing for the C64 KERNAL ROM for low-level inspection and lookup.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "C64 BASIC ROM Disassembly",
+        "uri": "c64://disasm/basic-rom",
+        "description": "Disassembly listing for the C64 BASIC ROM for low-level inspection and lookup.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "Dreadline Fastscroll Generator Example",
+        "uri": "c64://examples/assembly/dreadline-fastscroll-generator",
+        "description": "Dreadline-derived row fastscroll adapted to compile with the built-in assembly PRG generator.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "I/O Port Specification",
+        "uri": "c64://io/io-spec",
+        "description": "I/O port behavior and usage reference.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "SIDWAVE Format Specification",
+        "uri": "c64://sound/sidwave",
+        "description": "Reference for the SIDWAVE format and its expected data representation.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "Printer Unified Specification",
+        "uri": "c64://printer/spec",
+        "description": "Unified printer overview bridging Commodore and Epson-oriented workflows.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "BASIC Token And Control Codes Example",
+        "uri": "c64://examples/basic/token-control-codes",
+        "description": "Adaptation of an upstream C64 BASIC tokenization example for the built-in BASIC PRG generator.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "Commodore Printer Specification",
+        "uri": "c64://printer/commodore-spec",
+        "description": "Commodore printer reference covering control model and device-specific behavior.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "KERNAL Hello World Assembly Example",
+        "uri": "c64://examples/assembly/hello-world-kernal",
+        "description": "Adaptation of an upstream C64 assembly hello world example for the built-in assembly PRG generator.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "C64 Control Codes Reference",
+        "uri": "c64://io/control-codes-c64",
+        "description": "Control code reference for screen and text output.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "HIRES Fire Line Demo",
+        "uri": "c64://examples/assembly/hires-fire-line-demo",
+        "description": "Embedded upstream HIRES line/fire demo source; reference material that depends on the line draw library resource.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "Commodore Bitmap Printing",
+        "uri": "c64://printer/commodore-bitmap",
+        "description": "Bitmap-printing guidance for Commodore printer workflows.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "Kernal API Specification",
+        "uri": "c64://api/kernal-api",
+        "description": "API-oriented reference for KERNAL routines, entry points, and calling expectations.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "Machine Language KERNAL Quickstart",
+        "uri": "c64://assembly/ml-kernal-quickstart",
+        "description": "Practical 6510 assembly quickstart for SYS loaders, screen output, keyboard polling, and RUN/STOP handling.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "Kernal Memory Map",
+        "uri": "c64://memory/kernal",
+        "description": "KERNAL memory layout and address overview.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "Low Memory Map",
+        "uri": "c64://memory/low",
+        "description": "Low-memory usage and reserved areas.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "BASIC Bounce Animation",
+        "uri": "c64://basic/examples/bounce",
+        "description": "Simple bouncing animation in BASIC V2.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "BASIC Joystick Input Example",
+        "uri": "c64://basic/examples/joystick",
+        "description": "BASIC example that reads joystick input.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "Joystick Control Reference",
+        "uri": "c64://io/joystick",
+        "description": "Joystick mappings and interaction guidance.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "Epson Printer Specification",
+        "uri": "c64://printer/epson-spec",
+        "description": "Epson-compatible printer reference for control sequences and output behavior.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "C64 Keyboard Matrix Reference",
+        "uri": "c64://io/keyboard-c64",
+        "description": "Keyboard matrix lookup table.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "BASIC Pitfalls and Gotchas",
+        "uri": "c64://basic/pitfalls",
+        "description": "Common mistakes, compatibility traps, and debugging tips for BASIC V2.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "Raster Bars Assembly Demo",
+        "uri": "c64://examples/assembly/raster-bars-demo",
+        "description": "Raster colour bars demo skeleton using the built-in assembly PRG generator syntax.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "CIA Chip Specification",
+        "uri": "c64://io/cia-spec",
+        "description": "CIA register and timing reference.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "6510 Text Scroll Example",
+        "uri": "c64://assembly/examples/text-scroll",
+        "description": "Text scrolling example using the built-in assembly PRG generator syntax.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "BASIC V2 Specification",
+        "uri": "c64://basic/spec",
+        "description": "Reference for Commodore BASIC V2 syntax, memory layout, and runtime behavior.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "Game And Demo Pattern Notes",
+        "uri": "c64://examples/game-demo-patterns",
+        "description": "Embedded MCP notes for C64 game and demo patterns derived from MIT-licensed source examples.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "SID Programming Best Practices",
+        "uri": "c64://sound/sid-programming",
+        "description": "Practical guidance for composing and programming stable SID playback routines.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "Sprite and Charset Best Practices",
+        "uri": "c64://graphics/sprite-charset-best-practices",
+        "description": "Practical advice for mixing sprites, charsets, and screen memory efficiently.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "BASIC API Specification",
+        "uri": "c64://api/basic-api",
+        "description": "API-oriented reference for BASIC-related routines, contracts, and integration points.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "Classic C64 Reference Provenance",
+        "uri": "c64://sources/classic-c64-references",
+        "description": "Provenance notes for classic C64 books and manuals used to curate embedded MCP resources.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "SID Chip Specification",
+        "uri": "c64://sound/sid-spec",
+        "description": "Core SID chip reference with voices, registers, and synthesis capabilities.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "6510 Hello SYS Example",
+        "uri": "c64://assembly/examples/hello-sys",
+        "description": "Simple assembly example that boots with SYS and uses the built-in assembly PRG generator syntax.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "BASIC Snake Game Example",
+        "uri": "c64://basic/examples/games/snake",
+        "description": "Small snake game example in BASIC V2.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "C64 Memory Symbols",
+        "uri": "c64://memory/symbols",
+        "description": "Common C64 memory symbols and labels.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "PETSCII Style Guide",
+        "uri": "c64://graphics/petscii",
+        "description": "Guidelines for PETSCII composition, layout, and stylistic constraints.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "Joystick Game Loop Assembly Skeleton",
+        "uri": "c64://examples/assembly/joystick-game-loop",
+        "description": "Joystick-driven game loop skeleton using the built-in assembly PRG generator syntax.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "BASIC Hello World Example",
+        "uri": "c64://basic/examples/hello-world",
+        "description": "Minimal BASIC listing that prints a greeting.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "6510 Assembly Specification",
+        "uri": "c64://assembly/spec",
+        "description": "Overview of supported 6510 assembly syntax, addressing modes, and conventions.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "SID File Structure",
+        "uri": "c64://sound/sid-file-structure",
+        "description": "Explains SID file layout, metadata, and loading expectations.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "1541 Drive Specification",
+        "uri": "c64://drive/spec",
+        "description": "Reference for Commodore 1541 drive behavior, commands, and data layout.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "6510 Assembly Tooling Notes",
+        "uri": "c64://assembly/tooling-notes",
+        "description": "Notes about assembly tooling and the source layout supported by ultimate_generate_assembly_prg.",
+        "mimeType": "text/markdown"
+      },
+      {
+        "name": "HIRES Dot Burst Generator Example",
+        "uri": "c64://examples/assembly/hires-dot-burst-generator",
+        "description": "HIRES fire/line demo idea adapted to compile with the built-in assembly PRG generator.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "Character Set Reference",
+        "uri": "c64://graphics/charset",
+        "description": "Character set lookup table for C64 screen codes and glyph mapping.",
+        "mimeType": "text/csv"
+      },
+      {
+        "name": "BASIC Entchen PETSCII Demo",
+        "uri": "c64://basic/examples/entchen-petscii",
+        "description": "PETSCII demo showing a character-based display.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "HIRES Line Draw Library",
+        "uri": "c64://examples/assembly/hires-line-draw-library",
+        "description": "Embedded upstream HIRES line drawing and dot stepping library reference.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "BASIC Wave Animation",
+        "uri": "c64://basic/examples/wave",
+        "description": "Wave animation example for screen effects.",
+        "mimeType": "text/plain"
+      },
+      {
+        "name": "Epson Bitmap Printing",
+        "uri": "c64://printer/epson-bitmap",
+        "description": "Bitmap-printing guidance for Epson-compatible printer workflows.",
+        "mimeType": "text/markdown"
+      }
+    ]
+  },
+  "prompt": {
+    "description": "Plan, implement, and verify Commodore BASIC v2 programs safely.",
+    "messages": [
+      {
+        "content": {
+          "type": "text",
+          "text": "You operate the Commodore 64 Ultimate through MCP tools and documentation resources.\nReview relevant resources before generating code or issuing device commands."
+        },
+        "role": "assistant"
+      },
+      {
+        "content": {
+          "type": "text",
+          "text": "Safety guardrails:\n- Ask before reset, reboot, power-off, or destructive memory/disk operations.\n- Explain side effects and provide a recovery path."
+        },
+        "role": "assistant"
+      },
+      {
+        "content": {
+          "type": "text",
+          "text": "BASIC workflow:\n- Start with c64://resources/index, then reference c64://basic/spec and c64://basic/pitfalls.\n- Produce numbered BASIC V2 listing.\n- Describe verification using screen output and expected READY. state."
+        },
+        "role": "assistant"
+      }
+    ]
+  },
+  "resource": {
+    "contents": [
+      {
+        "uri": "c64://basic/spec",
+        "mimeType": "text/markdown",
+        "text": "---\ntype: Reference\ntitle: Commodore 64 BASIC V2 Specification\ndescription: Reference for Commodore BASIC V2 syntax, memory layout, and runtime behavior.\nresource: c64://basic/spec\ntags:\n- basic\n- reference\n- c64\n---\n\n# Commodore 64 BASIC V2 Specification\n\r\n## 1. Overview\r\n\r\nC64 BASIC V2 is a line-numbered, interpreted, tokenised language stored in ROM.  \r\nEach program consists of linked line records beginning at `$0801`, and executes sequentially unless redirected by explicit control flow. The interpreter manages variables, arrays, and strings in RAM regions immediately following the program text.\r\n\r\n---\r\n\r\n## 2. Memory and Program Layout\r\n\r\n### 2.1 System Pointers (Zero Page)\r\n\r\n| Name | Address | Meaning |\r\n|------|----------|----------|\r\n| **TXTTAB** | `$002B–002C` | Start of BASIC text (default `$0801`) |\r\n| **VARTAB** | `$002D–002E` | Start of variable table |\r\n| **ARYTAB** | `$002F–0030` | Start of array storage |\r\n| **STREND** | `$0031–0032` | End of arrays (+1) |\r\n| **FRETOP** | `$0033–0034` | Bottom of string storage |\r\n| **MEMSIZ** | `$0037–0038` | Highest BASIC RAM address |\r\n\r\nVariables grow upward from `TXTTAB`; strings grow downward from `MEMSIZ`.  \r\n`ARYTAB` always follows `VARTAB`; defining new scalars after arrays shifts array memory upward by 7 bytes per variable.\r\n\r\n---\r\n\r\n### 2.2 BASIC Program Storage (PRG Format)\r\n\r\nEach BASIC program in memory (and on disk/tape) is a contiguous block:\r\n\r\n| Field | Size | Description |\r\n|--------|------|-------------|\r\n| Load address | 2 bytes | `$0801` little-endian |\r\n| Next line pointer | 2 bytes | Absolute address of next line |\r\n| Line number | 2 bytes | 0–65535 |\r\n| Tokenised PETSCII text | variable | Zero-terminated statement list |\r\n| Terminator | 2 bytes | Final `$0000` sentinel |\r\n\r\nPointers increase monotonically. The final record’s pointer references the terminator.  \r\nTokenisation replaces keywords by single-byte codes (`$80–$CB`), ignoring quoted strings and `REM` comments. Empty lines are stored as a single `$20` (space).\r\n\r\n---\r\n\r\n## 3. Variables and Data Model\r\n\r\n### 3.1 Variable Types\r\n\r\nAll variables occupy **7 bytes** in the variable table.  \r\nThe first two bytes encode the name and type; the remaining bytes store the data or descriptor.\r\n\r\n| Type | Suffix | Range | Storage | Notes |\r\n|------|---------|--------|----------|-------|\r\n| **Real (Float)** | none | ±2.9×10⁻³⁸ … ±1.7×10³⁸ | 1-byte exponent + 4-byte mantissa | Default numeric type, ≈9.6-digit precision. |\r\n| **Integer** | `%` | −32768 … 32767 | 2 bytes (hi-lo) | High bit set on both name bytes; slower than float due to conversion. |\r\n| **String** | `$` | 0–255 chars | 1-byte length + 2-byte pointer | High bit set on second name byte; pointer references PETSCII data. |\r\n| **Boolean** | — | `0` (FALSE), `−1` or any non-zero (TRUE) | Numeric representation | Implemented via integers. |\r\n\r\n#### Name Encoding\r\n\r\n- Only first two letters significant (`CO`, `COCOS` → same variable).  \r\n- Letters A–Z, digits 0–9; must start with a letter.  \r\n- Case-insensitive; stored uppercase.  \r\n- Type suffix distinguishes variants (`A`, `A%`, `A$`).  \r\n- Reserved names: `ST`, `TI`, `TI$`, `FN`, and all keywords.  \r\n- Max name length ≈ 80 characters (logical line length).\r\n\r\n**Example collision:**\r\n\r\n```\r\n10 A$=\"1\":AA$=\"2\":AAA$=\"3\":PRINT A$,AA$,AAA$\r\n→ 1 3 3\r\n```\r\n\r\n---\r\n\r\n### 3.2 Internal Representation\r\n\r\n| Offset | Field | Description |\r\n|--------:|--------|-------------|\r\n| 0–1 | Name (2 chars) with high bits as type markers | Identifier |\r\n| 2–6 | Data payload | Depends on type |\r\n\r\n**Encoding rules:**\r\n\r\n- *Real*: ASCII name, 2nd byte zero if single char.  \r\n- *Integer*: both name bytes have high-bit set.  \r\n- *String*: only 2nd byte has high-bit set.\r\n\r\n**Payload:**\r\n\r\n- Real: exponent + mantissa (5 bytes).  \r\n- Integer: 2-byte value, 3 bytes padding 0.  \r\n- String: length (1 byte), pointer (2 bytes LE), padding 0s.\r\n\r\n---\r\n\r\n### 3.3 Arrays\r\n\r\nDeclared via `DIM`, e.g. `DIM A(7)` (indices 0–7).  \r\nIf a program uses an array without prior `DIM`, BASIC auto-DIMs it to 11 elements per dimension (0–10).  \r\nRe-DIMing → `?REDIM'D ARRAY ERROR`.  \r\nIndex < 0 or > 32767 → `?ILLEGAL QUANTITY ERROR`.\r\n\r\n#### Internal Layout\r\n\r\n```\r\nname(2) , offset_to_next(2) , dimensions(1) ,\r\nlength1(2) [, length2(2)...] , data...\r\n```\r\n\r\n- Offset is relative to next array (for relocation).  \r\n- `dimensions` = number of axes (1–255 theoretical).  \r\n- Each element stored in ascending index order; leftmost index varies fastest.  \r\n- Element sizes: Real 5 B, Integer 2 B, String 3 B descriptor.\r\n\r\n**Examples:**\r\n\r\n```\r\nDIM C%(2,3)  → 3×4 = 12 integers\r\nDIM S$(1,2,3) → 2×3×4 = 24 string descriptors\r\n```\r\n\r\n---\r\n\r\n### 3.4 Strings\r\n\r\nStrings hold PETSCII text of up to 255 chars.  \r\nThe descriptor’s pointer targets either:\r\n\r\n- an in-place literal within BASIC text (for quoted constants), or  \r\n- an allocated region in the **string heap** (descending from `FRETOP`).\r\n\r\nNew strings are created whenever:\r\n\r\n- concatenation (`+`),\r\n- substring (`LEFT$`, `MID$`, `RIGHT$`),\r\n- or runtime expression evaluation occurs.\r\n\r\nNo garbage collection exists. `CLR` or `NEW` frees all strings.\r\n\r\n**Efficiency notes**\r\n\r\n- Prefer `PRINT A$;B$` instead of `PRINT A$+B$` (no new allocation).  \r\n- Define and reuse variables to prevent heap growth.  \r\n- Direct-mode string operations always allocate temporary strings.\r\n\r\n**Advanced manipulation:**  \r\nBy modifying the descriptor at `VARTAB` (length and pointer), one can create scrolling or “windowed” text effects without copying data.\r\n\r\n---\r\n\r\n### 3.5 Variable Optimisation Guidelines\r\n\r\n- Declare scalar variables before arrays (avoids array shifting).  \r\n- Use short two-character names for speed.  \r\n- Avoid redundant `LET`.  \r\n- Keep string operations minimal in loops.  \r\n- Use `FRE(0)` to inspect available memory (16-bit signed).  \r\n- To locate start of variable table:\r\n\r\n  ```\r\n  VT = PEEK(46)*256 + PEEK(45)\r\n  ```\r\n\r\n---\r\n\r\n## 4. Operators\r\n\r\n| Rank | Operators | Description |\r\n|------|------------|-------------|\r\n| 1 | `^` | Exponentiation |\r\n| 2 | unary `+ −` | Sign prefix |\r\n| 3 | `* /` | Multiplication / Division |\r\n| 4 | `+ −` | Addition, Subtraction, String concatenation |\r\n| 5 | `< <= = >= > <>` | Comparison |\r\n| 6 | `NOT` | Logical NOT / bitwise invert |\r\n| 7 | `AND` | Logical AND / bitwise AND |\r\n| 8 | `OR` | Logical OR / bitwise OR |\r\n\r\nParentheses nest ≤ 10 levels.  \r\nDivision by 0 → `?DIVISION BY ZERO`.  \r\nLogical ops on integers act bitwise on 16-bit values.\r\n\r\n---\r\n\r\n## 5. Syntax Definition (EBNF)\r\n\r\n*(Complete grammar retained for program analysis)*\r\n\r\n```\r\nprogram      = { line }, endmarker ;\r\nline         = nextptr word , lineno word , stmtlist , 0x00 ;\r\nstmtlist     = statement , { \":\" , statement } ;\r\n\r\nstatement =\r\n  \"REM\" , { <any PETSCII except CR> } |\r\n  \"FOR\" , var , \"=\" , expr , \"TO\" , expr , [ \"STEP\" , expr ] |\r\n  \"NEXT\" , [ var ] |\r\n  \"IF\" , expr , \"THEN\" , ( stmtlist | lineno ) |\r\n  ( \"GOTO\" | \"GO\" , \"TO\" ) , lineno |\r\n  \"GOSUB\" , lineno | \"RETURN\" |\r\n  \"ON\" , expr , ( \"GOTO\" | \"GOSUB\" ) , lineno , { \",\" , lineno } |\r\n  \"DEF\" , \"FN\" , fnname , \"(\" , var , \")\" , \"=\" , expr |\r\n  \"INPUT\" , [ prompt ] , varlist | \"GET\" , var | \"PRINT\" , [ printlist ] |\r\n  \"OPEN\" , expr , \",\" , expr , [ \",\" , expr , [ \",\" , fnameMode ] ] |\r\n  \"CLOSE\" , expr | \"CMD\" , expr , [ \",\" , exprlist ] |\r\n  \"LOAD\" , fname [ \",\" , dev [ \",\" , secdev ] ] |\r\n  \"SAVE\" , fname [ \",\" , dev [ \",\" , secdev ] ] |\r\n  \"VERIFY\" , fname [ \",\" , dev [ \",\" , secdev ] ] |\r\n  \"READ\" , varlist | \"RESTORE\" | \"DATA\" , datalist |\r\n  \"POKE\" , expr , \",\" , expr | \"PEEK\" , \"(\" , expr , \")\" |\r\n  \"WAIT\" , expr , \",\" , expr , [ \",\" , expr ] |\r\n  \"SYS\" , expr , { \",\" , expr } | var , \"=\" , expr |\r\n  \"USR\" , \"(\" , expr , \")\" |\r\n  \"RUN\" , [ lineno ] | \"STOP\" | \"END\" | \"CONT\" |\r\n  \"LIST\" , [ listRange ] | \"NEW\" | \"CLR\" |\r\n  \"FRE\" , \"(\" , expr , \")\" ;\r\n\r\nexpr  = term , { \"OR\" , term } ;\r\nterm  = factor , { \"AND\" , factor } ;\r\nfactor= [ \"NOT\" ] , relation ;\r\nrelation = sum , { ( \"=\" | \"<\" | \">\" | \"<=\" | \">=\" | \"<>\" ) , sum } ;\r\nsum   = product , { ( \"+\" | \"-\" ) , product } ;\r\nproduct = power , { ( \"*\" | \"/\" ) , power } ;\r\npower = unary , { \"^\" , unary } ;\r\nunary = [ \"+\" | \"-\" ] , primary ;\r\nprimary = number | string | var | fncall | \"(\" , expr , \")\" ;\r\n\r\nfncall = ( \"SGN\" | \"INT\" | \"ABS\" | \"USR\" | \"FRE\" | \"POS\" | \"SQR\" | \"RND\" |\r\n           \"LOG\" | \"EXP\" | \"COS\" | \"SIN\" | \"TAN\" | \"ATN\" | \"PEEK\" | \"LEN\" |\r\n           \"STR$\" | \"VAL\" | \"ASC\" | \"CHR$\" | \"LEFT$\" | \"RIGHT$\" | \"MID$\" |\r\n           \"TAB\" | \"SPC\" ), \"(\" , [ expr , { \",\" , expr } ] , \")\" ;\r\n```\r\n\r\n---\r\n\r\n## 6. Commands and Functions\r\n\r\n**Flow Control**  \r\n`FOR–TO–STEP–NEXT`, `IF–THEN`, `GOTO`, `GOSUB`, `RETURN`, `ON–GOTO/GOSUB`, `DEF FN`.\r\n\r\n**Input/Output**  \r\n`INPUT`, `INPUT#`, `GET`, `PRINT`, `PRINT#`, `SPC(n)`, `TAB(n)`, `POS()`.\r\n\r\n**File Operations**  \r\n`LOAD`, `SAVE`, `VERIFY`, `OPEN`, `CLOSE`, `CMD`, `ST`.\r\n\r\n**Data Access**  \r\n`DATA`, `READ`, `RESTORE`.\r\n\r\n**Math / Logic**  \r\n`ABS`, `ATN`, `COS`, `EXP`, `INT`, `LOG`, `RND`, `SGN`, `SIN`, `SQR`, `TAN`;  \r\nOperators `+ − * / ^ AND OR NOT`.\r\n\r\n**String Processing**  \r\n`LEN`, `LEFT$`, `RIGHT$`, `MID$`, `STR$`, `VAL`, `ASC`, `CHR$`, `+` (concat).\r\n\r\n**Memory / System**  \r\n`PEEK`, `POKE`, `WAIT`, `SYS`, `USR`.\r\n\r\n**Program Control**  \r\n`RUN`, `STOP`, `END`, `CONT`, `NEW`, `CLR`, `LIST`, `FRE(0)`.\r\n\r\nConstants: `π`, `TI`, `TI$`.\r\n\r\n---\r\n\r\n## 7. Keywords and Abbreviations (BASIC V2)\r\n\r\n| Hex | Keyword | Abbrev. | Keystroke | Description |\r\n|------|----------|----------|------------|-------------|\r\n| 80 | END | eN | E + Shift-N | End program |\r\n| 81 | FOR | fO | F + Shift-O | Loop start |\r\n| 82 | NEXT | nE | N + Shift-E | Loop end |\r\n| 83 | DATA | dA | D + Shift-A | Literal data |\r\n| 84 | INPUT# | iN | I + Shift-N | File input |\r\n| 85 | INPUT | — | — | Keyboard input |\r\n| 86 | DIM | dI | D + Shift-I | Array declaration |\r\n| 87 | READ | rE | R + Shift-E | Read DATA |\r\n| 88 | LET | lE | L + Shift-E | Assignment |\r\n| 89 | GOTO | gO | G + Shift-O | Branch |\r\n| 8A | RUN | rU | R + Shift-U | Execute program |\r\n| 8B | IF | — | — | Conditional |\r\n| 8C | RESTORE | reS | R,E + Shift-S | Reset DATA pointer |\r\n| 8D | GOSUB | goS | G,O + Shift-S | Subroutine |\r\n| 8E | RETURN | reT | R,E + Shift-T | Return |\r\n| 8F | REM | — | — | Comment |\r\n| 90 | STOP | sT | S + Shift-T | Halt |\r\n| 91 | ON | — | — | Indexed branch |\r\n| 92 | WAIT | wA | W + Shift-A | Wait for mask |\r\n| 93 | LOAD | lO | L + Shift-O | Load file |\r\n| 94 | SAVE | sA | S + Shift-A | Save file |\r\n| 95 | VERIFY | vE | V + Shift-E | Verify file |\r\n| 96 | DEF | dE | D + Shift-E | Define FN |\r\n| 97 | POKE | pO | P + Shift-O | Write memory |\r\n| 98 | PRINT# | pR | P + Shift-R | Output to file |\r\n| 99 | PRINT | ? | ? key | Output to screen |\r\n| 9A | CONT | cO | C + Shift-O | Continue |\r\n| 9B | LIST | lI | L + Shift-I | List program |\r\n| 9C | CLR | cL | C + Shift-L | Clear vars |\r\n| 9D | CMD | cM | C + Shift-M | Redirect output |\r\n| 9E | SYS | sY | S + Shift-Y | Call machine code |\r\n| 9F | OPEN | oP | O + Shift-P | Open device |\r\n| A0 | CLOSE | clO | C,L + Shift-O | Close device |\r\n| A1 | GET | gE | G + Shift-E | Read char |\r\n| A2 | NEW | — | — | Clear program |\r\n| A3 | TAB( | tA | T + Shift-A | Tab cursor |\r\n| A4 | TO | — | — | Range keyword |\r\n| A5 | FN | — | — | Function prefix |\r\n| A6 | SPC( | sP | S + Shift-P | Space in print |\r\n| A7 | THEN | tH | T + Shift-H | IF branch |\r\n| A8 | NOT | nO | N + Shift-O | Logical NOT |\r\n| A9 | STEP | stE | S,T + Shift-E | Loop increment |\r\n| AF | AND | aN | A + Shift-N | Logical AND |\r\n| B0 | OR | — | — | Logical OR |\r\n| B4 | SGN | sG | S + Shift-G | Sign |\r\n| B5 | INT | — | — | Integer truncation |\r\n| B6 | ABS | aB | A + Shift-B | Absolute |\r\n| B7 | USR | uS | U + Shift-S | User routine |\r\n| B8 | FRE | fR | F + Shift-R | Free memory |\r\n| B9 | POS | — | — | Cursor position |\r\n| BA | SQR | sQ | S + Shift-Q | Square root |\r\n| BB | RND | rN | R + Shift-N | Random number |\r\n| BC | LOG | — | — | Natural log |\r\n| BD | EXP | eX | E + Shift-X | Exponent |\r\n| BE | COS | — | — | Cosine |\r\n| BF | SIN | sI | S  + Shift-I | Sine |\r\n| C0 | TAN | — | — | Tangent |\r\n| C1 | ATN | aT | A + Shift-T | Arctangent |\r\n| C2 | PEEK | pE | P + Shift-E | Read memory |\r\n| C3 | LEN | — | — | String length |\r\n| C4 | STR$ | stR | S,T + Shift-R | Number→String |\r\n| C5 | VAL | vA | V + Shift-A | String→Number |\r\n| C6 | ASC | aS | A + Shift-S | ASCII code |\r\n| C7 | CHR$ | cH | C + Shift-H | Code→Char |\r\n| C8 | LEFT$ | leF | L,E + Shift-F | Left substring |\r\n| C9 | RIGHT$ | rI | R + Shift-I | Right substring |\r\n| CA | MID$ | mI | M + Shift-I | Middle substring |\r\n| CB | GO | — | — | Used for GOTO/GOSUB |\r\n\r\n---\r\n\r\n## 8. System Constants and Status\r\n\r\n| Name | Meaning | Typical Range |\r\n|------|----------|----------------|\r\n| `PI` | 3.14159265 | Constant |\r\n| `ST` | Device status byte | Bit6=EOF, Bit7=No device |\r\n| `TI` | System tick counter | 1/60s resolution |\r\n| `TI$` | Time string | \"hhmmss\" |\r\n| `FRE(0)` | Free memory in bytes | 0–38911 |\r\n| `TRUE` | −1 ($FFFF) | Boolean |\r\n| `FALSE` | 0 | Boolean |\r\n\r\n---\r\n\r\n## 9. Validation Rules\r\n\r\n- Line numbers: 0–65535.  \r\n- Each program ends with `$0000` sentinel.  \r\n- Parentheses depth ≤10.  \r\n- Array redefinition prohibited.  \r\n- Division by zero → runtime error.  \r\n- Out-of-memory or string overflow → `?OUT OF MEMORY`.  \r\n- Keyword collision in variable name → `?SYNTAX ERROR`.\r\n\r\n---\r\n\r\n## 10. Performance and Optimisation Guidelines\r\n\r\nC64 BASIC V2 is fully interpreted and float-based. Optimise by reducing parsing, conversions, and heap movement. Every line lookup and variable access incurs cost; fast programs minimise interpreter work.\r\n\r\n### 10.1 Execution Model\r\n\r\n- Each line is linked; `GOTO`, `GOSUB`, `IF` search from start. Keep hot loops in low line numbers.\r\n- Keywords are tokenised; variables and literals parsed at runtime.\r\n- Numeric work is float unless explicitly integer; type conversions are slow.\r\n\r\n### 10.2 Variables\r\n\r\n- Only first two name letters count—use short names.\r\n- Define scalars before arrays; new scalars shift arrays by 7 B each.\r\n- Floats faster than integers; mixed arithmetic incurs conversion.\r\n- `FRE(0)` scans all variables—use sparingly.\r\n- Use 0 and −1 for Boolean logic.\r\n\r\n### 10.3 Arrays\r\n\r\n- Always `DIM`; undeclared arrays auto-DIM 11 elements per dimension.\r\n- Re-DIM → error; index 0–32767 only.\r\n- Keep dimensions small and fixed; leftmost index varies fastest.\r\n\r\n### 10.4 Arithmetic\r\n\r\n- Replace `^` with multiplication; pre-compute constants and function results.\r\n- `INT(X)` faster than truncation math; avoid mixing ints/floats.\r\n- Keep loops tight; each iteration re-parses expressions.\r\n\r\n### 10.5 Strings\r\n\r\n- Heap grows downward, no garbage collection.\r\n- Avoid `A$=A$+B$` in loops; prefer `PRINT A$;B$`.\r\n- Reuse string vars; overwrite via `MID$` instead of reallocating.\r\n- Use `CLR` to reclaim heap; `LEFT$/RIGHT$/MID$` create new descriptors—use sparingly.\r\n\r\n### 10.6 Control Flow\r\n\r\n- Prefer `FOR…NEXT` to manual `GOTO` loops.\r\n- Keep `IF` expressions short; parser re-evaluates every branch.\r\n- Combine short statements with `:` (< 80 chars per line).\r\n- Limit nesting depth (< 5) for readability and speed.\r\n\r\n### 10.7 Program Structure & I/O\r\n\r\n- Put constants/setup early; `DATA` and rarely used routines last.\r\n- Remove `REM` in loops; still parsed.\r\n- Minimise disk/tape/printer I/O; buffer in memory.\r\n- `CMD` redirection is slow—set once.\r\n- Avoid frequent `TI$`; use loop counters instead.\r\n- Use `SYS` for time-critical routines.\r\n\r\n### 10.8 Memory Use\r\n\r\n- Each scalar = 7 B; arrays store only element data.\r\n- Pack short related statements on one line.\r\n- Use abbreviations (`?`, `gO`, `sT`) to stay within 80 chars.\r\n- Maintain ≥ 50 % free RAM for string heap stability.\r\n- Call `CLR` to drop unused variables.\r\n\r\n### 10.9 Summary\r\n\r\nFast BASIC = minimal parsing, fixed data, short names, reused strings, few allocations.  \r\nDefine vars early, pre-DIM arrays, keep loops shallow, and avoid heap churn.  \r\nTypical speed gain: 2–5× over unoptimised code.\r\n\r\n---\r\n\r\n## 11. Writing Games Efficiently in BASIC\r\n\r\nC64 BASIC games rely on careful screen, input, and timing control. Interpreter speed limits frame rate; optimise for responsiveness, not raw throughput.\r\n\r\n### 11.1 Core Strategy\r\n\r\n- BASIC handles logic; graphics/sound via `POKE` to hardware.\r\n- Use fixed variables and arrays; avoid runtime string creation.\r\n- Keep main loop short and predictable.\r\n\r\n### 11.2 Screen Handling\r\n\r\n- Screen RAM $0400 (1024 dec); Colour RAM $D800 (55296 dec).\r\n- `PRINT` is slow; use direct writes:\r\n\r\n  ```basic\r\n  POKE1024+X+40*Y,CHR\r\n  POKE55296+X+40*Y,COLOR\r\n  ```\r\n\r\n- Redraw only modified cells; update deltas, not full screen.\r\n- For static backgrounds, draw once, then update moving parts.\r\n- To clear screen, loop over $0400/$D800 ranges.\r\n\r\n### 11.3 Delta Updates\r\n\r\n- Track old/new positions; erase previous cell, draw new one.\r\n- Use flags or small arrays for active objects only.\r\n- Skip unchanged elements; BASIC loops are costly.\r\n\r\n### 11.4 Timing (Delays)\r\n\r\n- **Do not delay by default**—BASIC is slower than 50 Hz refresh.\r\n- Add timing only for pacing (slow motion, animation rhythm, cross-platform consistency, or sync with music).  \r\n- Implement fixed-step gating, not busy-waits:\r\n\r\n  ```basic\r\n  IF TI-T0>=N THEN T0=TI:GOSUB UPDATE\r\n  ```\r\n\r\n  → limits maximum update rate without freezing input.\r\n- Avoid `FOR T=1 TO N:NEXT` and tight wait loops; they waste CPU.\r\n- If the game already runs slower than `N`, no wait occurs.\r\n\r\n### 11.5 Movement & Input\r\n\r\n- Move by arithmetic deltas (`X=X+DX`); keep signed `DX/DY`.\r\n- Keyboard: `GET A$` (non-blocking). Avoid `INPUT`.\r\n\r\n  ```basic\r\n  GETK$:IFK$<>\"\"THEN...\r\n  ```\r\n\r\n- Joystick port 2 @ $DC00 (56320):\r\n\r\n  | Bit | Function | Mask |\r\n  |------|-----------|------|\r\n  | 0 | Up | 1 |\r\n  | 1 | Down | 2 |\r\n  | 2 | Left | 4 |\r\n  | 3 | Right | 8 |\r\n  | 4 | Fire | 16 |\r\n  Example:  \r\n  `J=PEEK(56320):IF(JAND1)=0THENPY=PY-1`\r\n\r\n### 11.6 Sprites & Graphics\r\n\r\n- VIC sprite enable $D015; positions $D000–$D00F; colours $D027–$D02E.\r\n- Pre-load sprite data; update only X/Y each frame via `POKE`.\r\n- VIC renders asynchronously—BASIC handles motion logic only.\r\n\r\n### 11.7 Sound\r\n\r\n- SID base $D400.  \r\n- Store freq/envelope tables in DATA or arrays; `POKE` directly each frame.\r\n\r\n### 11.8 Memory & Performance\r\n\r\n- Use integer arrays for coordinates/counters.  \r\n- Keep < 26 variables for faster lookup.  \r\n- Avoid `PRINT` during play; write HUD directly to screen RAM.  \r\n- For scrolling, shift indices or viewport pointers instead of copying memory.  \r\n- Reuse data structures; avoid new strings inside loop.\r\n\r\n### 11.9 Example Loop Skeleton\r\n\r\n```basic\r\n10 T0=TI:GETK$\r\n20 GOSUB1000:REM LOGIC\r\n30 GOSUB2000:REM DRAW\r\n40 IF TI-T0<2 THEN GOTO40\r\n50 GOTO10\r\n```\r\n\r\n→ adds frame pacing only if motion needs slowing.\r\n\r\n### 11.10 Summary\r\n\r\nEfficient BASIC games minimise interpreter overhead.  \r\nUse `POKE/PEEK` for graphics and input, delta redraw for movement, fixed-step gating only when required, and pre-allocated variables for state.  \r\nResult: smooth, responsive gameplay within BASIC’s limits.\r\n"
+      }
+    ]
+  },
+  "basic": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"prgDataBase64\":\"AQgPCAoAmSAiSEVMTE8iAAAA\",\"sizeBytes\":18,\"loadAddress\":\"0x0801\",\"note\":\"Use ultimate_run_prg_binary with prgDataBase64 parameter to execute\"}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "prgDataBase64": "AQgPCAoAmSAiSEVMTE8iAAAA",
+      "sizeBytes": 18,
+      "loadAddress": "0x0801",
+      "note": "Use ultimate_run_prg_binary with prgDataBase64 parameter to execute"
+    },
+    "isError": false
+  },
+  "assembly": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"success\":true,\"prgDataBase64\":\"AMBg\",\"sizeBytes\":3,\"origin\":\"0xC000\",\"sysAddress\":49152,\"basicRunLoader\":false,\"note\":\"Start with SYS 49152.\"}"
+      }
+    ],
+    "structuredContent": {
+      "success": true,
+      "prgDataBase64": "AMBg",
+      "sizeBytes": 3,
+      "origin": "0xC000",
+      "sysAddress": 49152,
+      "basicRunLoader": false,
+      "note": "Start with SYS 49152."
+    },
+    "isError": false
+  },
+  "error": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"error\":\"Invalid line format: NOT BASIC. Expecting a line number at the beginning\",\"errorType\":\"SyntaxError\",\"retryable\":false}"
+      }
+    ],
+    "structuredContent": {
+      "error": "Invalid line format: NOT BASIC. Expecting a line number at the beginning",
+      "errorType": "SyntaxError",
+      "retryable": false
+    },
+    "isError": true
+  },
+  "text": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"ok\":true,\"message\":\"Connection managed via client initialization\"}"
+      }
+    ]
+  }
+}

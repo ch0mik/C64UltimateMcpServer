@@ -1,10 +1,11 @@
 ﻿using System.Collections.Concurrent;
 using ModelContextProtocol;
 using ModelContextProtocol.Server;
+using ModelContextProtocol.Protocol;
 
 namespace C64UltimateMcpServer.Core;
 
-public class SubscriptionMessageSender(McpServer server, ConcurrentDictionary<string, byte> subscriptions) : BackgroundService
+public class SubscriptionMessageSender(McpServer server, ConcurrentDictionary<string, byte> subscriptions, TimeProvider timeProvider) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -12,14 +13,14 @@ public class SubscriptionMessageSender(McpServer server, ConcurrentDictionary<st
         {
             foreach (var uri in subscriptions.Keys)
             {
-                await server.SendNotificationAsync("notifications/resource/updated",
-                    new
+                await server.SendNotificationAsync(NotificationMethods.ResourceUpdatedNotification,
+                    new ResourceUpdatedNotificationParams
                     {
                         Uri = uri,
                     }, cancellationToken: stoppingToken);
             }
 
-            await Task.Delay(5000, stoppingToken);
+            await Task.Delay(TimeSpan.FromSeconds(5), timeProvider, stoppingToken);
         }
     }
 }

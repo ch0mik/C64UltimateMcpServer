@@ -8,13 +8,29 @@ Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ult
 
 **License:** MIT License (see [LICENSE](LICENSE) file)
 
+Release summary: [RELEASE_NOTES.md](RELEASE_NOTES.md). Current validation: **38/38 Release tests** and **8/8 offline HTTP example files** pass.
+
+Implementation plans are tracked separately in OpenSpec: [MCP Apps/MRTR and related features](openspec/changes/enable-mcp-2-3-features/proposal.md) and [Ultimate REST API alignment](openspec/changes/align-ultimate-rest-api/proposal.md). Device `X-Password`, device-info, menu/input APIs, and the additional binary MCP tools described in those plans are not implemented yet. OAuth server configuration remains outside those plans.
+
+## MCP SDK 2.3.0 compatibility
+
+The server uses .NET 10 and MCP SDK **2.3.0** with hybrid Streamable HTTP at `/`:
+
+- Protocol **2025-11-25** clients use `initialize`, `Mcp-Session-Id`, and the `MCP-Protocol-Version` header on subsequent requests. Resource subscriptions and logging-level selection remain available in these sessions.
+- Protocol **2026-07-28** clients use `server/discover` and request metadata without transport sessions. Each request supplies `Mcp-Method` and, where required, `Mcp-Name` (tool/prompt name, resource URI, or task ID). Periodic session logging and resource notifications are available only to legacy sessions. A modern `subscriptions/listen` stream is not implemented.
+- Legacy SSE endpoints `/sse` and `/message` are disabled. Configure clients for **Streamable HTTP** at the root endpoint instead.
+
+Tasks now use `ModelContextProtocol.Extensions.Tasks`. A modern client opts in per request through `_meta["io.modelcontextprotocol/clientCapabilities"].extensions["io.modelcontextprotocol/tasks"]`. The server returns a task ID; poll `tasks/get` for status and the final result, or request `tasks/cancel`. Calls without opt-in return ordinary tool results. The experimental Tasks 1.x API and wire format are incompatible with this extension. Cancellation is cooperative and does not undo device operations already performed.
+
+Sessions and tasks live in memory in one server process and are lost on restart. Clients must reconnect; unfinished tasks are not recovered. See the [modern HTTP examples](examples_http/modern/README.md) and [offline smoke verification](examples_http/smoke/README.md).
+
 ## 🎥 Demo Video
 
 [![C64 Ultimate MCP Server Demo](https://img.youtube.com/vi/1q80quIIkV0/0.jpg)](https://www.youtube.com/watch?v=1q80quIIkV0?cc_load_policy=1&cc_lang_pref=en)
 
 ## ⚡ Key Features
 
-- **Complete Ultimate 64 API Support**: 46 MCP tools covering the Ultimate REST API plus PRG generation workflows
+- **Ultimate 64 API Integration**: 46 MCP tools for supported Ultimate REST operations and PRG generation workflows
 - **MCP Prompts Support**: 15 prompt templates exposed through `prompts/list` and `prompts/get`
 - **BASIC to PRG Compilation**: Real-time compilation of BASIC V2 source code to executable PRG files
 - **MCP Resources**: 55 embedded documentation resources (BASIC specs, Assembly guides, examples, source catalogs, Kernal API, memory maps, graphics, sound, I/O, drive, printer, keyboard/control codes, disassembly)
@@ -27,7 +43,7 @@ Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ult
 - **Enterprise Configuration**: appsettings.json with environment overrides
 - **Type Safety**: C# static typing with full null-safety and nullable reference types
 - **Structured Logging**: Separate loggers for client and service layers
-- **Production-Ready**: Zero errors/warnings, comprehensive error handling
+- **Verified Build**: Release tests pass; existing XML documentation warnings remain
 - **Agent Integration**: Works with Continue, Copilot, Cody, Cursor, Claude Desktop
 
 ## 🧠 Embedded Knowledge Resources
@@ -218,7 +234,7 @@ Ask Cody: List all available config categories
 
 ### Drive Management (7)
 - **ultimate_get_drives** - Get information about all disk drives
-- **ultimate_mount_disk** - Mount disk image from filesystem or binary data
+- **ultimate_mount_disk** - Mount disk image from the Ultimate filesystem; binary mounting is currently available in the C# client only
 - **ultimate_unmount_disk** - Unmount disk image
 - **ultimate_reset_drive** - Reset selected disk drive
 - **ultimate_set_drive_mode** - Change drive operating mode
@@ -636,7 +652,7 @@ networks:
 - ✅ Streamable HTTP transport
 - ✅ Agent integration (Continue, Copilot, Cody, Cursor)
 - ✅ Docker containerization with MCP Inspector
-- ✅ Zero errors/warnings
+- ✅ Release tests pass; existing XML documentation warnings remain
 - ✅ Comprehensive documentation
 - ✅ Configuration management
 - ✅ Session handling
@@ -682,6 +698,22 @@ MIT
 > ⚙️ **Ten projekt został stworzony 100% za pomocą promptów do Agenta AI** - Każda linia kodu, konfiguracji i dokumentacji została wygenerowana poprzez konwersacyjne prompty do GitHub Copilot Agent.
 
 Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 64 Ultimate** z **46 narzędziami MCP**, **15 promptami MCP** i **55 zasobami dokumentacyjnymi**. Zbudowany w C# z architekturą klasy enterprise, bezpieczeństwem typów i kompleksowym pokryciem API.
+
+Opis wydania: [RELEASE_NOTES.md](RELEASE_NOTES.md). Weryfikacja: **38/38 testów Release** i **8/8 plików przykładów HTTP bez urządzenia** przechodzi.
+
+Nowe funkcje mają osobne plany OpenSpec: [MCP Apps/MRTR i rozszerzenia](openspec/changes/enable-mcp-2-3-features/proposal.md) oraz [zgodność z REST Ultimate](openspec/changes/align-ultimate-rest-api/proposal.md). Obsługa hasła urządzenia, device-info, menu/wejścia i dodatkowych binarnych narzędzi MCP pozostaje do wdrożenia. OAuth serwera MCP nie jest skonfigurowany i nie został dodany do zakresu tych planów.
+
+## Zgodność z MCP SDK 2.3.0
+
+Serwer korzysta z .NET 10 i MCP SDK **2.3.0**, udostępniając hybrydowy Streamable HTTP pod `/`:
+
+- Klienci protokołu **2025-11-25** używają `initialize`, identyfikatora `Mcp-Session-Id` i nagłówka `MCP-Protocol-Version` w kolejnych żądaniach. Zachowują subskrypcje zasobów i wybór poziomu logowania.
+- Klienci protokołu **2026-07-28** używają `server/discover` i metadanych każdego żądania, bez sesji transportowej. Przekazują `Mcp-Method` oraz wymagany `Mcp-Name` (nazwę narzędzia/promptu, URI zasobu lub ID zadania). Okresowe logowanie i powiadomienia zasobów działają wyłącznie w starszych sesjach. Nowy strumień `subscriptions/listen` nie jest zaimplementowany.
+- Endpointy legacy SSE `/sse` i `/message` są wyłączone. Klienta należy skonfigurować na **Streamable HTTP** pod głównym adresem serwera.
+
+Tasks korzystają z pakietu `ModelContextProtocol.Extensions.Tasks`. Klient nowego protokołu włącza je dla żądania przez `_meta["io.modelcontextprotocol/clientCapabilities"].extensions["io.modelcontextprotocol/tasks"]`. Otrzymuje ID zadania, a stan i wynik pobiera przez `tasks/get`; `tasks/cancel` służy do anulowania. Bez opt-in odpowiedź narzędzia wraca bezpośrednio. Eksperymentalne Tasks 1.x mają niezgodne API i format protokołu. Anulowanie jest kooperatywne i nie cofa wykonanych operacji urządzenia.
+
+Sesje i zadania są przechowywane w pamięci jednego procesu i znikają po restarcie. Klienci muszą połączyć się ponownie; niezakończone zadania nie są odzyskiwane. Dostępne są [przykłady nowego HTTP](examples_http/modern/README.md) oraz [weryfikacja smoke bez sprzętu](examples_http/smoke/README.md).
 
 ## 🎥 Wideo Demo
 
@@ -768,7 +800,7 @@ Ultimate__BaseUrl=http://192.168.0.120
 
 ### Zarządzanie Stacjami Dysków (7)
 - **ultimate_get_drives** - Pobranie informacji o wszystkich stacjach dysków
-- **ultimate_mount_disk** - Zamontowanie obrazu dysku z systemu plików lub danych binarnych
+- **ultimate_mount_disk** - Zamontowanie obrazu z systemu plików Ultimate; wariant binarny jest obecnie dostępny tylko w kliencie C#
 - **ultimate_unmount_disk** - Odmontowanie obrazu dysku
 - **ultimate_reset_drive** - Reset wybranej stacji dysków
 - **ultimate_set_drive_mode** - Zmiana trybu pracy stacji
@@ -1250,7 +1282,7 @@ networks:
 - ✅ Transport Streamable HTTP
 - ✅ Integracja z agentami AI (Continue, Copilot, Cody, Cursor)
 - ✅ Konteneryzacja Docker z MCP Inspector
-- ✅ Brak błędów i ostrzeżeń
+- ✅ Testy Release przechodzą; pozostają wcześniejsze ostrzeżenia dokumentacji XML
 - ✅ Pełna dokumentacja
 - ✅ Zarządzanie konfiguracją
 - ✅ Obsługa sesji
@@ -1298,7 +1330,7 @@ curl -X POST http://localhost:8080/ \
 - ✅ Transport Streamable HTTP
 - ✅ Integracja z agentami AI
 - ✅ Konteneryzacja Docker
-- ✅ Brak błędów i ostrzeżeń
+- ✅ Testy Release przechodzą; pozostają wcześniejsze ostrzeżenia dokumentacji XML
 - ✅ Pełna dokumentacja
 - ✅ Zarządzanie konfiguracją
 - ✅ Obsługa sesji

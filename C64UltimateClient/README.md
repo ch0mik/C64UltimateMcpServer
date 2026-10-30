@@ -1,21 +1,23 @@
 # C64UltimateClient - Commodore 64 Ultimate REST API Client
 
-A comprehensive, production-ready .NET client library for the **Commodore 64 Ultimate** REST API (1541U). Clean, async-first design with full API coverage and enterprise-grade error handling.
+An asynchronous .NET client library for supported **Commodore 64 Ultimate** REST API (1541U) operations. The current coverage and proposed additions are recorded in the [REST API audit](../openspec/changes/align-ultimate-rest-api/audit.md).
 
 **License:** MIT License
 
 ## Features
 
-✅ **Complete API Coverage** - All 40+ endpoints from 1541U documentation  
-✅ **Async/Await Support** - Modern async/await with proper cancellation token support  
+✅ **REST API Integration** - Machine, memory, runners, configuration, drives, streams, and disk-image operations<br>
+✅ **Async/Await Support** - Asynchronous HTTP operations; propagation of caller cancellation tokens is planned<br>
 ✅ **Type-Safe** - Full C# type safety with nullable reference types enabled  
 ✅ **Structured Logging** - Optional ILogger<Ultimate64Client> integration  
 ✅ **Error Handling** - UltimateClientException with API error details  
 ✅ **.NET 10.0** - Targets .NET 10.0 and later  
-✅ **Zero Dependencies** - Only uses System.* and Microsoft.Extensions.Logging.Abstractions  
+✅ **Minimal Dependencies** - Uses System.* and Microsoft.Extensions.Logging.Abstractions<br>
 ✅ **NuGet Ready** - Fully packaged for public distribution  
 
 ## Installation
+
+Device password support, device-info, menu/input endpoints, and binary load-without-run are planned additions. Several binary operations already exist in this library but are not exposed by the current MCP tools. See the [implementation plan](../openspec/changes/align-ultimate-rest-api/tasks.md) and [release notes](../RELEASE_NOTES.md).
 
 ```bash
 dotnet add package C64UltimateClient

@@ -8,14 +8,12 @@ using ModelContextProtocol;
 using ModelContextProtocol.AspNetCore;
 using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
+using ModelContextProtocol.Extensions.Tasks;
 
 ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> subscriptions = new();
-const bool UseStatefulHttpTransport = true;
 
 var builder = WebApplication.CreateBuilder(args);
-#pragma warning disable MCPEXP001
 var taskStore = new InMemoryMcpTaskStore();
-#pragma warning restore MCPEXP001
 
 var baseUrl = builder.Configuration["Ultimate:BaseUrl"] ?? "http://192.168.0.120";
 Console.WriteLine($"[Config] Ultimate BaseUrl: {baseUrl}");
@@ -23,6 +21,8 @@ Console.WriteLine($"[Config] Ultimate BaseUrl: {baseUrl}");
 // Register UltimateService for DI
 builder.Services.AddScoped<UltimateService>();
 builder.Services.AddScoped<C64ResourceProvider>();
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddSingleton<McpSessionNotifications>();
 
 // Configure MCP Server AFTER setting up configuration
 builder.Services
@@ -46,26 +46,22 @@ builder.Services
                 }
             ]
         };
-        #pragma warning disable MCPEXP001
-        options.TaskStore = taskStore;
-        options.SendTaskStatusNotifications = true;
-        #pragma warning restore MCPEXP001
         // Note: Custom JsonSerializerOptions are configured per-service (see UltimateService)
-        // MCP SDK 1.0.0 supports user-defined serialization options
     })
     .WithHttpTransport(options => ConfigureHttpTransport(options, subscriptions))
     .WithTools<UltimateService>()
+    .WithTasks(taskStore)
     .WithPrompts<C64UltimatePrompts>()
-    .WithSubscribeToResourcesHandler(async (ctx, ct) =>
+    .WithSubscribeToResourcesHandler((ctx, ct) =>
     {
         if (ctx.Server.SessionId is { } sessionId && ctx.Params?.Uri is { } uri)
         {
             subscriptions.GetOrAdd(sessionId, _ => new ConcurrentDictionary<string, byte>())
                 .TryAdd(uri, 0);
         }
-        return new EmptyResult();
+        return ValueTask.FromResult(new EmptyResult());
     })
-    .WithUnsubscribeFromResourcesHandler(async (ctx, ct) =>
+    .WithUnsubscribeFromResourcesHandler((ctx, ct) =>
     {
         if (ctx.Server.SessionId is { } sessionId &&
             ctx.Params?.Uri is { } uri &&
@@ -73,7 +69,7 @@ builder.Services
         {
             sessionSubscriptions.TryRemove(uri, out _);
         }
-        return new EmptyResult();
+        return ValueTask.FromResult(new EmptyResult());
     })
     .WithResources<C64ResourceProvider>();
 
@@ -91,9 +87,9 @@ static void ConfigureHttpTransport(
     HttpServerTransportOptions options,
     ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> subscriptions)
 {
-    options.Stateless = !UseStatefulHttpTransport;
+    options.SessionMode = HttpServerSessionMode.StatefulForInitializeClients;
 
-    // Centralized here so future MCP 2.0 transport/session migration touches one place.
+    // Session workers need a lifetime callback; ConfigureSessionOptions has no cleanup hook.
     #pragma warning disable MCPEXP002
     options.RunSessionHandler = async (httpContext, mcpServer, token) =>
     {
@@ -103,22 +99,10 @@ static void ConfigureHttpTransport(
             return;
         }
 
-        try
-        {
-            subscriptions[mcpServer.SessionId] = new ConcurrentDictionary<string, byte>();
-
-            using var subscriptionSender = new SubscriptionMessageSender(mcpServer, subscriptions[mcpServer.SessionId]);
-            await subscriptionSender.StartAsync(token);
-
-            using var loggingSender = new LoggingUpdateMessageSender(mcpServer);
-            await loggingSender.StartAsync(token);
-
-            await mcpServer.RunAsync(token);
-        }
-        finally
-        {
-            subscriptions.TryRemove(mcpServer.SessionId, out _);
-        }
+        var notifications = httpContext.RequestServices.GetRequiredService<McpSessionNotifications>();
+        await notifications.RunAsync(mcpServer, subscriptions, token);
     };
     #pragma warning restore MCPEXP002
 }
+
+public partial class Program { }

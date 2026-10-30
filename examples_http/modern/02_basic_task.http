@@ -1,0 +1,48 @@
+@host = http://localhost:8080
+# Copy result.taskId from the first response before running the polling request manually.
+@taskId = replace-with-created-task-id
+
+### Generate a PRG asynchronously; no device calls
+POST {{host}}/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+MCP-Protocol-Version: 2026-07-28
+Mcp-Method: tools/call
+Mcp-Name: ultimate_generate_basic_prg
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_generate_basic_prg",
+    "arguments": { "basicSource": "10 PRINT \"HELLO\"" },
+    "_meta": {
+      "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+      "io.modelcontextprotocol/clientInfo": { "name": "http-modern-client", "version": "1.0.0" },
+      "io.modelcontextprotocol/clientCapabilities": { "extensions": { "io.modelcontextprotocol/tasks": {} } }
+    }
+  }
+}
+
+### Poll until status is completed, failed, or cancelled
+POST {{host}}/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+MCP-Protocol-Version: 2026-07-28
+Mcp-Method: tasks/get
+Mcp-Name: {{taskId}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tasks/get",
+  "params": {
+    "taskId": "{{taskId}}",
+    "_meta": {
+      "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+      "io.modelcontextprotocol/clientInfo": { "name": "http-modern-client", "version": "1.0.0" },
+      "io.modelcontextprotocol/clientCapabilities": { "extensions": { "io.modelcontextprotocol/tasks": {} } }
+    }
+  }
+}

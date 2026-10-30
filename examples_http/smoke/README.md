@@ -19,3 +19,10 @@ Notes:
 - Every file is self-contained and performs its own MCP handshake.
 - These requests are non-destructive and are safe as the default manual verification set.
 - If the Ultimate device is offline, only the first six MCP-only files are expected to pass.
+- The legacy examples use protocol **2025-11-25** and send the negotiated version on requests after initialize.
+- New protocol discovery and Tasks examples are in [../modern](../modern/README.md).
+- To execute the first six smoke files and both modern files against a running server, without device operations:
+
+```powershell
+./scripts/Test-McpExamples.ps1 -BaseUrl http://localhost:8080
+```

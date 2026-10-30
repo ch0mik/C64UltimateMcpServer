@@ -13,7 +13,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - Ultimate__BaseUrl=http://192.168.0.120
+      - Ultimate__BaseUrl=http://192.168.68.63
       - ASPNETCORE_URLS=http://+:8080
       - ASPNETCORE_ENVIRONMENT=Production
     volumes:

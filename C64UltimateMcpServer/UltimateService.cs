@@ -13,7 +13,7 @@ namespace C64UltimateMcpServer.Core;
 /// <summary>
 /// MCP Server wrapper around C64UltimateClient.
 /// Exposes Commodore 64 Ultimate REST API as MCP tools.
-/// Supports MCP SDK 1.0.0 features including custom JsonSerializerOptions and task support.
+/// Uses explicit tool result serialization; asynchronous execution is registered through the MCP Tasks extension.
 /// </summary>
 public class UltimateService
 {
@@ -29,7 +29,7 @@ public class UltimateService
         var baseUrl = configuration["Ultimate:BaseUrl"] ?? "http://192.168.0.120";
         _client = new Ultimate64Client(baseUrl, _clientLogger);
         
-        // Initialize JSON serializer options with camelCase and null handling (MCP SDK 1.0.0)
+        // Initialize JSON serializer options with camelCase and null handling
         _jsonOptions = new JsonSerializerOptions
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -43,7 +43,7 @@ public class UltimateService
 
     /// <summary>
     /// Helper method to serialize responses with custom JsonSerializerOptions.
-    /// Ensures consistent JSON formatting across all tool responses (MCP SDK 1.0.0).
+    /// Ensures consistent JSON formatting across all tool responses.
     /// </summary>
     private string SerializeResponse(object obj)
     {
@@ -1217,7 +1217,7 @@ public class UltimateService
         }
     }
 
-    // MARK: Error Handling & Form Elicitation (MCP SDK 1.0.0)
+    // MARK: Error Handling & Form Elicitation
     //
     // The UltimateService implements comprehensive error handling for form requests
     // and MCP task support. When a tool call fails:

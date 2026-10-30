@@ -5,7 +5,9 @@ using ModelContextProtocol.Server;
 
 namespace C64UltimateMcpServer.Core;
 
-public class LoggingUpdateMessageSender(McpServer server) : BackgroundService
+// Logging remains available to initialize-based clients; it is deprecated in protocol 2026-07-28.
+#pragma warning disable MCP9005
+public class LoggingUpdateMessageSender(McpServer server, TimeProvider timeProvider) : BackgroundService
 {
     readonly Dictionary<LoggingLevel, string> _loggingLevelMap = new()
     {
@@ -25,18 +27,25 @@ public class LoggingUpdateMessageSender(McpServer server) : BackgroundService
         {
             var msgLevel = (LoggingLevel)Random.Shared.Next(_loggingLevelMap.Count);
 
-            var message = new
-                {
-                    Level = msgLevel.ToString().ToLower(),
-                    Data = _loggingLevelMap[msgLevel],
-                };
-
-            if (msgLevel > server.LoggingLevel)
-            {
-                await server.SendNotificationAsync("notifications/message", message, cancellationToken: stoppingToken);
-            }
-
-            await Task.Delay(15000, stoppingToken);
+            await SendMessageAsync(msgLevel, stoppingToken);
+            await Task.Delay(TimeSpan.FromSeconds(15), timeProvider, stoppingToken);
         }
     }
+
+    internal Task SendMessageAsync(LoggingLevel msgLevel, CancellationToken cancellationToken)
+    {
+        if (server.LoggingLevel is not { } minimumLevel || msgLevel < minimumLevel)
+        {
+            return Task.CompletedTask;
+        }
+
+        var message = new LoggingMessageNotificationParams
+        {
+            Level = msgLevel,
+            Data = System.Text.Json.JsonSerializer.SerializeToElement(_loggingLevelMap[msgLevel]),
+        };
+
+        return server.SendNotificationAsync(NotificationMethods.LoggingMessageNotification, message, cancellationToken: cancellationToken);
+    }
 }
+#pragma warning restore MCP9005

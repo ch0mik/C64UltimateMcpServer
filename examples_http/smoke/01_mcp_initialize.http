@@ -11,7 +11,7 @@ Accept: application/json, text/event-stream
   "id": 1,
   "method": "initialize",
   "params": {
-    "protocolVersion": "2025-11-05",
+    "protocolVersion": "2025-11-25",
     "capabilities": {},
     "clientInfo": {
       "name": "http-smoke-client",
@@ -26,6 +26,7 @@ POST {{host}}/
 Content-Type: application/json
 Accept: application/json, text/event-stream
 Mcp-Session-Id: {{init.response.headers.Mcp-Session-Id}}
+MCP-Protocol-Version: 2025-11-25
 
 {
   "jsonrpc": "2.0",
