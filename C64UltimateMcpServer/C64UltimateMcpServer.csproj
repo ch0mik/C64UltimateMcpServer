@@ -9,8 +9,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.AI.Abstractions" />
     <PackageReference Include="ModelContextProtocol" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="ModelContextProtocol.AspNetCore" />
     <PackageReference Include="ModelContextProtocol.Extensions.Tasks" />
+    <PackageReference Include="ModelContextProtocol.Extensions.Apps" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +24,9 @@
   <!-- Include resource files in the output -->
   <ItemGroup>
     <Content Include="Resources/data/**/*" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Features/Ui/dist/**/*" CopyToOutputDirectory="PreserveNewest" />
+    <Content Remove="Features/Ui/node_modules/**/*" />
+    <None Remove="Features/Ui/node_modules/**/*" />
   </ItemGroup>
 
 </Project>

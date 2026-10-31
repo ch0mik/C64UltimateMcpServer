@@ -2,7 +2,7 @@
 
 ## Context
 
-Plan z 2026-10-30, przygotowany po prośbie o pełny zakres nowych funkcji, włącznie z MCP Apps i MRTR. Migracja 1.4.0 → 2.3.0 jest wdrożona: 38 testów Release oraz osiem przykładów HTTP przechodzi. Nowych funkcji z tego planu jeszcze nie wdrożono.
+Plan z 2026-10-30, przygotowany po prośbie o pełny zakres nowych funkcji, włącznie z MCP Apps i MRTR. Migracja 1.4.0 → 2.3.0 jest wdrożona: 38 testów Release oraz osiem przykładów HTTP przechodzi. Funkcje wdrożono 2026-10-31; końcowe wyniki opisuje verification.md.
 
 Punktem odniesienia jest tag SDK `v2.3.0` (`9a327829ef066c44a0d737c58bf3c7617d7c701c`), nie lokalny HEAD będący 16 commitów dalej. Źródła: [wydania](https://github.com/modelcontextprotocol/csharp-sdk/releases), dokumentacja [Apps](https://github.com/modelcontextprotocol/csharp-sdk/blob/v2.3.0/docs/concepts/apps/apps.md), [MRTR](https://github.com/modelcontextprotocol/csharp-sdk/blob/v2.3.0/docs/concepts/mrtr/mrtr.md), [Tasks](https://github.com/modelcontextprotocol/csharp-sdk/blob/v2.3.0/docs/concepts/tasks/tasks.md) i [zasobów](https://github.com/modelcontextprotocol/csharp-sdk/blob/v2.3.0/docs/concepts/resources/resources.md). Kontrakty cache potwierdza `ICacheableResult` w tagu.
 
@@ -20,7 +20,7 @@ Rozszerzenia Skills widoczne w lokalnym HEAD nie istnieją w drzewie tagu 2.3.0.
 
 ### Zależność od przeglądu API urządzenia
 
-Późniejsza analiza dokumentacji REST jest zapisana w `../align-ultimate-rest-api/`. Ten plan wykorzystuje z niej wspólny transport klienta, NetworkPassword, klasyfikację błędów i CancellationToken zamiast wdrażać drugi wariant. Device-info może zasilać dashboard; opcjonalny odczyt menu dotyczy wyłącznie firmware Ultimate i nie stanowi zrzutu ekranu gry. Brak funkcji w zainstalowanym firmware ma czytelny wynik NotSupported. Wdrożenie funkcji zależnych od nowego klienta następuje po odpowiednich zadaniach planu API.
+Późniejsza analiza dokumentacji REST jest zapisana w `../../align-ultimate-rest-api/`. Ten plan wykorzystuje z niej wspólny transport klienta, NetworkPassword, klasyfikację błędów i CancellationToken zamiast wdrażać drugi wariant. Device-info może zasilać dashboard; opcjonalny odczyt menu dotyczy wyłącznie firmware Ultimate i nie stanowi zrzutu ekranu gry. Brak funkcji w zainstalowanym firmware ma czytelny wynik NotSupported. Wdrożenie funkcji zależnych od nowego klienta następuje po odpowiednich zadaniach planu API.
 
 ### 1. Moduły i kolejność
 
@@ -45,7 +45,7 @@ Ustawić `TimeToLive` i `CacheScope` przez filtry wyników `ICacheableResult`, b
 | Odpowiedź | TTL | Scope |
 | --- | --- | --- |
 | Wbudowana dokumentacja c64:// | 1 godzina | public |
-| Stała lista zasobów dokumentacji | 5 minut | public, tylko jeśli identyczna dla wszystkich klientów |
+| Wszystkie katalogi | 0 | private |
 | Discovery oraz katalogi zależne od Apps/capabilities | 0 | private |
 | Snapshoty urządzenia | 0 | private |
 | Artefakty i ich katalog | najwyżej pozostała ważność; katalog 0 | private |
@@ -78,9 +78,9 @@ Nowe narzędzie `ultimate_program_workflow` przyjmuje język (`basic`/`assembly`
 4. Kompilacja i zapis artefaktu. Domyślnie workflow kończy się tutaj.
 5. Jeśli wykonanie było zamówione, pokazać artefakt, jego SHA-256 i adres urządzenia w żądaniu potwierdzenia; dopiero akceptacja pozwala wywołać istniejący klient REST.
 
-Bezsesyjna ścieżka używa `InputRequiredException`/`InputRequiredResult`, `InputResponses` i `RequestState`; nie wywołuje legacy server-to-client ElicitAsync/SampleAsync/RequestRootsAsync. Starsza ścieżka korzysta z resolvera zgodności SDK przy odpowiednich capability. W Tasks SDK przenosi żądania wejścia do input_required i obsługuje tasks/update. Testy muszą objąć obie formy.
+Bezsesyjna ścieżka używa `InputRequiredException`/`InputRequiredResult`, `InputResponses` i `RequestState`; nie wywołuje legacy server-to-client ElicitAsync/SampleAsync/RequestRootsAsync. Starsza ścieżka korzysta z resolvera zgodności SDK przy odpowiednich capability. SDK 2.3.0 nie komponuje MRTR z Tasks w narzędziach atrybutowych. Dedykowany WorkflowTaskRunner przechwytuje workflow przed filtrem SDK, udostępnia input_required i obsługuje tasks/update. Testy muszą objąć obie formy.
 
-`RequestState` jest nieprzewidywalnym identyfikatorem rekordu operacji, nie zaufanym opisem operacji od klienta. Rekord zawiera hash parametrów, target, artifact ID, fazę, ważność i wersję rundy. Limit 256, ważność maksymalnie 60 minut i nie dłuższa niż artefaktu. Atomowe przejście confirmed → executing zapobiega podwójnemu wykonaniu po ponowieniu żądania. Duplikat otrzymuje zapisany wynik lub błąd ponowienia; niepewny wynik po zerwaniu komunikacji nie powoduje automatycznego powtórzenia urządzenia. Zmiana danych, celu lub wygasły rekord wymaga nowej operacji.
+`RequestState` jest nieprzewidywalnym identyfikatorem rekordu operacji, nie zaufanym opisem operacji od klienta. Rekord zawiera hash parametrów, target, artifact ID, fazę, ważność i wersję rundy. Limit 256, ważność maksymalnie 60 minut i nie dłuższa niż artefaktu. Atomowe przejście confirmed → executing zapobiega podwójnemu wykonaniu po ponowieniu żądania. Duplikat otrzymuje błąd ponowienia; niepewny wynik po zerwaniu komunikacji nie powoduje automatycznego powtórzenia urządzenia. Zmiana danych, celu lub wygasły rekord wymaga nowej operacji.
 
 ### 7. MCP Apps
 
@@ -106,3 +106,7 @@ Polityka zasobu blokuje niepotrzebne zewnętrzne originy; wszystkie źródła i 
 Realizować etapy z tasks.md, utrzymując przechodzące istniejące 38 testów i osiem przykładów. Każdy moduł rejestrować dopiero po dodaniu wymaganych testów i opisów. Nowe URI/narzędzia porównać z bazowymi katalogami jako zaplanowane dodatki, a nie regresję.
 
 Po zakończeniu przeprowadzić testy Apps w rzeczywistym kompatybilnym hoście i zapisać jego wersję; test HTML bez hosta nie dowodzi zgodności mostu. Wdrożenie jest oddzielnym krokiem. Rollback przywraca poprzedni obraz/kod; nowe zadania, artefakty i operacje w pamięci przepadają, a klienci zaczynają nowe interakcje.
+
+## Implementation decisions (2026-10-31)
+
+Dashboard używa istniejących GetVersion/GetDrives, bez planowanego device-info. Wszystkie katalogi mają private/0. App-only helper ultimate_request_program_execution opakowuje prośbę MRTR jako zwykły CallToolResult, wymagany przez most Apps, i przekazuje kontynuację do rozmowy hosta. Sam helper nie wykonuje komendy. Źródło ograniczono do 1 MiB, prompt do 64 KiB i osiem rund. Host referencyjny używa AppBridge 2.0.4 w Edge 156.0.4314.50; nie deklarujemy testów komercyjnych hostów.

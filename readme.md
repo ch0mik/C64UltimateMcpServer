@@ -4,20 +4,22 @@
 
 > ⚙️ **This project was built 100% using AI Agent prompts** - Every line of code, configuration, and documentation was generated through conversational prompts to GitHub Copilot Agent.
 
-Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ultimate** device with **46 MCP tools**, **15 MCP prompts**, and **55 embedded documentation resources**. Built in C# with enterprise-grade architecture, type safety, and comprehensive API coverage.
+Comprehensive **Model Context Protocol (MCP)** server for the **Commodore 64 Ultimate** device with **49 model-facing MCP tools (plus one Apps-only helper)**, **15 MCP prompts**, and **55 embedded documentation resources, two live resources, and two Apps resources**. Built in C# with enterprise-grade architecture, type safety, and comprehensive API coverage.
 
 **License:** MIT License (see [LICENSE](LICENSE) file)
 
-Release summary: [RELEASE_NOTES.md](RELEASE_NOTES.md). Current validation: **38/38 Release tests** and **8/8 offline HTTP example files** pass.
+Release summary: [RELEASE_NOTES.md](RELEASE_NOTES.md). Final scope review: [completion review](openspec/changes/archive/2026-10-31-centralize-validated-options/completion-review.md). Current validation: **236/236 Release tests** and **10/10 offline HTTP example files** pass.
 
-Implementation plans are tracked separately in OpenSpec: [MCP Apps/MRTR and related features](openspec/changes/enable-mcp-2-3-features/proposal.md) and [Ultimate REST API alignment](openspec/changes/align-ultimate-rest-api/proposal.md). Device `X-Password`, device-info, menu/input APIs, and the additional binary MCP tools described in those plans are not implemented yet. OAuth server configuration remains outside those plans.
+MCP Apps, MRTR workflows, live subscriptions, PRG artifacts, bounded Tasks, cancellation and cache hints are implemented. See the [feature guide](C64UltimateMcpServer/Features/README.md). Device `X-Password` is supported. Additional device-info, menu/input APIs and binary MCP tools remain in the [Ultimate REST API plan](openspec/changes/align-ultimate-rest-api/proposal.md). Optional MCP OAuth is implemented with validated `IOptions` configuration and is disabled by default. See [OAuth configuration](C64UltimateMcpServer/Configuration/README.md).
+
+Application configuration uses [validated IOptions with startup snapshots](C64UltimateMcpServer/Configuration/README.md), including `Ultimate__BaseUrl`, limits, timeouts, transport, server identity and optional OAuth. Changes require restart.
 
 ## MCP SDK 2.3.0 compatibility
 
 The server uses .NET 10 and MCP SDK **2.3.0** with hybrid Streamable HTTP at `/`:
 
 - Protocol **2025-11-25** clients use `initialize`, `Mcp-Session-Id`, and the `MCP-Protocol-Version` header on subsequent requests. Resource subscriptions and logging-level selection remain available in these sessions.
-- Protocol **2026-07-28** clients use `server/discover` and request metadata without transport sessions. Each request supplies `Mcp-Method` and, where required, `Mcp-Name` (tool/prompt name, resource URI, or task ID). Periodic session logging and resource notifications are available only to legacy sessions. A modern `subscriptions/listen` stream is not implemented.
+- Protocol **2026-07-28** clients use `server/discover` and request metadata without transport sessions. Each request supplies `Mcp-Method` and, where required, `Mcp-Name` (tool/prompt name, resource URI, or task ID). Periodic session logging remains legacy-only. Modern `subscriptions/listen` and legacy subscriptions report actual changes to live device resources.
 - Legacy SSE endpoints `/sse` and `/message` are disabled. Configure clients for **Streamable HTTP** at the root endpoint instead.
 
 Tasks now use `ModelContextProtocol.Extensions.Tasks`. A modern client opts in per request through `_meta["io.modelcontextprotocol/clientCapabilities"].extensions["io.modelcontextprotocol/tasks"]`. The server returns a task ID; poll `tasks/get` for status and the final result, or request `tasks/cancel`. Calls without opt-in return ordinary tool results. The experimental Tasks 1.x API and wire format are incompatible with this extension. Cancellation is cooperative and does not undo device operations already performed.
@@ -30,10 +32,10 @@ Sessions and tasks live in memory in one server process and are lost on restart.
 
 ## ⚡ Key Features
 
-- **Ultimate 64 API Integration**: 46 MCP tools for supported Ultimate REST operations and PRG generation workflows
+- **Ultimate 64 API Integration**: 49 model-facing MCP tools (plus one Apps-only helper) for supported Ultimate REST operations and PRG generation workflows
 - **MCP Prompts Support**: 15 prompt templates exposed through `prompts/list` and `prompts/get`
 - **BASIC to PRG Compilation**: Real-time compilation of BASIC V2 source code to executable PRG files
-- **MCP Resources**: 55 embedded documentation resources (BASIC specs, Assembly guides, examples, source catalogs, Kernal API, memory maps, graphics, sound, I/O, drive, printer, keyboard/control codes, disassembly)
+- **MCP Resources**: 55 embedded documentation resources, two live resources, and two Apps resources (BASIC specs, Assembly guides, examples, source catalogs, Kernal API, memory maps, graphics, sound, I/O, drive, printer, keyboard/control codes, disassembly)
 - **Separated Client Library**: Reusable `C64UltimateClient` NuGet package with clean async API
 - **Clean Architecture**: Client → Service → MCP wrapper pattern with proper DI
 - **Streamable HTTP Transport**: Remote multi-client support with session-aware MCP interactions
@@ -200,7 +202,7 @@ Ask Cody: List all available config categories
 /c64 load program
 ```
 
-## 🛠️ Tools (46 Total)
+## 🛠️ Tools (49 model-facing + 1 Apps-only)
 
 ### Machine Control (5)
 - **ultimate_reset_machine** - Soft reset C64 (preserves configuration)
@@ -291,7 +293,7 @@ Ask Cody: List all available config categories
 Important: prompts are MCP prompts, not tools.  
 Use `prompts/list` and `prompts/get` for prompts, and `tools/call` only for tools.
 
-## Summary (46 Total Tools)
+## Summary (49 model-facing tools)
 
 - **Machine Control**: 5 tools
 - **Program Management**: 7 tools
@@ -304,8 +306,11 @@ Use `prompts/list` and `prompts/get` for prompts, and `tools/call` only for tool
 - **Configuration Management**: 8 tools
 - **Connection Management**: 2 tools
 - **System Information**: 1 tool
+- **Interactive workflow and Apps**: 3 tools (`ultimate_program_workflow`, `ultimate_dashboard`, `ultimate_program_preview`)
 
-## 📚 Resources (55 Total)
+The Apps-only `ultimate_request_program_execution` helper hands off confirmation to the host. See the [feature guide](C64UltimateMcpServer/Features/README.md).
+
+## 📚 Resources (55 documentation + 2 live + 2 UI, plus artifact template)
 
 Embedded documentation accessible via MCP Inspector at `http://localhost:8000`:
 
@@ -645,9 +650,9 @@ networks:
 
 ## ✅ Status: Production Ready
 
-- ✅ 46 production tools implemented for C64 Ultimate operations
+- ✅ 49 model-facing tools implemented, plus one Apps-only helper for C64 Ultimate operations
 - ✅ 15 MCP prompts implemented
-- ✅ 55 embedded documentation resources
+- ✅ 55 embedded documentation resources, two live resources, and two Apps resources
 - ✅ BASIC to PRG on-the-fly compilation
 - ✅ Streamable HTTP transport
 - ✅ Agent integration (Continue, Copilot, Cody, Cursor)
@@ -697,18 +702,20 @@ MIT
 
 > ⚙️ **Ten projekt został stworzony 100% za pomocą promptów do Agenta AI** - Każda linia kodu, konfiguracji i dokumentacji została wygenerowana poprzez konwersacyjne prompty do GitHub Copilot Agent.
 
-Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 64 Ultimate** z **46 narzędziami MCP**, **15 promptami MCP** i **55 zasobami dokumentacyjnymi**. Zbudowany w C# z architekturą klasy enterprise, bezpieczeństwem typów i kompleksowym pokryciem API.
+Kompleksowy serwer **Model Context Protocol (MCP)** dla urządzenia **Commodore 64 Ultimate** z **49 narzędziami MCP oraz jednym pomocniczym narzędziem Apps**, **15 promptami MCP** i **55 zasobami dokumentacyjnymi, dwoma zasobami stanu i dwoma zasobami Apps**. Zbudowany w C# z architekturą klasy enterprise, bezpieczeństwem typów i kompleksowym pokryciem API.
 
-Opis wydania: [RELEASE_NOTES.md](RELEASE_NOTES.md). Weryfikacja: **38/38 testów Release** i **8/8 plików przykładów HTTP bez urządzenia** przechodzi.
+Opis wydania: [RELEASE_NOTES.md](RELEASE_NOTES.md). Weryfikacja: **236/236 testów Release** i **10/10 plików przykładów HTTP bez urządzenia** przechodzi.
 
-Nowe funkcje mają osobne plany OpenSpec: [MCP Apps/MRTR i rozszerzenia](openspec/changes/enable-mcp-2-3-features/proposal.md) oraz [zgodność z REST Ultimate](openspec/changes/align-ultimate-rest-api/proposal.md). Obsługa hasła urządzenia, device-info, menu/wejścia i dodatkowych binarnych narzędzi MCP pozostaje do wdrożenia. OAuth serwera MCP nie jest skonfigurowany i nie został dodany do zakresu tych planów.
+Wdrożono MCP Apps, workflow MRTR, subskrypcje zmian, artefakty PRG, ograniczony magazyn Tasks, anulowanie i politykę cache. Szczegóły: [przewodnik funkcji](C64UltimateMcpServer/Features/README.md). Hasło urządzenia `X-Password` jest obsługiwane. Device-info, menu/wejścia i dodatkowe binarne narzędzia MCP pozostają w [osobnym planie REST](openspec/changes/align-ultimate-rest-api/proposal.md). OAuth serwera MCP jest opcjonalny i domyślnie wyłączony; konfiguracja korzysta z `IOptions` i walidacji przy starcie. Zobacz [konfigurację OAuth](C64UltimateMcpServer/Configuration/README.md).
+
+Konfiguracja aplikacji korzysta z [IOptions, walidacji przy starcie i snapshotów](C64UltimateMcpServer/Configuration/README.md), także `Ultimate__BaseUrl`, limitów, timeoutów, transportu, metadanych i opcjonalnego OAuth. Zmiany wymagają restartu.
 
 ## Zgodność z MCP SDK 2.3.0
 
 Serwer korzysta z .NET 10 i MCP SDK **2.3.0**, udostępniając hybrydowy Streamable HTTP pod `/`:
 
 - Klienci protokołu **2025-11-25** używają `initialize`, identyfikatora `Mcp-Session-Id` i nagłówka `MCP-Protocol-Version` w kolejnych żądaniach. Zachowują subskrypcje zasobów i wybór poziomu logowania.
-- Klienci protokołu **2026-07-28** używają `server/discover` i metadanych każdego żądania, bez sesji transportowej. Przekazują `Mcp-Method` oraz wymagany `Mcp-Name` (nazwę narzędzia/promptu, URI zasobu lub ID zadania). Okresowe logowanie i powiadomienia zasobów działają wyłącznie w starszych sesjach. Nowy strumień `subscriptions/listen` nie jest zaimplementowany.
+- Klienci protokołu **2026-07-28** używają `server/discover` i metadanych każdego żądania, bez sesji transportowej. Przekazują `Mcp-Method` oraz wymagany `Mcp-Name` (nazwę narzędzia/promptu, URI zasobu lub ID zadania). Okresowe logowanie pozostaje dostępne dla starszych sesji. Nowy strumień `subscriptions/listen` oraz starsze subskrypcje raportują rzeczywiste zmiany zasobów urządzenia.
 - Endpointy legacy SSE `/sse` i `/message` są wyłączone. Klienta należy skonfigurować na **Streamable HTTP** pod głównym adresem serwera.
 
 Tasks korzystają z pakietu `ModelContextProtocol.Extensions.Tasks`. Klient nowego protokołu włącza je dla żądania przez `_meta["io.modelcontextprotocol/clientCapabilities"].extensions["io.modelcontextprotocol/tasks"]`. Otrzymuje ID zadania, a stan i wynik pobiera przez `tasks/get`; `tasks/cancel` służy do anulowania. Bez opt-in odpowiedź narzędzia wraca bezpośrednio. Eksperymentalne Tasks 1.x mają niezgodne API i format protokołu. Anulowanie jest kooperatywne i nie cofa wykonanych operacji urządzenia.
@@ -766,7 +773,7 @@ docker-compose up
 Ultimate__BaseUrl=http://192.168.0.120
 ```
 
-## 🛠️ Narzędzia (46 razem)
+## 🛠️ Narzędzia (49 dla modelu + 1 pomocnicze Apps)
 
 ### Kontrola Maszyny (5)
 - **ultimate_reset_machine** - Miękki reset C64 (zachowuje konfigurację)
@@ -1275,7 +1282,7 @@ networks:
 
 ## ✅ Status: Gotowy do Produkcji (PL)
 
-- ✅ Zaimplementowano 46 narzędzi produkcyjnych dla operacji C64 Ultimate
+- ✅ Zaimplementowano 49 narzędzi dla modelu i jedno pomocnicze Apps dla operacji C64 Ultimate
 - ✅ Zaimplementowano 15 promptów MCP
 - ✅ 55 wbudowanych zasobów dokumentacyjnych
 - ✅ Kompilacja BASIC do PRG w locie
@@ -1325,7 +1332,7 @@ curl -X POST http://localhost:8080/ \
 
 ## 🎉 Status: Gotowy do Produkcji
 
-- ✅ Wszystkie 46 narzędzi zaimplementowane
+- ✅ 49 narzędzi dla modelu i jedno pomocnicze Apps zaimplementowane
 - ✅ Kompilacja BASIC do PRG w locie
 - ✅ Transport Streamable HTTP
 - ✅ Integracja z agentami AI

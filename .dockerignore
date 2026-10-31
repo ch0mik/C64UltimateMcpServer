@@ -23,6 +23,8 @@ Thumbs.db
 bin/
 obj/
 dist/
+!C64UltimateMcpServer/Features/Ui/dist/
+!C64UltimateMcpServer/Features/Ui/dist/*.html
 build/
 x64/
 x86/

@@ -10,6 +10,10 @@ using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 using Moq;
 using Xunit;
+using C64UltimateMcpServer.Features;
+using Microsoft.Extensions.Configuration;
+using C64UltimateMcpServer.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace C64UltimateClient.Tests;
 
@@ -17,6 +21,50 @@ namespace C64UltimateClient.Tests;
 #pragma warning disable MCP9005, MCPEXP002
 public class McpNotificationTests
 {
+    [Fact]
+    public async Task ConfiguredLoggingInterval_ControlsActualNotifications()
+    {
+        var clock = new FakeTimeProvider();
+        var messages = new ConcurrentQueue<JsonRpcNotification>();
+        var server = Server(messages);
+        server.SetupGet(s => s.LoggingLevel).Returns(LoggingLevel.Debug);
+        using var worker = new LoggingUpdateMessageSender(server.Object, clock, Options.Create(new McpNotificationOptions
+            { LegacyLoggingInterval = TimeSpan.FromSeconds(1) }));
+        await worker.StartAsync(CancellationToken.None);
+        await McpHttpIntegrationTests.EventuallyAsync(() => messages.Count == 1);
+        clock.Advance(TimeSpan.FromMilliseconds(999));
+        Assert.Single(messages);
+        clock.Advance(TimeSpan.FromMilliseconds(1));
+        await McpHttpIntegrationTests.EventuallyAsync(() => messages.Count == 2);
+        await worker.StopAsync(CancellationToken.None);
+    }
+
+    [Fact]
+    public async Task DisabledLogging_KeepsResourceWorkerWithoutPeriodicLogTimer()
+    {
+        var clock = new TrackingClock();
+        var messages = new ConcurrentQueue<JsonRpcNotification>();
+        var server = Server(messages);
+        server.SetupGet(s => s.SessionId).Returns("no-logging");
+        server.SetupGet(s => s.LoggingLevel).Returns(LoggingLevel.Debug);
+        using var hub = Hub(clock, new DeviceStub());
+        server.Setup(s => s.RunAsync(It.IsAny<CancellationToken>())).Returns(async () =>
+        {
+            await McpHttpIntegrationTests.EventuallyAsync(() => hub.ListenerCount == 1);
+            Assert.Equal(0, clock.CreatedTimers);
+            await hub.ReadAsync(DeviceResourceHub.StatusUri, CancellationToken.None);
+            await McpHttpIntegrationTests.EventuallyAsync(() => messages.Count == 1);
+            Assert.Equal("notifications/resources/updated", messages.Single().Method);
+        });
+        var subscriptions = new ConcurrentDictionary<string, ConcurrentDictionary<string, byte>>();
+        subscriptions["no-logging"] = new();
+        subscriptions["no-logging"][DeviceResourceHub.StatusUri] = 0;
+        var sessions = new McpSessionNotifications(clock, NullLogger<McpSessionNotifications>.Instance, hub,
+            Options.Create(new McpNotificationOptions { LegacyLoggingEnabled = false }));
+        await sessions.RunAsync(server.Object, subscriptions, CancellationToken.None);
+        Assert.Equal(0, hub.ListenerCount);
+        Assert.Equal(0, clock.CreatedTimers);
+    }
     [Fact]
     public async Task ResourceWorkers_IsolateSubscriptionsAndStopAfterCancellation()
     {
@@ -26,21 +74,28 @@ public class McpNotificationTests
         var first = Server(firstMessages);
         var second = Server(secondMessages);
         var firstSubscriptions = new ConcurrentDictionary<string, byte>();
-        firstSubscriptions["c64://basic/spec"] = 0;
+        firstSubscriptions[DeviceResourceHub.StatusUri] = 0;
         var secondSubscriptions = new ConcurrentDictionary<string, byte>();
-        secondSubscriptions["c64://memory/map"] = 0;
-        using var firstWorker = new SubscriptionMessageSender(first.Object, firstSubscriptions, clock);
-        using var secondWorker = new SubscriptionMessageSender(second.Object, secondSubscriptions, clock);
+        secondSubscriptions[DeviceResourceHub.DrivesUri] = 0;
+        var device = new DeviceStub();
+        using var hub = Hub(clock, device);
+        using var firstWorker = new SubscriptionMessageSender(first.Object, firstSubscriptions, hub);
+        using var secondWorker = new SubscriptionMessageSender(second.Object, secondSubscriptions, hub);
         await firstWorker.StartAsync(CancellationToken.None);
         await secondWorker.StartAsync(CancellationToken.None);
-        await McpHttpIntegrationTests.EventuallyAsync(() => clock.CreatedTimers >= 2);
-        Assert.Equal("c64://basic/spec", Assert.Single(firstMessages).Params!["uri"]!.GetValue<string>());
-        Assert.Equal("c64://memory/map", Assert.Single(secondMessages).Params!["uri"]!.GetValue<string>());
+        await McpHttpIntegrationTests.EventuallyAsync(() => hub.ListenerCount == 2);
+        await hub.ReadAsync(DeviceResourceHub.StatusUri, CancellationToken.None);
+        await hub.ReadAsync(DeviceResourceHub.DrivesUri, CancellationToken.None);
+        await McpHttpIntegrationTests.EventuallyAsync(() => firstMessages.Count == 1 && secondMessages.Count == 1);
+        Assert.Equal(DeviceResourceHub.StatusUri, Assert.Single(firstMessages).Params!["uri"]!.GetValue<string>());
+        Assert.Equal(DeviceResourceHub.DrivesUri, Assert.Single(secondMessages).Params!["uri"]!.GetValue<string>());
         Assert.All(firstMessages.Concat(secondMessages), n => Assert.Equal("notifications/resources/updated", n.Method));
 
         firstSubscriptions.Clear();
-        clock.Advance();
-        await McpHttpIntegrationTests.EventuallyAsync(() => clock.CreatedTimers >= 4);
+        device.Revision++;
+        await hub.ReadAsync(DeviceResourceHub.StatusUri, CancellationToken.None);
+        await hub.ReadAsync(DeviceResourceHub.DrivesUri, CancellationToken.None);
+        await McpHttpIntegrationTests.EventuallyAsync(() => secondMessages.Count == 2);
         Assert.Single(firstMessages);
         Assert.Equal(2, secondMessages.Count);
         await firstWorker.StopAsync(CancellationToken.None);
@@ -89,7 +144,7 @@ public class McpNotificationTests
         var failure = new InvalidOperationException("session failed");
         server.Setup(s => s.RunAsync(It.IsAny<CancellationToken>())).Returns(async (CancellationToken ct) =>
         {
-            await McpHttpIntegrationTests.EventuallyAsync(() => clock.CreatedTimers >= 2);
+            await McpHttpIntegrationTests.EventuallyAsync(() => clock.CreatedTimers >= 1);
             if (cancel)
             {
                 cancellation.Cancel();
@@ -100,7 +155,8 @@ public class McpNotificationTests
         var subscriptions = new ConcurrentDictionary<string, ConcurrentDictionary<string, byte>>();
         subscriptions["test-session"] = new();
         subscriptions["test-session"]["c64://basic/spec"] = 0;
-        var sessions = new McpSessionNotifications(clock, NullLogger<McpSessionNotifications>.Instance);
+        using var hub = Hub(clock, new DeviceStub());
+        var sessions = new McpSessionNotifications(clock, NullLogger<McpSessionNotifications>.Instance, hub);
         if (cancel) await Assert.ThrowsAnyAsync<OperationCanceledException>(() => sessions.RunAsync(server.Object, subscriptions, cancellation.Token));
         else Assert.Same(failure, await Assert.ThrowsAsync<InvalidOperationException>(() => sessions.RunAsync(server.Object, subscriptions, cancellation.Token)));
         Assert.Empty(subscriptions);
@@ -111,6 +167,9 @@ public class McpNotificationTests
         Assert.Equal(count, messages.Count);
         Assert.Equal(timers, clock.CreatedTimers);
     }
+
+    private static DeviceResourceHub Hub(TimeProvider clock, DeviceStub device) => new(new UltimateDeviceClientFactory(
+        new ConfigurationBuilder().Build(), NullLoggerFactory.Instance, device.CreateHandler), clock);
 
     private static Mock<McpServer> Server(ConcurrentQueue<JsonRpcNotification> messages)
     {

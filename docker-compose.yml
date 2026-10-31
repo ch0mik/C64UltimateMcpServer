@@ -14,6 +14,8 @@ services:
       - "8080:8080"
     environment:
       - Ultimate__BaseUrl=http://192.168.68.63
+      - Ultimate__RequestTimeout=00:00:30
+      - Mcp__OAuth__Enabled=false
       - ASPNETCORE_URLS=http://+:8080
       - ASPNETCORE_ENVIRONMENT=Production
     volumes:

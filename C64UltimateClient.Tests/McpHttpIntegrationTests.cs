@@ -17,6 +17,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Time.Testing;
 using ModelContextProtocol.Server;
+using C64UltimateMcpServer.Features;
+using Microsoft.Extensions.Configuration;
 using Xunit;
 
 namespace C64UltimateClient.Tests;
@@ -32,8 +34,8 @@ public class McpHttpIntegrationTests
         await first.ConnectAsync();
         await second.ConnectAsync();
         await first.CallAsync("logging/setLevel", new() { ["level"] = "emergency" });
-        await first.CallAsync("resources/subscribe", new() { ["uri"] = "c64://basic/spec" });
-        await second.CallAsync("resources/subscribe", new() { ["uri"] = "c64://memory/map" });
+        await first.CallAsync("resources/subscribe", new() { ["uri"] = DeviceResourceHub.StatusUri });
+        await second.CallAsync("resources/subscribe", new() { ["uri"] = DeviceResourceHub.DrivesUri });
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         var firstUpdates = Channel.CreateUnbounded<JsonNode>();
         var secondUpdates = Channel.CreateUnbounded<JsonNode>();
@@ -42,10 +44,11 @@ public class McpHttpIntegrationTests
         var firstUpdate = firstUpdates.Reader.ReadAsync(timeout.Token).AsTask();
         var secondUpdate = secondUpdates.Reader.ReadAsync(timeout.Token).AsTask();
         await AdvanceUntilAsync(factory, () => firstUpdate.IsCompleted && secondUpdate.IsCompleted, timeout.Token);
-        Assert.Equal("c64://basic/spec", (await firstUpdate)["params"]!["uri"]!.GetValue<string>());
-        Assert.Equal("c64://memory/map", (await secondUpdate)["params"]!["uri"]!.GetValue<string>());
+        Assert.Equal(DeviceResourceHub.StatusUri, (await firstUpdate)["params"]!["uri"]!.GetValue<string>());
+        Assert.Equal(DeviceResourceHub.DrivesUri, (await secondUpdate)["params"]!["uri"]!.GetValue<string>());
 
-        await first.CallAsync("resources/unsubscribe", new() { ["uri"] = "c64://basic/spec" });
+        await first.CallAsync("resources/unsubscribe", new() { ["uri"] = DeviceResourceHub.StatusUri });
+        factory.Device.Revision++;
         using var unsubscribed = CancellationTokenSource.CreateLinkedTokenSource(timeout.Token);
         // Drain any notifications already sent before unsubscribe; subsequent ticks must omit this URI.
         while (firstUpdates.Reader.TryRead(out _)) { }
@@ -89,7 +92,10 @@ public class McpHttpIntegrationTests
             var actual = await rpc.CallAsync(method);
             var expectedItems = baseline[field]![field]!.AsArray().ToDictionary(n => n![key]!.GetValue<string>());
             var actualItems = actual[field]!.AsArray().ToDictionary(n => n![key]!.GetValue<string>());
-            Assert.Equal(expectedItems.Keys.Order(), actualItems.Keys.Order());
+            var additions = field == "tools"
+                ? new[] { "ultimate_program_workflow", "ultimate_dashboard", "ultimate_program_preview" }
+                : field == "resources" ? new[] { DeviceResourceHub.StatusUri, DeviceResourceHub.DrivesUri, "ui://c64/dashboard.html", "ui://c64/program-preview.html" } : Array.Empty<string>();
+            Assert.Equal(expectedItems.Keys.Concat(additions).Order(), actualItems.Keys.Order());
             foreach (var name in expectedItems.Keys)
             {
                 // SDK 2 changes execution/caching metadata, but the callable input contract is stable.
@@ -201,19 +207,23 @@ public class McpHttpIntegrationTests
         Assert.True(JsonNode.DeepEquals(expected, actual), $"Expected {expected}; actual {actual}");
 }
 
-internal sealed class McpAppFactory(bool includeSlowTool = false) : WebApplicationFactory<Program>
+internal sealed class McpAppFactory(bool includeSlowTool = false, IDictionary<string, string?>? settings = null) : WebApplicationFactory<Program>
 {
     internal FakeTimeProvider Clock { get; } = new();
     internal TestWork Work { get; } = new();
+    internal DeviceStub Device { get; } = new();
     internal McpSessionNotifications Notifications => Services.GetRequiredService<McpSessionNotifications>();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        if (settings is not null) builder.ConfigureAppConfiguration((_, configuration) => configuration.AddInMemoryCollection(settings));
         builder.ConfigureLogging(logging => logging.ClearProviders());
         builder.ConfigureServices(services =>
         {
             services.RemoveAll<TimeProvider>();
             services.AddSingleton<TimeProvider>(Clock);
+            services.RemoveAll<Func<HttpMessageHandler>>();
+            services.AddSingleton<Func<HttpMessageHandler>>(Device.CreateHandler);
             if (includeSlowTool)
             {
                 services.AddSingleton(Work);
@@ -238,18 +248,20 @@ public sealed class TestWork
     }
 }
 
-internal sealed class RpcClient(HttpClient http, bool modern) : IDisposable
+internal sealed class RpcClient(HttpClient http, bool modern, string endpointPath = "/") : IDisposable
 {
     internal HttpClient Http => http;
     internal string? SessionId { get; private set; }
     private int _id;
+    internal JsonObject Capabilities { get; set; } = new();
+    internal List<JsonNode> Notifications { get; } = new();
 
     internal async Task<JsonNode> ConnectAsync()
     {
         if (modern) return await CallAsync("server/discover");
         var result = await CallAsync("initialize", new()
         {
-            ["protocolVersion"] = "2025-11-25", ["capabilities"] = new JsonObject(),
+            ["protocolVersion"] = "2025-11-25", ["capabilities"] = Capabilities.DeepClone(),
             ["clientInfo"] = new JsonObject { ["name"] = "integration", ["version"] = "1" }
         });
         using var initialized = CreateRequest("notifications/initialized", new JsonObject(), notification: true);
@@ -266,29 +278,36 @@ internal sealed class RpcClient(HttpClient http, bool modern) : IDisposable
         Assert.True(response.IsSuccessStatusCode, $"{method}: {response.StatusCode} {body}");
         if (response.Headers.TryGetValues("Mcp-Session-Id", out var values)) SessionId = values.Single();
         if (modern) Assert.False(response.Headers.Contains("Mcp-Session-Id"));
-        var json = response.Content.Headers.ContentType?.MediaType == "text/event-stream"
-            ? body.Split('\n').Where(l => l.StartsWith("data:")).Select(l => JsonNode.Parse(l[5..].Trim())!).Single(n => n["id"] is not null)
-            : JsonNode.Parse(body)!;
+        JsonNode json;
+        if (response.Content.Headers.ContentType?.MediaType == "text/event-stream")
+        {
+            var messages = body.Split('\n').Where(l => l.StartsWith("data:")).Select(l => JsonNode.Parse(l[5..].Trim())!).ToArray();
+            Notifications.AddRange(messages.Where(n => n["method"] is not null));
+            json = messages.Single(n => n["id"] is not null);
+        }
+        else json = JsonNode.Parse(body)!;
         Assert.Null(json["error"]);
         return json["result"]!;
     }
 
-    private HttpRequestMessage CreateRequest(string method, JsonObject parameters, bool tasks = false, bool notification = false)
+    internal HttpRequestMessage CreateRequest(string method, JsonObject parameters, bool tasks = false, bool notification = false)
     {
         if (modern)
         {
-            parameters["_meta"] = new JsonObject
+            parameters["_meta"] ??= new JsonObject();
+            parameters["_meta"]!["io.modelcontextprotocol/protocolVersion"] = "2026-07-28";
+            parameters["_meta"]!["io.modelcontextprotocol/clientInfo"] = new JsonObject { ["name"] = "integration", ["version"] = "1" };
+            parameters["_meta"]!["io.modelcontextprotocol/clientCapabilities"] = Capabilities.DeepClone();
+            if (tasks)
             {
-                ["io.modelcontextprotocol/protocolVersion"] = "2026-07-28",
-                ["io.modelcontextprotocol/clientInfo"] = new JsonObject { ["name"] = "integration", ["version"] = "1" },
-                ["io.modelcontextprotocol/clientCapabilities"] = tasks
-                    ? new JsonObject { ["extensions"] = new JsonObject { ["io.modelcontextprotocol/tasks"] = new JsonObject() } }
-                    : new JsonObject()
-            };
+                var caps = parameters["_meta"]!["io.modelcontextprotocol/clientCapabilities"]!;
+                caps["extensions"] ??= new JsonObject();
+                caps["extensions"]!["io.modelcontextprotocol/tasks"] = new JsonObject();
+            }
         }
         var body = new JsonObject { ["jsonrpc"] = "2.0", ["method"] = method, ["params"] = parameters };
         if (!notification) body["id"] = Interlocked.Increment(ref _id);
-        var request = new HttpRequestMessage(HttpMethod.Post, "/") { Content = new StringContent(body.ToJsonString(), Encoding.UTF8, "application/json") };
+        var request = new HttpRequestMessage(HttpMethod.Post, endpointPath) { Content = new StringContent(body.ToJsonString(), Encoding.UTF8, "application/json") };
         request.Headers.Add("Accept", "application/json, text/event-stream");
         request.Headers.Add("MCP-Protocol-Version", modern ? "2026-07-28" : "2025-11-25");
         if (SessionId is not null) request.Headers.Add("Mcp-Session-Id", SessionId);
@@ -304,7 +323,7 @@ internal sealed class RpcClient(HttpClient http, bool modern) : IDisposable
     internal async Task DeleteSessionAsync()
     {
         if (SessionId is null) return;
-        using var request = new HttpRequestMessage(HttpMethod.Delete, "/");
+        using var request = new HttpRequestMessage(HttpMethod.Delete, endpointPath);
         request.Headers.Add("Mcp-Session-Id", SessionId);
         request.Headers.Add("MCP-Protocol-Version", "2025-11-25");
         using var response = await http.SendAsync(request);
@@ -316,7 +335,7 @@ internal sealed class RpcClient(HttpClient http, bool modern) : IDisposable
     {
         try
         {
-            using var request = new HttpRequestMessage(HttpMethod.Get, "/");
+            using var request = new HttpRequestMessage(HttpMethod.Get, endpointPath);
             request.Headers.Add("Accept", "text/event-stream");
             request.Headers.Add("Mcp-Session-Id", SessionId);
             request.Headers.Add("MCP-Protocol-Version", "2025-11-25");

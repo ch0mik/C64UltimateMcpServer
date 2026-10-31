@@ -7,7 +7,8 @@ $files = @(
     'smoke/01_mcp_initialize.http', 'smoke/02_mcp_tools_list.http',
     'smoke/03_mcp_prompts_list.http', 'smoke/04_mcp_prompts_get.http',
     'smoke/05_mcp_resources_list.http', 'smoke/06_mcp_resources_read.http',
-    'modern/01_discovery.http', 'modern/02_basic_task.http'
+    'modern/01_discovery.http', 'modern/02_basic_task.http',
+    'modern/03_program_artifacts.http', 'modern/04_program_mrtr.http'
 )
 
 function Read-RpcResult($response) {
@@ -26,7 +27,7 @@ function Read-RpcResult($response) {
 }
 
 foreach ($file in $files) {
-    $variables = @{ host = $BaseUrl.TrimEnd('/'); taskId = '' }
+    $variables = @{ host = $BaseUrl.TrimEnd('/'); taskId = ''; artifactId = ''; requestState = '' }
     $sessionId = $null
     try {
         $content = [IO.File]::ReadAllText((Join-Path $root "examples_http/$file"))
@@ -51,6 +52,8 @@ foreach ($file in $files) {
             if ($response.StatusCode -eq 202) { continue }
             $result = Read-RpcResult $response
             if ($result.taskId) { $variables.taskId = $result.taskId }
+            if ($result.structuredContent.artifact.id) { $variables.artifactId = $result.structuredContent.artifact.id }
+            if ($result.requestState) { $variables.requestState = $result.requestState }
             $rpcBody = $body | ConvertFrom-Json -AsHashtable
             if ($rpcBody.method -eq 'tasks/get') {
                 $deadline = [DateTimeOffset]::UtcNow.AddSeconds(10)

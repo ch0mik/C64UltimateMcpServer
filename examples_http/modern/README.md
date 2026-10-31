@@ -7,7 +7,11 @@ These examples use protocol **2026-07-28** and Streamable HTTP at `/`, without i
 
 Tasks require the per-request extension opt-in shown in `_meta`. The `Mcp-Name` header for `tasks/get` is the task ID. To cancel a running task, use `tasks/cancel` with the same headers, metadata, and `taskId`. Ordinary calls omit the extension capability and return their result directly.
 
-Both files work without a C64 device. The offline verification script executes their requests and fills in the task ID automatically:
+The first four files work without a C64 device. `03_program_artifacts.http` compiles and reads a PRG artifact; `04_program_mrtr.http` completes an interactive compile. Keep original arguments unchanged and copy the newest requestState for each manual continuation.
+
+`05_live_subscriptions.http` is a long-lived manual stream for status/drives changes; cancel it to disconnect. It polls device reads and is excluded from the default offline suite.
+
+The default suite runs six legacy smoke files plus four modern files (ten total). The offline verification script executes their requests and fills in the task ID automatically:
 
 ```powershell
 ./scripts/Test-McpExamples.ps1 -BaseUrl http://localhost:8080

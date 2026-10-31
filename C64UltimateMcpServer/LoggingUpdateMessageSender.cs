@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Options;
+using C64UltimateMcpServer.Configuration;
 ﻿using Microsoft.Extensions.Hosting;
 using ModelContextProtocol;
 using ModelContextProtocol.Protocol;
@@ -7,8 +9,9 @@ namespace C64UltimateMcpServer.Core;
 
 // Logging remains available to initialize-based clients; it is deprecated in protocol 2026-07-28.
 #pragma warning disable MCP9005
-public class LoggingUpdateMessageSender(McpServer server, TimeProvider timeProvider) : BackgroundService
+public class LoggingUpdateMessageSender(McpServer server, TimeProvider timeProvider, IOptions<McpNotificationOptions>? settings = null) : BackgroundService
 {
+    private readonly TimeSpan _interval = (settings?.Value ?? new()).LegacyLoggingInterval;
     readonly Dictionary<LoggingLevel, string> _loggingLevelMap = new()
     {
         { LoggingLevel.Debug, "Debug-level message" },
@@ -28,7 +31,7 @@ public class LoggingUpdateMessageSender(McpServer server, TimeProvider timeProvi
             var msgLevel = (LoggingLevel)Random.Shared.Next(_loggingLevelMap.Count);
 
             await SendMessageAsync(msgLevel, stoppingToken);
-            await Task.Delay(TimeSpan.FromSeconds(15), timeProvider, stoppingToken);
+            await Task.Delay(_interval, timeProvider, stoppingToken);
         }
     }
 

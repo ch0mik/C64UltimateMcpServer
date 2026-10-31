@@ -1,0 +1,87 @@
+@host = http://localhost:8080
+# Copy structuredContent.artifact.id from the first response for manual execution.
+@artifactId = replace-with-artifact-id
+
+### Compile a temporary PRG artifact (no device calls)
+POST {{host}}/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+MCP-Protocol-Version: 2026-07-28
+Mcp-Method: tools/call
+Mcp-Name: ultimate_program_workflow
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_program_workflow",
+    "arguments": {
+      "language": "basic",
+      "source": "10 PRINT \"HELLO\""
+    },
+    "_meta": {
+      "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+      "io.modelcontextprotocol/clientInfo": {
+        "name": "http-feature-client",
+        "version": "1.0"
+      },
+      "io.modelcontextprotocol/clientCapabilities": {},
+      "progressToken": 42
+    }
+  }
+}
+
+### Read the PRG as a binary MCP resource
+POST {{host}}/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+MCP-Protocol-Version: 2026-07-28
+Mcp-Method: resources/read
+Mcp-Name: c64://artifacts/{{artifactId}}
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "resources/read",
+  "params": {
+    "uri": "c64://artifacts/{{artifactId}}",
+    "_meta": {
+      "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+      "io.modelcontextprotocol/clientInfo": {
+        "name": "http-feature-client",
+        "version": "1.0"
+      },
+      "io.modelcontextprotocol/clientCapabilities": {}
+    }
+  }
+}
+
+### Preview metadata and bounded hex without execution
+POST {{host}}/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+MCP-Protocol-Version: 2026-07-28
+Mcp-Method: tools/call
+Mcp-Name: ultimate_program_preview
+
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_program_preview",
+    "arguments": {
+      "artifactId": "{{artifactId}}"
+    },
+    "_meta": {
+      "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+      "io.modelcontextprotocol/clientInfo": {
+        "name": "http-feature-client",
+        "version": "1.0"
+      },
+      "io.modelcontextprotocol/clientCapabilities": {}
+    }
+  }
+}
+

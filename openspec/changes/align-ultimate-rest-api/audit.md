@@ -20,3 +20,9 @@ Analiza: 2026-10-30. [Dokumentacja wskazana przez użytkownika](https://1541u-do
 Istotne kontrakty z dokumentacji: menu ma 2000 bajtów (dwie macierze 40×25) i odpowiada 404, gdy nie jest dostępne. Input ma ograniczenia 1–64 zdarzeń oraz 4096 bajtów całego JSON; brak sprzętowego wsparcia daje 501. Pamięć nie może przekroczyć granicy adresowej, a query-write mieści maksymalnie 128 bajtów. Dokładne zasady wejść należy utrwalić w fixture zgodnym z dokumentacją podczas implementacji.
 
 Nie potwierdzono błędu kodowania ukośników w ścieżkach `files`: obecne kodowanie całej ścieżki wymaga testu zgodnego z dekoderem firmware, a nie automatycznego uznania za wadę. Dokumentacja powtarza `drives:remove` dla dwóch opisów, dlatego nie należy na tej podstawie wymyślać endpointu unlink. `files:info` jest opisane jako nieukończone — zachować ostrożny opis wsparcia.
+
+## Aktualny status po przeglądzie wydania — 2026-10-31
+
+Tabela powyżej zachowuje historyczny wynik analizy z 2026-10-30. Od tego czasu wdrożono wspólny transport, propagację anulowania, X-Password, kontrolę przekierowań, podstawową klasyfikację HTTP/błędnego JSON i konfigurację Ultimate przez IOptions z walidacją przy starcie. Testy download factory potwierdzają osobny transport bez hasła urządzenia.
+
+Device-info, menu/input, binarne load-without-run i dodatkowe narzędzia MCP transferów pozostają niewdrożone. Pełna macierz błędów/firmware, walidacja argumentów i kodowania URL nadal należą do tego aktywnego planu; nie zamykamy go na podstawie zakończenia zmian MCP/OAuth/Options. Szczegóły zakończonego zakresu: [completion review](../archive/2026-10-31-centralize-validated-options/completion-review.md).

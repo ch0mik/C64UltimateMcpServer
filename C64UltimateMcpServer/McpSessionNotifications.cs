@@ -1,11 +1,15 @@
+using Microsoft.Extensions.Options;
+using C64UltimateMcpServer.Configuration;
 using System.Collections.Concurrent;
 using ModelContextProtocol.Server;
+using C64UltimateMcpServer.Features;
 
 namespace C64UltimateMcpServer.Core;
 
 /// <summary>Owns notification workers for legacy HTTP sessions only.</summary>
-public sealed class McpSessionNotifications(TimeProvider timeProvider, ILogger<McpSessionNotifications> logger)
+public sealed class McpSessionNotifications(TimeProvider timeProvider, ILogger<McpSessionNotifications> logger, DeviceResourceHub hub, IOptions<McpNotificationOptions>? settings = null)
 {
+    private readonly McpNotificationOptions _options = settings?.Value ?? new();
     private int _activeSessions;
     internal int ActiveSessions => Volatile.Read(ref _activeSessions);
 
@@ -15,21 +19,21 @@ public sealed class McpSessionNotifications(TimeProvider timeProvider, ILogger<M
     {
         var sessionId = server.SessionId ?? throw new InvalidOperationException("A legacy session is required.");
         var sessionSubscriptions = subscriptions.GetOrAdd(sessionId, _ => new());
-        using var resources = new SubscriptionMessageSender(server, sessionSubscriptions, timeProvider);
-        using var logging = new LoggingUpdateMessageSender(server, timeProvider);
+        using var resources = new SubscriptionMessageSender(server, sessionSubscriptions, hub);
+        using var logging = _options.LegacyLoggingEnabled ? new LoggingUpdateMessageSender(server, timeProvider, Options.Create(_options)) : null;
         Interlocked.Increment(ref _activeSessions);
         try
         {
             await resources.StartAsync(cancellationToken);
-            await logging.StartAsync(cancellationToken);
+            if (logging is not null) await logging.StartAsync(cancellationToken);
             await server.RunAsync(cancellationToken);
         }
         finally
         {
             try
             {
-                using var cleanup = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-                await Task.WhenAll(StopAsync(resources, cleanup.Token), StopAsync(logging, cleanup.Token));
+                using var cleanup = new CancellationTokenSource(_options.CleanupTimeout);
+                await Task.WhenAll(StopAsync(resources, cleanup.Token), logging is null ? Task.CompletedTask : StopAsync(logging, cleanup.Token));
             }
             finally
             {

@@ -1,0 +1,112 @@
+@host = http://localhost:8080
+# Copy requestState from each input_required response before running the next round manually.
+@requestState = replace-with-latest-request-state
+
+### Start an interactive compile workflow
+POST {{host}}/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+MCP-Protocol-Version: 2026-07-28
+Mcp-Method: tools/call
+Mcp-Name: ultimate_program_workflow
+
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_program_workflow",
+    "arguments": {},
+    "_meta": {
+      "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+      "io.modelcontextprotocol/clientInfo": {
+        "name": "http-feature-client",
+        "version": "1.0"
+      },
+      "io.modelcontextprotocol/clientCapabilities": {
+        "elicitation": {
+          "form": {}
+        }
+      }
+    }
+  }
+}
+
+### Answer language selection; original arguments stay identical
+POST {{host}}/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+MCP-Protocol-Version: 2026-07-28
+Mcp-Method: tools/call
+Mcp-Name: ultimate_program_workflow
+
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_program_workflow",
+    "arguments": {},
+    "requestState": "{{requestState}}",
+    "inputResponses": {
+      "parameters": {
+        "action": "accept",
+        "content": {
+          "language": "basic"
+        }
+      }
+    },
+    "_meta": {
+      "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+      "io.modelcontextprotocol/clientInfo": {
+        "name": "http-feature-client",
+        "version": "1.0"
+      },
+      "io.modelcontextprotocol/clientCapabilities": {
+        "elicitation": {
+          "form": {}
+        }
+      }
+    }
+  }
+}
+
+### Answer source request; returns an artifact without running it
+POST {{host}}/
+Content-Type: application/json
+Accept: application/json, text/event-stream
+MCP-Protocol-Version: 2026-07-28
+Mcp-Method: tools/call
+Mcp-Name: ultimate_program_workflow
+
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "ultimate_program_workflow",
+    "arguments": {},
+    "requestState": "{{requestState}}",
+    "inputResponses": {
+      "source": {
+        "action": "accept",
+        "content": {
+          "source": "10 END"
+        }
+      }
+    },
+    "_meta": {
+      "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+      "io.modelcontextprotocol/clientInfo": {
+        "name": "http-feature-client",
+        "version": "1.0"
+      },
+      "io.modelcontextprotocol/clientCapabilities": {
+        "elicitation": {
+          "form": {}
+        }
+      }
+    }
+  }
+}
+

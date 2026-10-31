@@ -64,6 +64,8 @@ docker-compose.override.yml
 
 # Build output
 dist/
+!C64UltimateMcpServer/Features/Ui/dist/
+!C64UltimateMcpServer/Features/Ui/dist/*.html
 build/
 *.dll
 *.exe

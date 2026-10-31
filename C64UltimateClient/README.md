@@ -7,7 +7,7 @@ An asynchronous .NET client library for supported **Commodore 64 Ultimate** REST
 ## Features
 
 ✅ **REST API Integration** - Machine, memory, runners, configuration, drives, streams, and disk-image operations<br>
-✅ **Async/Await Support** - Asynchronous HTTP operations; propagation of caller cancellation tokens is planned<br>
+✅ **Async/Await Support** - Asynchronous HTTP operations with caller cancellation propagated through HTTP and response reads<br>
 ✅ **Type-Safe** - Full C# type safety with nullable reference types enabled  
 ✅ **Structured Logging** - Optional ILogger<Ultimate64Client> integration  
 ✅ **Error Handling** - UltimateClientException with API error details  
@@ -17,7 +17,7 @@ An asynchronous .NET client library for supported **Commodore 64 Ultimate** REST
 
 ## Installation
 
-Device password support, device-info, menu/input endpoints, and binary load-without-run are planned additions. Several binary operations already exist in this library but are not exposed by the current MCP tools. See the [implementation plan](../openspec/changes/align-ultimate-rest-api/tasks.md) and [release notes](../RELEASE_NOTES.md).
+Device password support is implemented. Device-info, menu/input endpoints, and binary load-without-run remain planned additions. Several binary operations already exist in this library but are not exposed by the current MCP tools. See the [implementation plan](../openspec/changes/align-ultimate-rest-api/tasks.md) and [release notes](../RELEASE_NOTES.md).
 
 ```bash
 dotnet add package C64UltimateClient
@@ -190,3 +190,22 @@ var client = new Ultimate64Client(
 ## License
 
 MIT License - See LICENSE file
+
+## Connection options and cancellation
+
+Existing constructors and method signatures remain available. New overloads accept `CancellationToken`; cancellation throws `OperationCanceledException` and cannot undo a device command already received.
+
+```csharp
+using var client = new Ultimate64Client(new UltimateClientOptions
+{
+    BaseUrl = "http://192.168.0.120",
+    NetworkPassword = "example-only"
+}, new SocketsHttpHandler { AllowAutoRedirect = false });
+var version = await client.GetVersionAsync(cancellationToken);
+```
+
+The options constructor also accepts an owned `HttpMessageHandler` for testing. Known HTTP handlers, including injected handler chains, have redirects disabled to prevent credential forwarding and command retransmission. Custom handlers must not implement automatic redirects. `X-Password` is sent only by the device client; external source downloads use a separate client. Error messages redact the password; successful device data is preserved. HTTP failures expose `UltimateClientException.StatusCode`. Responses, JSON documents and owned handlers are disposed.
+
+For the MCP server configure `Ultimate:BaseUrl` and optional `Ultimate:NetworkPassword` (environment variable `Ultimate__NetworkPassword`). This device password does not configure OAuth for MCP clients.
+
+The options model also exposes `RequestTimeout` (default 30 seconds). An explicit constructor timeout takes precedence. The MCP server binds `Ultimate__BaseUrl`, `Ultimate__NetworkPassword` and `Ultimate__RequestTimeout` through startup-validated `IOptions<UltimateClientOptions>`; all device consumers share the same process snapshot. See [server configuration](../C64UltimateMcpServer/Configuration/README.md).

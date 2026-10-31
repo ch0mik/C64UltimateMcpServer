@@ -1,10 +1,10 @@
 # Tasks
 
-Plan do późniejszego wdrożenia. Na etapie analizy nie zmieniono kodu ani pakietów i nie wywołano urządzenia.
+Plan częściowo wykorzystany przez enable-mcp-2-3-features: wdrożono wspólny transport, cancellation i NetworkPassword. Pozostałe trasy i pełna macierz zgodności pozostają do wdrożenia; nie wywołano fizycznego urządzenia.
 
 ## 1. Wspólna komunikacja i walidacja
 
-- [ ] 1.1 Wprowadzić opcje klienta i kontrolowaną fabrykę transportu lub wstrzykiwany HttpMessageHandler z zachowaniem poprzedniego konstruktora oraz opcjonalne tokeny; testy blokowanego handlera sprawdzają anulowanie i lifetime transportu. Udokumentować sposób użycia w README biblioteki.
+- [x] 1.1 Wprowadzić opcje klienta i kontrolowaną fabrykę transportu lub wstrzykiwany HttpMessageHandler z zachowaniem poprzedniego konstruktora oraz opcjonalne tokeny; testy blokowanego handlera sprawdzają anulowanie i lifetime transportu. Udokumentować sposób użycia w README biblioteki.
 - [ ] 1.2 Dodać konfigurację NetworkPassword i stosowanie X-Password tylko do urządzenia; testy JSON/binary/no-password, zewnętrznego downloadu i przekierowań 301/302/303/307/308 muszą wykazać brak ujawnienia i przekazania sekretu. Na rzeczywistych lokalnych originach sprawdzić brak drugiego żądania i retransmisji komendy; ta sama reguła obowiązuje konstruktor domyślny i DI. Dodać przykład konfiguracji bez prawdziwego hasła.
 - [ ] 1.3 Ujednolicić obsługę errors, statusu i odpowiedzi binarnych, zwalnianie zasobów i klasyfikację błędów; testy obejmują 2xx z errors, 403, 404, 501, JSON zamiast binary, nieprawidłowy JSON i poweroff bez potwierdzenia. Zachować istniejące formaty narzędzi, nowe opisać w README.
 - [ ] 1.4 Dodać wspólną walidację pamięci, hex, dysków i enumeracji; testy graniczne mają potwierdzić brak HTTP dla błędnego wejścia. Zestaw poprawnych argumentów i limitów udokumentować przy metodach i narzędziach.
@@ -33,3 +33,7 @@ Plan do późniejszego wdrożenia. Na etapie analizy nie zmieniono kodu ani paki
 
 - Po zakończeniu i weryfikacji zarchiwizować zmianę i zsynchronizować specyfikacje główne.
 - Testy menu, wejścia i operacji binarnych na fizycznym urządzeniu wykonywać jako oddzielny etap.
+
+## Shared transport implementation
+
+NetworkPassword i blokada przekierowań są wdrożone i przetestowane (w tym 301/302/303/307/308 na dwóch lokalnych originach). Zadania 1.2 i 1.3 pozostają otwarte do uzupełnienia całej przewidzianej macierzy API, w tym zewnętrznych downloadów i poweroff. Nie oznacza to ukończenia pozostałych funkcji planu REST.

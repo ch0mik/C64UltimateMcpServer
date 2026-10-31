@@ -2,25 +2,23 @@
 using ModelContextProtocol;
 using ModelContextProtocol.Server;
 using ModelContextProtocol.Protocol;
+using C64UltimateMcpServer.Features;
 
 namespace C64UltimateMcpServer.Core;
 
-public class SubscriptionMessageSender(McpServer server, ConcurrentDictionary<string, byte> subscriptions, TimeProvider timeProvider) : BackgroundService
+public class SubscriptionMessageSender(McpServer server, ConcurrentDictionary<string, byte> subscriptions, DeviceResourceHub hub) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        using var listener = hub.Watch(() => subscriptions.Keys);
+        await foreach (var uri in listener.ReadAllAsync(stoppingToken))
         {
-            foreach (var uri in subscriptions.Keys)
-            {
+            if (subscriptions.ContainsKey(uri))
                 await server.SendNotificationAsync(NotificationMethods.ResourceUpdatedNotification,
                     new ResourceUpdatedNotificationParams
                     {
                         Uri = uri,
                     }, cancellationToken: stoppingToken);
-            }
-
-            await Task.Delay(TimeSpan.FromSeconds(5), timeProvider, stoppingToken);
         }
     }
 }

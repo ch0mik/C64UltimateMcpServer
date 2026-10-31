@@ -31,6 +31,6 @@ Migracja do MCP SDK 2.3.0 zapewniła zgodność protokołów i podstawowe Tasks.
 
 ## Impact
 
-Serwer, klient REST C64, modele wyników, zasoby i testy. Planowana zależność `ModelContextProtocol.Extensions.Apps` 2.3.0; obsługa Apps w tym wydaniu jest eksperymentalna. Zasoby UI HTML/JS będą częścią serwera. Nie jest wymagane aktualizowanie SDK powyżej 2.3.0 ani osobny hosting strony.
+Serwer, klient REST C64, modele wyników, zasoby i testy. Dodana zależność `ModelContextProtocol.Extensions.Apps` 2.3.0; obsługa Apps w tym wydaniu jest eksperymentalna. Zasoby UI HTML/JS są częścią serwera. Nie jest wymagane aktualizowanie SDK powyżej 2.3.0 ani osobny hosting strony.
 
-Ten etap tworzy wyłącznie plan i dokumenty. Wdrożenie nowych funkcji wymaga kolejnego polecenia implementacji. Poprzednia migracja jest zakończona i opisana w `../archive/2026-10-30-upgrade-mcp-sdk-2-3/verification.md`.
+Wdrożono na polecenie użytkownika; wyniki i ograniczenia zapisano w verification.md. Poprzednia migracja jest zakończona i opisana w `../2026-10-30-upgrade-mcp-sdk-2-3/verification.md`.
